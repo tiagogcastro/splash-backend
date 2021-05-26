@@ -1,0 +1,15 @@
+{
+  "name": "mvp-backend",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "repository": "https://github.com/lavimco/mvp-backend.git",
+  "author": "Tiaguin061, Marcos, Gustavo - Lavimco",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "dev:server": "ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules src/http/server.ts",
+    "start": "ts-node -r tsconfig-paths/register src/http/server.ts",
+    "typeorm": "ts-node-dev -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "test": "jest"
+  }
+}
