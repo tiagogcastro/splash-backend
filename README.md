@@ -1,10 +1,9 @@
-✅ 
+✅
 
 
-# Usuário 
+# Usuário
 **RF**
 - O usuário deve poder visualizar o perfil de qualquer pessoa;
-
 - O usuário deve poder listar todos os participantes, com excessão do usuário logado;
 - O usuário deve poder visualizar seu perfil;
 
@@ -19,7 +18,7 @@
 - Usar bycrypt para criptografar a senha enviada pelo usuário;
 
 **RN**
-- (telefone) verificar se o código de acesso é válido 
+- (telefone) verificar se o código de acesso é válido
 - O usuário não deve poder criar uma conta com um e-mail já existente;
 - O usuário deverá ter a senha criptografada após a criação da conta;
 
@@ -28,11 +27,12 @@
 
 **RF**
 - O usuário deve poder fazer login na aplicação informando o email ou username com a senha;
-- Deve ser possível o usuário logar por telefone (OTP por SMS)
+- Deve ser possível o usuário logar por telefone (OTP por SMS)/
 
 **RNF**
 - Usar JsonWebToken para geração de tokens de autenticação;
 - Usar bycrypt para comparar a senha criptografada a senha enviada pelo usuário;
+
 **RN**
 - Deve gerar um token de acesso após login;
 
@@ -55,10 +55,6 @@
 - O usuário precisa informar uma nova senha;
 - (e-mail) O link enviado para a recuperação deve expirar em 2 horas;
 - (telefone) O código de acessso enviado para a recuperação deve expirar em 2 horas;
-
-
-
-
 
 
 # Enviar Patrocínio
