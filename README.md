@@ -10,7 +10,7 @@
 
 ## Cadastro
 **RF**
-- O usuário deve poder cadastrar informando name, email, password;
+- O usuário deve poder cadastrar informando name, email, password; ✅
 - O usuário deve poder cadastrar por telefone (OTP por SMS);
 
 
