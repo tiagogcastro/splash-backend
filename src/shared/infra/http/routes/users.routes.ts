@@ -1,37 +1,35 @@
-import { Router } from 'express'
-import { getRepository } from 'typeorm'
+import { Router } from 'express';
 
-import CreateUsersService from '@modules/users/services/CreateUsersService'
-import User from '@modules/users/infra/typeorm/entities/User'
+import CreateUsersService from '@modules/users/services/CreateUsersService';
 
-const usersRoutes = Router()
+const usersRoutes = Router();
 
 usersRoutes.post('/', async (req, res) => {
   try {
-    const { name, username, email, password } = req.body
+    const { name, username, email, password } = await req.body;
 
-    const usersService = new CreateUsersService
+    const userService = new CreateUsersService();
 
-    const user = await usersService.execute({
+    const user = await userService.execute({
       name,
       username,
       email,
-      password
-    })
+      password,
+    });
 
     const userWithoutPassword = {
       id: user.id,
       name: user.name,
+      username: user.username,
       email: user.email,
       created_at: user.created_at,
       updated_at: user.updated_at,
     };
 
-    res.json(userWithoutPassword)
-
+    res.json(userWithoutPassword);
   } catch (err) {
-    return res.status(400).json({ error: err.message });
+    res.json({ error: err.message });
   }
-})
+});
 
 export default usersRoutes;
