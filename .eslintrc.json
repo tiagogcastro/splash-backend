@@ -33,7 +33,6 @@
       "error",
       {
         "selector": "interface",
-        "prefix": ["I"],
         "format": ["PascalCase"]
       }
     ],
