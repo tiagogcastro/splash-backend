@@ -5,7 +5,7 @@
     "port": 5432,
     "username": "postgres",
     "password": "lavimco",
-    "database": "postgres",
+    "database": "lavimco_postgres",
 
     "migrations": ["./src/shared/infra/typeorm/migrations/*.ts"],
     "entities": ["./src/modules/**/infra/typeorm/entities/*.ts"],
