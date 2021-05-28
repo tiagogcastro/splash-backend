@@ -39,6 +39,12 @@
 - [ㅤ ]  Utilizar Twillo para envio do código de acesso ( produção e desenvolvimento );
 
 **RN**
+- Usar bycrypt para criptografar a senha enviada pelo usuário; ✅
+
+**RN**
+- (telefone) verificar se o código de acesso é válido
+- O usuário não deve poder criar uma conta com um e-mail já existente; ✅
+- O usuário deverá ter a senha criptografada após a criação da conta; ✅
 
 - [✅]  O usuário não deve poder criar uma conta com um e-mail já existente;
 - [✅]  O usuário deverá ter a senha criptografada após a criação da conta;
