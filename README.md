@@ -1,61 +1,129 @@
 ✅
+### **Securança**
 
-
-# Usuário
 **RF**
-- O usuário deve poder visualizar o perfil de qualquer pessoa;
-- O usuário deve poder listar todos os participantes, com excessão do usuário logado;
-- O usuário deve poder visualizar seu perfil;
-
-
-## Cadastro
-**RF**
-- O usuário deve poder cadastrar informando name, email, password;
-- O usuário deve poder cadastrar por telefone (OTP por SMS);
-
+-  [ㅤ ] Bloquear usuário por 1h, após 10 **requisições consecutivas ( Opcional );
 
 **RNF**
-- Usar bycrypt para criptografar a senha enviada pelo usuário;
-
-**RN**
-- (telefone) verificar se o código de acesso é válido
-- O usuário não deve poder criar uma conta com um e-mail já existente;
-- O usuário deverá ter a senha criptografada após a criação da conta;
-
-
-## Autenticação
+-  [ㅤ ] Utilizar rate-limiter-flexible para **bloquear tentativa de DDoS;
+### **Perfil do usuário**
 
 **RF**
-- O usuário deve poder fazer login na aplicação informando o email ou username com a senha;
-- Deve ser possível o usuário logar por telefone (OTP por SMS)/
+
+- [ㅤ ]  O usuário deve poder visualizar o perfil de qualquer pessoa;
+- [✅]  O usuário deve poder seguir ( patrocinar ) outro usuário;
+- [ㅤ ]  O usuário deve poder visualizar seu perfil;
+- [ㅤ ]  O usuário ( loja ) deve poder visualizar seu perfil com ;
+- [ㅤ ]  O usuário deve poder deletar sua conta;
+- [ㅤ ]  O usuário deve poder listar quem ele está patrocinando;
+- [ㅤ ]  O usuário deve poder atualizar sua conta informando nome, email, e username e senha ser opcional;
+- [ㅤ ]  O usuário deve atualizar sua senha informando a senha atual, nova senha e confirmar nova senha;
 
 **RNF**
-- Usar JsonWebToken para geração de tokens de autenticação;
-- Usar bycrypt para comparar a senha criptografada a senha enviada pelo usuário;
 
-**RN**
-- Deve gerar um token de acesso após login;
-
-## Recuperação de Senha
+- [ㅤ ]  Utilizar bcryptjs para criptografar a nova senha enviada pelo usuário após a atualização;
+- [ㅤ ]  Utilizar Twillo para envio do código de acesso ( produção e desenvolvimento );
+### **Cadastro**
 
 **RF**
-- Deve ser possível o usuário recuperar a senha informando o e-mail;
-- Deve ser possível o usuário recuperar a senha informando o seu telefone;
-- (telefone) O usuário deve receber uma mensagem por SMS com o passo a passo para a recuperação da senha;
-- (e-mail) O usuário deve receber um e-mail com o passo a passo para a recuperação da senha;
-- O usuário deve conseguir inserir uma nova senha;
+
+- [✅]  O usuário deve poder cadastrar informando nome, e-mail, senha;
+- [ㅤ ]  O usuário deve poder cadastrar por telefone ( OTP por SMS );
+- [ㅤ ]  O usuário deve poder aceitar os termos;
+- [ㅤ ]  Validar o número de telefone;
+- [ㅤ ]  Verificar o Código de Patrocínio enviado ( obrigatório para cadatro );
 
 **RNF**
-- Usar twillo para envio do código de acesso (produção e desenvolvimento);
-- Usar Ethereal mail para envio de e-mail em desenvolvimento;
-- Usar Amazon ses para envio de e-mail em produção;
 
+- [✅]  Utilizar bcryptjs para criptografar a senha enviada pelo usuário;
+- [ㅤ ]  Utilizar Twillo para envio do código de acesso ( produção e desenvolvimento );
 
 **RN**
-- O usuário precisa informar uma nova senha;
-- (e-mail) O link enviado para a recuperação deve expirar em 2 horas;
-- (telefone) O código de acessso enviado para a recuperação deve expirar em 2 horas;
 
+- [✅]  O usuário não deve poder criar uma conta com um e-mail já existente;
+- [✅]  O usuário deverá ter a senha criptografada após a criação da conta;
+### **Autenticação**
 
-# Enviar Patrocínio
+**RF**
 
+- [ㅤ ]  O usuário deve poder fazer login por telefone ( OTP por SMS );
+- [ㅤ ]  O usuário deve poder login com e-mail ou username;
+- [ㅤ ]  O usuário não deve poder criar uma conta com um telefone inválido;
+- [ㅤ ]  O usuário deve pode enviar o código após 3 minutos;
+- [ㅤ ]  Verificar se o usuário existe para autenticação;
+
+**RNF**
+
+- [ㅤ ]  Utilizar jsonwebtoken para geração de tokens de autenticação;
+- [ㅤ ]  Utilizar bcryptjs para comparar a senha criptografada com a senha enviada pelo usuário;
+
+**RN**
+
+- [ㅤ ]  Deve gerar um token de acesso após login;
+### **Recuperação de Senha**
+
+**RF**
+
+- [ㅤ ]  Deve ser possível o usuário recuperar a senha informando o e-mail;
+- [ㅤ ]  Deve ser possível o usuário recuperar a senha informando o seu telefone;
+- [ㅤ ]  O usuário deve receber um e-mail com o passo a passo para a recuperação da senha;
+- [ㅤ ]  O usuário deve conseguir inserir uma nova senha;
+
+**RNF**
+
+- [ㅤ ]  Utilizar Twillo para envio do código de acesso (produção e desenvolvimento);
+- [ㅤ ]  Utilizar Ethereal mail para envio de e-mail em desenvolvimento;
+- [ㅤ ]  Utilizar Amazon SES para envio de e-mail em produção;
+
+**RN**
+
+- [ㅤ ]  O usuário precisa informar uma nova senha;
+- [ㅤ ]  O link enviado para a recuperação deve expirar em 2 horas;
+### **QR Code**
+
+**RF**
+
+- [ ]  Deverá ser possível criar um QR Code;
+- [ ]  O usuário poderá ler o QR Code;
+
+**RNF**
+
+- [ ]  Utilizar qr-image para poder ler ou criar um QR Code;
+
+### **Feed**
+
+**RF**
+
+- [ㅤ ]  O usuário deve poder listar patrocínios que ele Recebeu;
+- [ㅤ ]  O usuário deve poder listar patrocínios que ele Enviou;
+- [ㅤ ]  As atualizações será agrupadas por usuário;
+
+**RNF**
+
+- [ㅤ ]  Utilizar [socket.io](http://socket.io) para atualizar em realtime as notificações;
+- [ㅤ ]  Utilizar MongoDB para notificações;
+### **Saldo**
+
+**RF**
+
+- [ㅤ ]  O usuário deve poder visualizar seu saldo total;
+- [ㅤ ]  O usuário deve poder visualizar seu saldo disponível para saque;
+- [ㅤ ]  O usuário deve poder visualizar seu saldo por loja;
+
+**RN**
+
+- [ㅤ ]  O usuário deve poder efetuar pagamento para uma loja com saldo disponível;
+- [ㅤ ]  O usuário deve poderá usar livremente seu saldo disponível;
+### **Patrocínios**
+### Enviar Patrocínio
+
+**RF**
+
+- [ㅤ ]  O usuário deve poder definir o valor do patrocínio;
+- [ㅤ ]  O usuário ( Loja ) poderá permitir saque;
+- [ㅤ ]  Validar se o valor enviado é um double;
+- [ㅤ ]  Deve ser possível o usuário pesquisar pelo username ( Opcional ) qualquer usuário que ele está patrocinando;
+
+**RN**
+
+- [ㅤ ]  O valor enviado ao usuário deve ser entre R$ 1,00 - R$ 500,00;
