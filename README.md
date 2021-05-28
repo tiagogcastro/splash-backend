@@ -82,12 +82,12 @@
 
 **RF**
 
-- [ ]  Deverá ser possível criar um QR Code;
-- [ ]  O usuário poderá ler o QR Code;
+- [ㅤ ]  Deverá ser possível criar um QR Code;
+- [ㅤ ]  O usuário poderá ler o QR Code;
 
 **RNF**
 
-- [ ]  Utilizar qr-image para poder ler ou criar um QR Code;
+- [ㅤ ]  Utilizar qr-image para poder ler ou criar um QR Code;
 
 ### **Feed**
 
@@ -121,8 +121,10 @@
 - [ㅤ ]  O usuário deve poder definir o valor do patrocínio;
 - [ㅤ ]  O usuário ( Loja ) poderá permitir saque;
 - [ㅤ ]  Validar se o valor enviado é um double;
-- [ㅤ ]  Deve ser possível o usuário pesquisar pelo username ( Opcional ) qualquer usuário que ele está patrocinando;
+- [ㅤ ]  O usuário deve poder pesquisar pelo nome do usuário que ele estiver patrocinando ( Opcional );
+- [ㅤ ]  O usuário deve poder listar os usuário que ele estiver patrocinando;
 
 **RN**
 
+- [ㅤ ]  O usuário não poderá patrocinar a sí mesmo;
 - [ㅤ ]  O valor enviado ao usuário deve ser entre R$ 1,00 - R$ 500,00;
