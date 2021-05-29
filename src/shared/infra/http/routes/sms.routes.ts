@@ -3,7 +3,7 @@ import { Router } from 'express';
 import client from 'twilio';
 import twilioConfig from '@config/twilio';
 
-import createUserMiddleware from '@shared/infra/http/middleware/createUserMiddleware';
+import createUserByPhoneNumberMiddleware from '@shared/infra/http/middleware/createUserByPhoneNumberMiddleware';
 import UsersPhoneController from '@shared/infra/http/controllers/UsersPhoneController';
 
 const smsRoutes = Router();
@@ -16,7 +16,7 @@ smsRoutes.post('/', async (request, response) => {
 
 smsRoutes.post(
   '/validation',
-  createUserMiddleware,
+  createUserByPhoneNumberMiddleware,
   async (request, response) => {
     await userPhone.create(request, response);
   },
