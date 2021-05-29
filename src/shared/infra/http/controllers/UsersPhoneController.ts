@@ -9,6 +9,28 @@ const { accountSid, authToken, servicesSid } = twilioConfig.twilio;
 const clientSendMessage = client(accountSid, authToken);
 
 class UsersPhoneController {
+  async sendCode(request: Request, response: Response): Promise<Response> {
+    try {
+      const { phoneNumber } = request.body;
+
+      await clientSendMessage.verify
+        .services(servicesSid)
+        .verifications.create({
+          to: `${String(phoneNumber)}`,
+          channel: 'sms',
+        });
+
+      request.user = {
+        id: '',
+        phoneNumber,
+      };
+
+      return response.json({ message: 'Code sent successfully!' });
+    } catch (err) {
+      return response.status(400).json({ error: err.message });
+    }
+  }
+
   async create(request: Request, response: Response): Promise<Response> {
     const { code } = request.body;
 
