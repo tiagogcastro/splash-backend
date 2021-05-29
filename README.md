@@ -20,22 +20,22 @@
 
 **RNF**
 
-- [ㅤ ]  Utilizar bcryptjs para criptografar a nova senha enviada pelo usuário após a atualização;
-- [ㅤ ]  Utilizar Twillo para envio do código de acesso ( produção e desenvolvimento );
+- [✅]  Utilizar bcryptjs para criptografar a nova senha enviada pelo usuário após a atualização;
+- [✅]  Utilizar Twillo para envio do código de acesso ( produção e desenvolvimento );
 ### **Cadastro**
 
 **RF**
 
 - [✅]  O usuário deve poder cadastrar informando nome, e-mail, senha;
-- [ㅤ ]  O usuário deve poder cadastrar por telefone ( OTP por SMS );
+- [✅]  O usuário deve poder cadastrar por telefone ( OTP por SMS );
 - [ㅤ ]  O usuário deve poder aceitar os termos;
-- [ㅤ ]  Validar o número de telefone;
+- [✅]  Validar o número de telefone;
 - [ㅤ ]  Verificar o Código de Patrocínio enviado ( obrigatório para cadatro );
 
 **RNF**
 
 - [✅]  Utilizar bcryptjs para criptografar a senha enviada pelo usuário;
-- [ㅤ ]  Utilizar Twillo para envio do código de acesso ( produção e desenvolvimento );
+- [✅]  Utilizar Twillo para envio do código de acesso ( produção e desenvolvimento );
 
 **RN**
 
@@ -54,7 +54,7 @@
 **RNF**
 
 - [ㅤ ]  Utilizar jsonwebtoken para geração de tokens de autenticação;
-- [ㅤ ]  Utilizar bcryptjs para comparar a senha criptografada com a senha enviada pelo usuário;
+- [✅]  Utilizar bcryptjs para comparar a senha criptografada com a senha enviada pelo usuário;
 
 **RN**
 
