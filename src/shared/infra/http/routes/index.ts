@@ -6,7 +6,6 @@ import smsRoutes from './sms.routes';
 
 const router = Router();
 
-router.use(express.json());
 router.use('/users', usersRoutes);
 router.use('/sms', smsRoutes);
 router.use('/sponsor', sponsoringRoutes);
