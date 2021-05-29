@@ -1,12 +1,10 @@
-import express, { Router } from 'express';
-
+import { Router } from 'express';
+import smsRoutes from './sms.routes';
 import sponsoringRoutes from './sponsoring.routes';
 import usersRoutes from './users.routes';
-import smsRoutes from './sms.routes';
 
 const router = Router();
 
-router.use(express.json());
 router.use('/users', usersRoutes);
 router.use('/sms', smsRoutes);
 
