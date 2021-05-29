@@ -1,9 +1,10 @@
-import {MigrationInterface, QueryRunner, Table} from "typeorm";
+import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class CreateSponsoring1622226527670 implements MigrationInterface {
-
-	public async up(queryRunner: QueryRunner): Promise<void> {
-		await queryRunner.createTable(
+export default class CreateSponsoring1622226527670
+  implements MigrationInterface
+{
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.createTable(
       new Table({
         name: 'sponsoring',
         columns: [
@@ -16,7 +17,7 @@ export class CreateSponsoring1622226527670 implements MigrationInterface {
             name: 'sponsoring_userId',
             type: 'uuid',
           },
-					{
+          {
             name: 'sponsored_userId',
             type: 'uuid',
           },
@@ -31,32 +32,29 @@ export class CreateSponsoring1622226527670 implements MigrationInterface {
             default: 'now()',
           },
         ],
-				foreignKeys: [
-					{
-						name: 'sponsoringFK_userId',
-						referencedTableName: 'users',
-						referencedColumnNames: ['id'],
-						columnNames: ['sponsoring_userId'],
-						onUpdate: 'CASCADE',
-						onDelete: 'CASCADE',
-
-					},
-					{
-						name: 'sponsoredFK_userId',
-						referencedTableName: 'users',
-						referencedColumnNames: ['id'],
-						columnNames: ['sponsored_userId'],
-						onUpdate: 'CASCADE',
-						onDelete: 'CASCADE',
-
-					}
-				]
+        foreignKeys: [
+          {
+            name: 'sponsoringFK_userId',
+            referencedTableName: 'users',
+            referencedColumnNames: ['id'],
+            columnNames: ['sponsoring_userId'],
+            onUpdate: 'CASCADE',
+            onDelete: 'CASCADE',
+          },
+          {
+            name: 'sponsoredFK_userId',
+            referencedTableName: 'users',
+            referencedColumnNames: ['id'],
+            columnNames: ['sponsored_userId'],
+            onUpdate: 'CASCADE',
+            onDelete: 'CASCADE',
+          },
+        ],
       }),
     );
-	}
+  }
 
-	public async down(queryRunner: QueryRunner): Promise<void> {
-		await queryRunner.dropTable('sponsoring');
-	}
-
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.dropTable('sponsoring');
+  }
 }
