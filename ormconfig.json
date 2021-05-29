@@ -1,4 +1,5 @@
-{
+[
+  {
     "name": "default",
     "type": "postgres",
     "host": "localhost",
@@ -13,4 +14,16 @@
       "migrationsDir": "./src/shared/infra/typeorm/migrations"
     }
 
-}
+  },
+  {
+    "name": "mongo",
+    "type": "mongodb",
+    "host": "localhost",
+    "port": 27017,
+    "database": "lavimco_mongodb",
+    "useUnifiedTopology": true,
+    "entities": [
+      "./src/modules/**/infra/typeorm/schemas/*.ts"
+    ]
+  }
+]
