@@ -12,16 +12,19 @@ class User {
   id: string;
 
   @Column()
-  name: string;
+  name?: string;
 
   @Column()
   username: string;
 
   @Column()
-  email: string;
+  email?: string;
 
   @Column()
-  password: string;
+  phoneNumber: string;
+
+  @Column()
+  password?: string;
 
   @CreateDateColumn()
   created_at: Date;

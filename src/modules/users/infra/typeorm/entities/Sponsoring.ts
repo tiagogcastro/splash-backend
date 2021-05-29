@@ -1,12 +1,12 @@
-import { 
-  ObjectID, 
+import {
+  ObjectID,
   Entity,
   CreateDateColumn,
   UpdateDateColumn,
   Column,
   ManyToOne,
   JoinColumn,
-  PrimaryGeneratedColumn
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import User from './User';
@@ -24,11 +24,11 @@ class Sponsoring {
   sponsored_userId: string;
 
   @ManyToOne(() => User)
-  @JoinColumn({name: "sponsoring_userId"})
+  @JoinColumn({ name: 'sponsoring_userId' })
   user_id_sponsoring: string;
-  
+
   @ManyToOne(() => User)
-  @JoinColumn({name: "sponsored_userId"})
+  @JoinColumn({ name: 'sponsored_userId' })
   user_id_sponsored: User;
 
   @CreateDateColumn()
@@ -38,8 +38,8 @@ class Sponsoring {
   updated_at: Date;
 
   constructor() {
-    if(!this.id) {
-      this.id = uuid()
+    if (!this.id) {
+      this.id = uuid();
     }
   }
 }

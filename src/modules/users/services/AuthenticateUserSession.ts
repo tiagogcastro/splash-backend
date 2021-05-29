@@ -1,3 +1,5 @@
+/* eslint-disable import/no-unresolved */
+// eslint-disable-next-line import/no-unresolved
 import { getRepository } from 'typeorm';
 import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
@@ -35,11 +37,19 @@ export default class AuthenticateUserSession {
       return passwordVerified;
     }
 
-    const UserfoundbyUsername = await usersRepository.findOne({
+    const UserFoundByUsername = await usersRepository.findOne({
       where: { username },
     });
-    const UserfoundbyEmail = await usersRepository.findOne({
+    const UserFoundByEmail = await usersRepository.findOne({
       where: { email },
     });
+
+    if (!UserFoundByUsername) {
+      throw new AppError('Username is already used.');
+    }
+
+    if (!UserFoundByEmail) {
+      throw new AppError('E-mail address already used.');
+    }
   }
 }

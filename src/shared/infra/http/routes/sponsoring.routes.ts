@@ -9,7 +9,13 @@ const listSponsorController = new ListSponsorController();
 
 sponsoringRoutes.put('/', sponsoringController.update);
 sponsoringRoutes.delete('/', sponsoringController.delete);
-sponsoringRoutes.get('/sponsoring/:user_id', listSponsorController.indexSponsoring);
-sponsoringRoutes.get('/sponsored/:user_id', listSponsorController.indexSponsored);
+sponsoringRoutes.get(
+  '/sponsoring/:user_id',
+  listSponsorController.indexSponsoring,
+);
+sponsoringRoutes.get(
+  '/sponsored/:user_id',
+  listSponsorController.indexSponsored,
+);
 
 export default sponsoringRoutes;
