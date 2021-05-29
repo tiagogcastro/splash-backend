@@ -1,7 +1,5 @@
 /* eslint-disable consistent-return */
 import { Router } from 'express';
-import client from 'twilio';
-import twilioConfig from '@config/twilio';
 
 import createUserByPhoneNumberMiddleware from '@shared/infra/http/middleware/createUserByPhoneNumberMiddleware';
 import UsersPhoneController from '@shared/infra/http/controllers/UsersPhoneController';
