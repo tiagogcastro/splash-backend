@@ -1,15 +1,19 @@
 import { Router } from 'express';
-import ListSponsorController from '../controllers/ListSponsorController';
-import SponsoringController from '../controllers/SponsoringController';
+import SponsorController from '../controllers/SponsorUserController';
 
-const sponsoringRoutes = Router();
+import SponsoringUserController from '../controllers/SponsoringUserController';
+import SponsoredUserController from '../controllers/SponsoredUserController';
 
-const sponsoringController = new SponsoringController();
-const listSponsorController = new ListSponsorController();
+const sponsorsRoutes = Router();
 
-sponsoringRoutes.put('/', sponsoringController.update);
-sponsoringRoutes.delete('/', sponsoringController.delete);
-sponsoringRoutes.get('/sponsoring/:user_id', listSponsorController.indexSponsoring);
-sponsoringRoutes.get('/sponsored/:user_id', listSponsorController.indexSponsored);
+const sponsorUserController = new SponsorController();
+const sponsoringUserController = new SponsoringUserController();
+const sponsoredUserController = new SponsoredUserController();
 
-export default sponsoringRoutes;
+sponsorsRoutes.put('/', sponsorUserController.update);
+sponsorsRoutes.delete('/', sponsorUserController.delete);
+
+sponsorsRoutes.get('/sponsoring/:user_id', sponsoringUserController.index);
+sponsorsRoutes.get('/sponsored/:user_id', sponsoredUserController.index);
+
+export default sponsorsRoutes;
