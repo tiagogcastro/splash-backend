@@ -20,7 +20,7 @@ export default class Sponsorship {
   sponsor_id: string;
 
   @Column()
-  your_sponsor_balance: Double;
+  your_sponsor_balance: number;
 
   @Column()
   withdrawal_balance_available: boolean;
