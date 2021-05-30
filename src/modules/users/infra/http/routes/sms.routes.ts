@@ -1,8 +1,8 @@
 /* eslint-disable consistent-return */
 import { Router } from 'express';
 
-import createUserByPhoneNumberMiddleware from '@shared/infra/http/middleware/createUserByPhoneNumberMiddleware';
-import UsersPhoneController from '@shared/infra/http/controllers/UsersPhoneController';
+import createUserByPhoneNumberMiddleware from '../middleware/createUserByPhoneNumberMiddleware';
+import UsersPhoneController from '../controllers/UsersPhoneController';
 
 const smsRoutes = Router();
 

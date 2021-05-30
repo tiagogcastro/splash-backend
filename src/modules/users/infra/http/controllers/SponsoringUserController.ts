@@ -4,7 +4,7 @@ import ListUsersWhoSponsorTheUser from '@modules/users/services/ListUsersWhoSpon
 
 class ListSponsoringController {
   async index(request: Request, response: Response): Promise<Response> {
-    const {user_id} = request.params;
+    const { user_id } = request.params;
 
     const listUsersWhoSponsorTheUser = new ListUsersWhoSponsorTheUser();
 

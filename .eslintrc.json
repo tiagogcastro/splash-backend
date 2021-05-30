@@ -18,7 +18,8 @@
     "prettier"
   ],
   "rules": {
-
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": ["error"],
     "import/no-extraneous-dependencies": "off",
     "@typescript-eslint/no-empty-function": "off",
     "class-methods-use-this":"off",

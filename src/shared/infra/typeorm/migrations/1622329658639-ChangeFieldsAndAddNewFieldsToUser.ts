@@ -1,7 +1,8 @@
-import {MigrationInterface, QueryRunner, TableColumn} from "typeorm";
+import { MigrationInterface, QueryRunner, TableColumn } from 'typeorm';
 
-export class ChangeFieldsAndAddNewFieldsToUser1622329658639 implements MigrationInterface {
-
+export default class ChangeFieldsAndAddNewFieldsToUser1622329658639
+  implements MigrationInterface
+{
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.changeColumns('users', [
       {
@@ -22,7 +23,7 @@ export class ChangeFieldsAndAddNewFieldsToUser1622329658639 implements Migration
           name: 'email',
           type: 'varchar',
           isUnique: true,
-          isNullable: false
+          isNullable: false,
         }),
 
         newColumn: new TableColumn({
@@ -44,78 +45,74 @@ export class ChangeFieldsAndAddNewFieldsToUser1622329658639 implements Migration
           type: 'varchar',
           isNullable: true,
         }),
-      }
+      },
     ]);
 
-    await queryRunner.addColumns(
-      'users', [
-        new TableColumn({
-          name: 'sponsoring',
-          type: 'int',
-          default: 0,
-        }),
+    await queryRunner.addColumns('users', [
+      new TableColumn({
+        name: 'sponsoring',
+        type: 'int',
+        default: 0,
+      }),
 
-        new TableColumn({
-          name: 'sponsored',
-          type: 'int',
-          default: 0,
-        }),
+      new TableColumn({
+        name: 'sponsored',
+        type: 'int',
+        default: 0,
+      }),
 
-        new TableColumn({
-          name: 'phoneNumber',
-          type: 'varchar',
-          isNullable: true
-        }),
+      new TableColumn({
+        name: 'phoneNumber',
+        type: 'varchar',
+        isNullable: true,
+      }),
 
-        new TableColumn({
-          name: 'money',
-          type: 'float',
-          default: 0,
-        }),
+      new TableColumn({
+        name: 'money',
+        type: 'float',
+        default: 0,
+      }),
 
-        new TableColumn({
-          name: 'permissions',
-          type: 'int',
-          default: 0
-        }),
-      ]
-    );
+      new TableColumn({
+        name: 'permissions',
+        type: 'int',
+        default: 0,
+      }),
+    ]);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropColumns(
-      'users', [
-        new TableColumn({
-          name: 'sponsoring',
-          type: 'int',
-          default: 0,
-        }),
+    await queryRunner.dropColumns('users', [
+      new TableColumn({
+        name: 'sponsoring',
+        type: 'int',
+        default: 0,
+      }),
 
-        new TableColumn({
-          name: 'sponsored',
-          type: 'int',
-          default: 0,
-        }),
+      new TableColumn({
+        name: 'sponsored',
+        type: 'int',
+        default: 0,
+      }),
 
-        new TableColumn({
-          name: 'phoneNumber',
-          type: 'varchar',
-          isNullable: true
-        }),
+      new TableColumn({
+        name: 'phoneNumber',
+        type: 'varchar',
+        isNullable: true,
+      }),
 
-        new TableColumn({
-          name: 'money',
-          type: 'float',
-          default: 0,
-        }),
+      new TableColumn({
+        name: 'money',
+        type: 'float',
+        default: 0,
+      }),
 
-        new TableColumn({
-          name: 'permissions',
-          type: 'int',
-          default: 0
-        }),
-      ]
-    );
+      new TableColumn({
+        name: 'permissions',
+        type: 'int',
+        default: 0,
+      }),
+    ]);
 
     await queryRunner.changeColumns('users', [
       {
@@ -136,7 +133,7 @@ export class ChangeFieldsAndAddNewFieldsToUser1622329658639 implements Migration
           name: 'email',
           type: 'varchar',
           isUnique: true,
-          isNullable: false
+          isNullable: false,
         }),
 
         oldColumn: new TableColumn({
@@ -158,7 +155,7 @@ export class ChangeFieldsAndAddNewFieldsToUser1622329658639 implements Migration
           type: 'varchar',
           isNullable: true,
         }),
-      }
+      },
     ]);
   }
 }

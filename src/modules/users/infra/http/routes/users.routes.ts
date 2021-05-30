@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import UsersEmailController from '@shared/infra/http/controllers/UsersEmailController';
+import UsersEmailController from '../controllers/UsersEmailController';
 
 const usersRoutes = Router();
 

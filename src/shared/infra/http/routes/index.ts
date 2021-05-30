@@ -1,15 +1,12 @@
 import { Router } from 'express';
-import smsRoutes from './sms.routes';
-import sponsoringRoutes from './sponsoring.routes';
-import usersRoutes from './users.routes';
+import smsRoutes from '@modules/users/infra/http/routes/sms.routes';
+import sponsorsRoutes from '@modules/users/infra/http/routes/sponsors.routes';
+import usersRoutes from '@modules/users/infra/http/routes/users.routes';
 
 const router = Router();
 
 router.use('/users', usersRoutes);
 router.use('/sms', smsRoutes);
-<<<<<<< HEAD
-router.use('/sponsor', sponsoringRoutes);
-=======
->>>>>>> 5a23fea89c6c1577e9554ad0f53b316cd545740a
+router.use('/sponsors', sponsorsRoutes);
 
 export default router;

@@ -18,7 +18,7 @@ export default class SendSponsorshipService {
     allow_withdrawal = false,
     sponsor_id,
   }: ISendSponsorshipServiceDTO): Promise<Sponsor> {
-    const withdrawal_balance_available = true;
+    let withdrawal_balance_available = true;
 
     const usersRepository = getRepository(User);
 
@@ -28,16 +28,16 @@ export default class SendSponsorshipService {
     if (!findUser) throw new AppError('The user does not exist', 401);
     if (!findSponsor) throw new AppError('The sponsor does not exist', 401);
 
-    // if (!(user.enum === 2) && allow_withdrawal)
-    //   throw new AppError('You are not allowed to access here', 401);
+    if (!(findUser.permissions === 2) && allow_withdrawal)
+      throw new AppError('You are not allowed to access here', 401);
 
-    // if (user.enum === 2) {
-    //   withdrawal_balance_available = allow_withdrawal;
-    // }
+    if (findUser.permissions === 2) {
+      withdrawal_balance_available = allow_withdrawal;
+    }
 
     const message = {
-      name: findUser.name || '',
-      subject: `você recebeu R$${your_sponsor_balance} de ${findSponsor.name}`,
+      name: findUser.name || 'Olá, ',
+      subject: `você recebeu R$${your_sponsor_balance} de ${findSponsor.username}`,
     };
     await this.notificationsRepository.create({
       recipient_id: user_recipient_id,
