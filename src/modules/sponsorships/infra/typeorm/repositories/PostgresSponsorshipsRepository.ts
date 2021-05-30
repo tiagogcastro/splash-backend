@@ -1,7 +1,7 @@
-import ICreateSponsorDTO from '@modules/sponsors/dtos/ICreateSponsorDTO';
-import ISponsorsRepository from '@modules/sponsors/repositories/ISponsorsRepository';
+import ICreateSponsorDTO from '@modules/sponsorships/dtos/ICreateSponsorDTO';
+import ISponsorsRepository from '@modules/sponsorships/repositories/ISponsorshipsRepository';
 import { getRepository, Repository } from 'typeorm';
-import Sponsor from '../schemas/Sponsor';
+import Sponsor from '../entities/Sponsorship';
 
 export default class PostgresSponsorsRepository implements ISponsorsRepository {
   private ormRepository: Repository<Sponsor>;

@@ -8,8 +8,8 @@ import {
 } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
-@Entity('sponsors')
-export default class Sponsor {
+@Entity('sponsorships')
+export default class Sponsorship {
   @PrimaryColumn()
   readonly id: string;
 

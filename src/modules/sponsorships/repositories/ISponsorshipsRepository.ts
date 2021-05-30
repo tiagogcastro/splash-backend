@@ -1,6 +1,6 @@
 import ICreateSponsorDTO from '../dtos/ICreateSponsorDTO';
-import Sponsor from '../infra/typeorm/schemas/Sponsor';
+import Sponsor from '../infra/typeorm/entities/Sponsorship';
 
-export default interface ISponsorsRepository {
+export default interface ISponsorshipsRepository {
   create(sponsorData: ICreateSponsorDTO): Promise<Sponsor>;
 }
