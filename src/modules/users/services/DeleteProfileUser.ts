@@ -7,7 +7,7 @@ class DeleteProfileUser {
     const usersRepository = getRepository(User);
 
     const user = await usersRepository.findOne({
-      where: { user_id },
+      where: { id: user_id },
     });
 
     if(!user) {
