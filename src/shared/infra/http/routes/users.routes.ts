@@ -1,9 +1,10 @@
 import { Router } from 'express';
 
-import CreateUsersService from '@modules/users/services/CreateUsersService';
+import UsersEmailController from '@shared/infra/http/controllers/UsersEmailController';
 
 const usersRoutes = Router();
 
+<<<<<<< HEAD
 usersRoutes.post('/', async (req, res) => {
   try {
     const { name, username, email, password } = await req.body;
@@ -26,6 +27,12 @@ usersRoutes.post('/', async (req, res) => {
   } catch (err) {
     res.json({ error: err.message });
   }
+=======
+usersRoutes.post('/', async (request, response) => {
+  const usersEmail = new UsersEmailController();
+
+  usersEmail.create(request, response);
+>>>>>>> 5a23fea89c6c1577e9554ad0f53b316cd545740a
 });
 
 export default usersRoutes;

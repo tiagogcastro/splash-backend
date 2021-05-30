@@ -10,21 +10,20 @@ class ListUsersWhoSponsorTheUser {
 
     const user = await usersRepository.findOne({
       where: {
-        id: user_id
-      }}
-    );
+        id: user_id,
+      },
+    });
 
-    if(!user) {
+    if (!user) {
       throw new AppError('User not logged', 401);
     }
 
     const usersSponsoring = await sponsoringRepository.find({
       where: {
-        sponsored_userId: user_id
+        sponsored_userId: user_id,
       },
-      relations: ['user_id_sponsoring']
-      }
-    )
+      relations: ['user_id_sponsoring'],
+    });
 
     return usersSponsoring;
   }

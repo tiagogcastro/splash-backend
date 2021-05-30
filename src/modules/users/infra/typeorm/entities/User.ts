@@ -24,6 +24,7 @@ class User {
 
   @Column()
   email?: string;
+<<<<<<< HEAD
 
   @Column()
   password?: string;
@@ -42,6 +43,14 @@ class User {
 
   @Column('int')
   permissions: Permissions;
+=======
+
+  @Column()
+  phoneNumber: string;
+
+  @Column()
+  password?: string;
+>>>>>>> 5a23fea89c6c1577e9554ad0f53b316cd545740a
 
   @CreateDateColumn()
   created_at: Date;

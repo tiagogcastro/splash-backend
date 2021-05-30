@@ -1,9 +1,9 @@
-import CreateUsersService from '@modules/users/services/CreateUsersService';
+import CreateUsersService from '@modules/users/services/CreateUsersByEmailService';
 import { Request, Response } from 'express';
 
-class UsersController {
+class UsersEmailController {
   async create(request: Request, response: Response): Promise<Response> {
-    const { name, username, email, password } = await request.body;
+    const { name, username, phoneNumber, email, password } = await request.body;
 
     const userService = new CreateUsersService();
 
@@ -11,6 +11,7 @@ class UsersController {
       name,
       username,
       email,
+      phoneNumber,
       password,
     });
 
@@ -27,4 +28,4 @@ class UsersController {
   }
 }
 
-export default UsersController;
+export default UsersEmailController;
