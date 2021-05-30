@@ -62,12 +62,6 @@ export default class ChangeFieldsAndAddNewFieldsToUser1622329658639
       }),
 
       new TableColumn({
-        name: 'phoneNumber',
-        type: 'varchar',
-        isNullable: true,
-      }),
-
-      new TableColumn({
         name: 'money',
         type: 'float',
         default: 0,
@@ -93,12 +87,6 @@ export default class ChangeFieldsAndAddNewFieldsToUser1622329658639
         name: 'sponsored',
         type: 'int',
         default: 0,
-      }),
-
-      new TableColumn({
-        name: 'phoneNumber',
-        type: 'varchar',
-        isNullable: true,
       }),
 
       new TableColumn({
