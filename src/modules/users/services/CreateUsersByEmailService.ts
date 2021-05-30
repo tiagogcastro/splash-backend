@@ -10,8 +10,7 @@ import User from '../infra/typeorm/entities/User';
 interface Request {
   name?: string;
   email: string;
-  phoneNumber?: string;
-  username: string;
+  username?: string;
   password: string;
 }
 
@@ -20,7 +19,6 @@ export default class CreateUsersService {
     name,
     username,
     email,
-    phoneNumber,
     password,
   }: Request): Promise<User> {
     const usersRepository = getRepository(User);
@@ -33,10 +31,6 @@ export default class CreateUsersService {
       where: { username },
     });
 
-    const checkUserPhoneNumberExist = await usersRepository.findOne({
-      where: { phoneNumber },
-    });
-
     if (checkUserEmailExist) {
       throw new AppError('E-mail address already used.', 400);
     }
@@ -45,17 +39,23 @@ export default class CreateUsersService {
       throw new AppError('Username address already used.', 400);
     }
 
-    if (checkUserPhoneNumberExist) {
-      throw new AppError('This phone number address already used.', 400);
+    if(!username) {
+      const randomUsername= `username.${Math.random().toFixed(4).replace('.', '')}${new Date().getTime()}`;
+      username = randomUsername;      
+    }
+    
+    username = username.replace(/\s/g, '');
+
+    if(!name) {
+      name = `name.${Math.random().toFixed(4).replace('.', '')}`
     }
 
     const hashedPassword = await hash(password, 8);
 
     const user = usersRepository.create({
       id: uuid(),
-      name,
+      name: name || `name.lavimco-${Math.random().toFixed(4)}`,
       username,
-      phoneNumber,
       email,
       password: hashedPassword,
     });
