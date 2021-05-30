@@ -31,7 +31,7 @@ export default class CreateUsers1622143314249 implements MigrationInterface {
           {
             name: 'phoneNumber',
             type: 'varchar',
-            isNullable: false,
+            isNullable: true,
           },
           {
             name: 'password',
