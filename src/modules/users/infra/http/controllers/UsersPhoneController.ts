@@ -40,7 +40,7 @@ class UsersPhoneController {
       return response.status(400).json({ error: 'User number is missing' });
     }
 
-    const verifyCode = await clientSendMessage.verify
+    await clientSendMessage.verify
       .services(servicesSid)
       .verificationChecks.create({
         to: phoneNumber,
@@ -51,9 +51,16 @@ class UsersPhoneController {
       });
 
     const createUserByPhoneNumber = new CreateUsersByPhoneNumberService();
-    const user = await createUserByPhoneNumber.execute({ phoneNumber });
+    const { user, token } = await createUserByPhoneNumber.execute({
+      phoneNumber,
+    });
 
-    return response.json(user);
+    request.user = {
+      id: user.id,
+      phoneNumber: user.phoneNumber,
+    };
+
+    return response.json({ user, token });
   }
 }
 

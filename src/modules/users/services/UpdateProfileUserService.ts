@@ -13,46 +13,56 @@ interface Request {
 }
 
 class UpdateProfileUserService {
-  async execute({user_id, email, name, password, password_confirmation, username}: Request): Promise<User | undefined> {
+  async execute({
+    user_id,
+    email,
+    name,
+    password,
+    password_confirmation,
+    username,
+  }: Request): Promise<User | undefined> {
     const usersRepository = getRepository(User);
 
     const userLogged = await usersRepository.findOne({
-      where: {id: user_id}
+      where: { id: user_id },
     });
 
-    if(!userLogged) {
+    if (!userLogged) {
       throw new AppError('User not exist', 401);
     }
 
     const emailExist = await usersRepository.findOne({
-      where: {email}
+      where: { email },
     });
 
-    if(emailExist && emailExist.id !== user_id) {
+    if (emailExist && emailExist.id !== user_id) {
       throw new AppError('Este email já existe', 401);
     }
 
     const usernameExist = await usersRepository.findOne({
-      where: {username}
+      where: { username },
     });
 
-    if(usernameExist && usernameExist.id !== user_id) {
+    if (usernameExist && usernameExist.id !== user_id) {
       throw new AppError('Este username já existe', 401);
     }
 
-    if(!username) {
+    if (!username) {
       throw new AppError('Username obrigatório', 401);
     }
 
-    if(password && !password_confirmation || !password && password_confirmation ) {
+    if (
+      (password && !password_confirmation) ||
+      (!password && password_confirmation)
+    ) {
       throw new AppError('A senha e confirmação de senha é obrigatório', 401);
     }
 
-    if(password !== password_confirmation) {
+    if (password !== password_confirmation) {
       throw new AppError('A senha é diferente da confirmação de senha', 401);
     }
 
-    if(password && password.length < 6) {
+    if (password && password.length < 6) {
       throw new AppError('A senha precisa ter no mínimo 6 digitos', 401);
     }
 
@@ -62,12 +72,12 @@ class UpdateProfileUserService {
       email,
       name,
       password: hashedPassword,
-      username
+      username,
     });
 
-    if(user.affected === 1) {
+    if (user.affected === 1) {
       const userUpdated = await usersRepository.findOne({
-        where: {id: user_id}
+        where: { id: user_id },
       });
 
       return userUpdated;
