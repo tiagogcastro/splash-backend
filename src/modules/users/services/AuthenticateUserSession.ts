@@ -20,36 +20,38 @@ interface Response {
 }
 
 export default class AuthenticateUserSession {
-  public async execute({ username, email, password }: Request): Promise<void> {
+  public async create({
+    username,
+    email,
+    password,
+  }: Request): Promise<Response> {
     const usersRepository = getRepository(User);
 
     const { expiresIn, secret } = authConfig.jwt;
 
-    function createUserToken(userID: string) {
-      const token = sign({}, secret, { subject: userID, expiresIn });
-
-      return token;
-    }
-
-    async function VerifyUserPassword(userPassword: string) {
-      const passwordVerified = await compare(password, userPassword);
-
-      return passwordVerified;
-    }
-
-    const UserFoundByUsername = await usersRepository.findOne({
-      where: { username },
-    });
-    const UserFoundByEmail = await usersRepository.findOne({
+    const user = await usersRepository.findOne({
       where: { email },
     });
 
-    if (!UserFoundByUsername) {
-      throw new AppError('Username is already used.');
-    }
-
-    if (!UserFoundByEmail) {
+    if (!user) {
       throw new AppError('E-mail address already used.');
     }
+
+    const passwordVerified = await compare(password, String(user.password));
+
+    if (password && password.length < 6) {
+      throw new AppError('A senha precisa ter no mínimo 6 digitos', 401);
+    }
+
+    if (!passwordVerified) {
+      throw new AppError('Password invalid');
+    }
+
+    const token = sign({}, secret, { subject: user.id, expiresIn });
+
+    return {
+      user,
+      token,
+    };
   }
 }
