@@ -1,23 +1,28 @@
 /* eslint-disable no-param-reassign */
 // eslint-disable-next-line import/no-unresolved
-import { getRepository } from 'typeorm';
-import { hash } from 'bcryptjs';
-import { v4 as uuid } from 'uuid';
-
+import jwtConfig from '@config/auth';
 import AppError from '@shared/errors/AppError';
+import { sign } from 'jsonwebtoken';
+import { getRepository } from 'typeorm';
 import User from '../infra/typeorm/entities/User';
 
 interface Request {
   phoneNumber: string;
 }
+interface Response {
+  user: User;
+  token: string;
+}
 
 function createUsername() {
-  const username = `username.${uuid()}`;
+  const username = `username.${Math.random()
+    .toFixed(4)
+    .replace('.', '')}${new Date().getTime()}`;
   return username;
 }
 
 export default class CreateUsersByPhoneNumberService {
-  public async execute({ phoneNumber }: Request): Promise<User> {
+  public async execute({ phoneNumber }: Request): Promise<Response> {
     const usersRepository = getRepository(User);
 
     const checkUserPhoneNumberExists = await usersRepository.findOne({
@@ -29,16 +34,19 @@ export default class CreateUsersByPhoneNumberService {
     }
 
     const user = usersRepository.create({
-      id: uuid(),
       phoneNumber,
       username: createUsername(),
-      name: undefined,
-      email: undefined,
-      password: undefined,
     });
 
     await usersRepository.save(user);
 
-    return user;
+    const { secret, expiresIn } = jwtConfig.jwt;
+
+    const token = sign({}, secret, {
+      subject: user.id,
+      expiresIn,
+    });
+
+    return { user, token };
   }
 }

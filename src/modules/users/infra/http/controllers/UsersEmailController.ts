@@ -1,30 +1,24 @@
 import CreateUsersService from '@modules/users/services/CreateUsersByEmailService';
 import { Request, Response } from 'express';
+import PostgresUsersRepository from '../../typeorm/repositories/PostgresUsersRepository';
 
 class UsersEmailController {
   async create(request: Request, response: Response): Promise<Response> {
-    const { name, username, phoneNumber, email, password } = await request.body;
+    const { name, username, email, password } = await request.body;
 
-    const userService = new CreateUsersService();
+    const userService = new CreateUsersService(new PostgresUsersRepository());
 
-    const user = await userService.execute({
+    const { user, token } = await userService.execute({
       name,
       username,
       email,
-      phoneNumber,
       password,
     });
 
-    const userWithoutPassword = {
-      id: user.id,
-      name: user.name,
-      username: user.username,
-      email: user.email,
-      created_at: user.created_at,
-      updated_at: user.updated_at,
-    };
-
-    return response.json(userWithoutPassword);
+    return response.json({
+      user,
+      token,
+    });
   }
 }
 

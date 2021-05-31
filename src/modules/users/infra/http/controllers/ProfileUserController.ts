@@ -16,17 +16,18 @@ class ProfileUserController {
   }
 
   async update(request: Request, response: Response): Promise<Response> {
-    const { user_id, username, password, password_confirmation, email, name } = request.body;
+    const { user_id, username, password, password_confirmation, email, name } =
+      request.body;
 
     const updateProfile = new UpdateProfileUserService();
 
     const userUpdated = await updateProfile.execute({
       user_id,
-      username, 
-      password, 
+      username,
+      password,
       password_confirmation,
-      email, 
-      name
+      email,
+      name,
     });
 
     return response.json(userUpdated);
