@@ -6,7 +6,9 @@ class UsersEmailController {
   async create(request: Request, response: Response): Promise<Response> {
     const { name, username, email, password } = await request.body;
 
-    const userService = new CreateUsersService(new PostgresUsersRepository());
+    const usersRepository = new PostgresUsersRepository();
+
+    const userService = new CreateUsersService(usersRepository);
 
     const { user, token } = await userService.execute({
       name,

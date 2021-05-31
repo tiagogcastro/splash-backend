@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 
 import client from 'twilio';
 import twilioConfig from '@config/twilio';
+import PostgresUsersRepository from '../../typeorm/repositories/PostgresUsersRepository';
 
 const { accountSid, authToken, servicesSid } = twilioConfig.twilio;
 
@@ -50,7 +51,11 @@ class UsersPhoneController {
         return response.status(404).json({ error });
       });
 
-    const createUserByPhoneNumber = new CreateUsersByPhoneNumberService();
+    const usersRepository = new PostgresUsersRepository();
+
+    const createUserByPhoneNumber = new CreateUsersByPhoneNumberService(
+      usersRepository,
+    );
     const { user, token } = await createUserByPhoneNumber.execute({
       phoneNumber,
     });
@@ -60,7 +65,7 @@ class UsersPhoneController {
       phoneNumber: user.phoneNumber,
     };
 
-    return response.json({ user, token });
+    return response.status(201).json({ user, token });
   }
 }
 

@@ -3,12 +3,14 @@ import { Request, Response } from 'express';
 import UpdateProfileUserService from '@modules/users/services/UpdateProfileUserService';
 import ShowProfileUserService from '@modules/users/services/ShowProfileUserService';
 import DeleteProfileUser from '@modules/users/services/DeleteProfileUser';
+import PostgresUsersRepository from '../../typeorm/repositories/PostgresUsersRepository';
 
 class ProfileUserController {
   async show(request: Request, response: Response): Promise<Response> {
     const { username } = request.params;
 
-    const showProfileUser = new ShowProfileUserService();
+    const usersRepository = new PostgresUsersRepository();
+    const showProfileUser = new ShowProfileUserService(usersRepository);
 
     const user = await showProfileUser.execute(username);
 
@@ -18,8 +20,8 @@ class ProfileUserController {
   async update(request: Request, response: Response): Promise<Response> {
     const { user_id, username, password, password_confirmation, email, name } =
       request.body;
-
-    const updateProfile = new UpdateProfileUserService();
+    const usersRepository = new PostgresUsersRepository();
+    const updateProfile = new UpdateProfileUserService(usersRepository);
 
     const userUpdated = await updateProfile.execute({
       user_id,
@@ -36,7 +38,8 @@ class ProfileUserController {
   async delete(request: Request, response: Response): Promise<Response> {
     const user_id = request.user.id;
 
-    const deleteProfile = new DeleteProfileUser();
+    const usersRepository = new PostgresUsersRepository();
+    const deleteProfile = new DeleteProfileUser(usersRepository);
 
     await deleteProfile.execute(user_id);
 
