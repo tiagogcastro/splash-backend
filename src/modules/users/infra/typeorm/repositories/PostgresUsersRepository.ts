@@ -41,7 +41,7 @@ export default class PostgresUsersRepository implements IUsersRepository {
     return user;
   }
 
-  async save(userData: User): Promise<User | undefined> {
+  async save(userData: User): Promise<User> {
     const user = await this.ormRepository.save(userData);
     return user;
   }
