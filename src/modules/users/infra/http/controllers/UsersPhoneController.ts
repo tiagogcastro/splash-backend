@@ -51,11 +51,43 @@ class UsersPhoneController {
         return response.status(404).json({ error });
       });
 
-    const usersRepository = new PostgresUsersRepository();
+    const createUserByPhoneNumber = new CreateUsersByPhoneNumberService();
 
-    const createUserByPhoneNumber = new CreateUsersByPhoneNumberService(
-      usersRepository,
-    );
+    const { user, token } = await createUserByPhoneNumber.execute({
+      phoneNumber,
+    });
+
+    request.user = {
+      id: user.id,
+      phoneNumber: user.phoneNumber,
+    };
+
+    return response.status(201).json({ user, token });
+  }
+
+  public async validation(
+    request: Request,
+    response: Response,
+  ): Promise<Response> {
+    const { code } = request.body;
+
+    const { phoneNumber } = request.user;
+
+    if (!phoneNumber) {
+      return response.status(400).json({ error: 'User number is missing' });
+    }
+
+    await clientSendMessage.verify
+      .services(servicesSid)
+      .verificationChecks.create({
+        to: phoneNumber,
+        code: String(code),
+      })
+      .catch(error => {
+        return response.status(404).json({ error });
+      });
+
+    const createUserByPhoneNumber = new CreateUsersByPhoneNumberService();
     const { user, token } = await createUserByPhoneNumber.execute({
       phoneNumber,
     });

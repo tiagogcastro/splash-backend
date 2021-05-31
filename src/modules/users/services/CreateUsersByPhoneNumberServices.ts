@@ -3,6 +3,8 @@
 import jwtConfig from '@config/auth';
 import AppError from '@shared/errors/AppError';
 import { sign } from 'jsonwebtoken';
+import { getRepository } from 'typeorm';
+
 import User from '../infra/typeorm/entities/User';
 import IUsersRepository from '../repositories/IUsersRepository';
 
@@ -22,17 +24,18 @@ function createUsername() {
 }
 
 export default class CreateUsersByPhoneNumberService {
-  constructor(private usersRepository: IUsersRepository) {}
-
   public async execute({ phoneNumber }: Request): Promise<Response> {
-    const checkUserPhoneNumberExists =
-      await this.usersRepository.findByPhoneNumber(phoneNumber);
+    const usersRepository = getRepository(User);
+
+    const checkUserPhoneNumberExists = await usersRepository.findByPhoneNumber(
+      phoneNumber,
+    );
 
     if (checkUserPhoneNumberExists) {
       throw new AppError('This phone number already used');
     }
 
-    const user = await this.usersRepository.create({
+    const user = await usersRepository.create({
       phoneNumber,
       username: createUsername(),
     });
