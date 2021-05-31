@@ -1,6 +1,6 @@
-import ISendNotificationDTO from '../dtos/ISendNotificationDTO';
-import Notification from '../infra/schemas/Notification';
+import ICreateNotificationDTO from '../dtos/ICreateNotificationDTO';
+import Notification from '../infra/typeorm/schemas/Notification';
 
 export default interface INotificationsRepository {
-  create(notificationData: ISendNotificationDTO): Promise<Notification>;
+  create(notificationData: ICreateNotificationDTO): Promise<Notification>;
 }
