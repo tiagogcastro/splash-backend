@@ -4,10 +4,8 @@ import UsersEmailController from '../controllers/UsersEmailController';
 
 const usersRoutes = Router();
 
-usersRoutes.post('/', async (request, response) => {
-  const usersEmail = new UsersEmailController();
+const usersEmail = new UsersEmailController();
 
-  usersEmail.create(request, response);
-});
+usersRoutes.post('/', usersEmail.create);
 
 export default usersRoutes;

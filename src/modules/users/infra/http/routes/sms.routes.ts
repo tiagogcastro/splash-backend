@@ -8,16 +8,12 @@ const smsRoutes = Router();
 
 const userPhone = new UsersPhoneController();
 
-smsRoutes.post('/', async (request, response) => {
-  await userPhone.sendCode(request, response);
-});
+smsRoutes.post('/', userPhone.sendCode);
 
 smsRoutes.post(
   '/validation',
   createUserByPhoneNumberMiddleware,
-  async (request, response) => {
-    await userPhone.create(request, response);
-  },
+  userPhone.create,
 );
 
 export default smsRoutes;
