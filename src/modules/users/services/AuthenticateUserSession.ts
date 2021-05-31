@@ -1,12 +1,11 @@
 /* eslint-disable import/no-unresolved */
 // eslint-disable-next-line import/no-unresolved
-import { getRepository } from 'typeorm';
-import { compare } from 'bcryptjs';
-import { sign } from 'jsonwebtoken';
-
+import authConfig from '@config/auth';
 import User from '@modules/users/infra/typeorm/entities/User';
 import AppError from '@shared/errors/AppError';
-import authConfig from '@config/auth';
+import { compare } from 'bcryptjs';
+import { sign } from 'jsonwebtoken';
+import IUsersRepository from '../repositories/IUsersRepository';
 
 interface Request {
   username?: string;
@@ -20,30 +19,24 @@ interface Response {
 }
 
 export default class AuthenticateUserSession {
-  public async create({
-    username,
-    email,
-    password,
-  }: Request): Promise<Response> {
-    const usersRepository = getRepository(User);
+  constructor(private usersRepository: IUsersRepository) {}
 
+  public async create({ email, password }: Request): Promise<Response> {
     const { expiresIn, secret } = authConfig.jwt;
 
-    const user = await usersRepository.findOne({
-      where: { email },
-    });
+    const user = await this.usersRepository.findByEmail(email);
 
     if (!user) {
       throw new AppError('E-mail address already used.');
     }
 
-    const passwordVerified = await compare(password, String(user.password));
+    const passwordMatched = await compare(password, String(user.password));
 
     if (password && password.length < 6) {
       throw new AppError('A senha precisa ter no mínimo 6 digitos', 401);
     }
 
-    if (!passwordVerified) {
+    if (!passwordMatched) {
       throw new AppError('Password invalid');
     }
 

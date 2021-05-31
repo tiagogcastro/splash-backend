@@ -1,20 +1,17 @@
 import AppError from '@shared/errors/AppError';
-import { getRepository } from 'typeorm';
-import User from '../infra/typeorm/entities/User';
+import IUsersRepository from '../repositories/IUsersRepository';
 
 class DeleteProfileUser {
+  constructor(private usersRepository: IUsersRepository) {}
+
   async execute(user_id: string): Promise<void> {
-    const usersRepository = getRepository(User);
+    const user = await this.usersRepository.findById(user_id);
 
-    const user = await usersRepository.findOne({
-      where: { id: user_id },
-    });
-
-    if(!user) {
+    if (!user) {
       throw new AppError('User not exist', 400);
     }
 
-    await usersRepository.delete(user_id);    
+    await this.usersRepository.deleteById(user_id);
   }
 }
 

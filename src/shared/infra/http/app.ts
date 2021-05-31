@@ -24,6 +24,7 @@ app.use(
         .status(error.statusCode)
         .json({ status: 'error', message: error.message });
     }
+    console.error(error);
 
     return response
       .status(500)

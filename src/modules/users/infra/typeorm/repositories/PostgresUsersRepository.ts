@@ -1,5 +1,8 @@
-import IUsersRepository from '@modules/users/repositories/IUsersRepository';
-import { getRepository, Like, Repository } from 'typeorm';
+import IUpdateUserDTO from '@modules/users/dtos/IUpdateUserDTO';
+import IUsersRepository, {
+  IUpdateResult,
+} from '@modules/users/repositories/IUsersRepository';
+import { getRepository, Repository } from 'typeorm';
 import ICreateUserDTO from '../../../dtos/ICreateUserDTO';
 import User from '../entities/User';
 
@@ -10,6 +13,12 @@ export default class PostgresUsersRepository implements IUsersRepository {
     this.ormRepository = getRepository(User);
   }
 
+  async update(id: string, userData: IUpdateUserDTO): Promise<IUpdateResult> {
+    const { affected } = await this.ormRepository.update(id, userData);
+
+    return { affected };
+  }
+
   async create(userData: ICreateUserDTO): Promise<User> {
     const user = this.ormRepository.create(userData);
 
@@ -18,7 +27,7 @@ export default class PostgresUsersRepository implements IUsersRepository {
     return user;
   }
 
-  async findByEmail(email: string): Promise<User | undefined> {
+  async findByEmail(email: string | undefined): Promise<User | undefined> {
     const user = await this.ormRepository.findOne({
       where: {
         email,
@@ -32,13 +41,28 @@ export default class PostgresUsersRepository implements IUsersRepository {
     return user;
   }
 
-  async findByUsername(username: string): Promise<User | undefined> {
+  async findByUsername(
+    username: string | undefined,
+  ): Promise<User | undefined> {
     const user = await this.ormRepository.findOne({
       where: {
         username,
       },
     });
     return user;
+  }
+
+  async findByPhoneNumber(phoneNumber: string): Promise<User | undefined> {
+    const user = await this.ormRepository.findOne({
+      where: {
+        phoneNumber,
+      },
+    });
+    return user;
+  }
+
+  async deleteById(id: string): Promise<void> {
+    await this.ormRepository.delete(id);
   }
 
   async save(userData: User): Promise<User> {

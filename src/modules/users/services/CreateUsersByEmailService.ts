@@ -1,12 +1,9 @@
 /* eslint-disable no-param-reassign */
 // eslint-disable-next-line import/no-unresolved
-import { getRepository } from 'typeorm';
-import { hash } from 'bcryptjs';
-import { v4 as uuid } from 'uuid';
-import { sign } from 'jsonwebtoken';
-
-import AppError from '@shared/errors/AppError';
 import jwtConfig from '@config/auth';
+import AppError from '@shared/errors/AppError';
+import { hash } from 'bcryptjs';
+import { sign } from 'jsonwebtoken';
 import User from '../infra/typeorm/entities/User';
 import IUsersRepository from '../repositories/IUsersRepository';
 
@@ -31,13 +28,11 @@ export default class CreateUsersService {
     email,
     password,
   }: Request): Promise<Response> {
-    const usersRepository = getRepository(User);
-
     const checkUserEmailExist = await this.usersRepository.findByEmail(email);
 
-    const checkUserUsernameExist = await usersRepository.findOne({
-      where: { username },
-    });
+    const checkUserUsernameExist = await this.usersRepository.findByUsername(
+      username,
+    );
 
     if (checkUserEmailExist) {
       throw new AppError('E-mail address already used.');
@@ -62,7 +57,7 @@ export default class CreateUsersService {
 
     const hashedPassword = await hash(password, 8);
 
-    const user = usersRepository.create({
+    const user = await this.usersRepository.create({
       name: name || `name.lavimco-${Math.random().toFixed(4)}`,
       username,
       email,
@@ -75,8 +70,6 @@ export default class CreateUsersService {
       subject: user.id,
       expiresIn,
     });
-
-    await usersRepository.save(user);
 
     return {
       user,

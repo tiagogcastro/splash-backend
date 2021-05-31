@@ -1,16 +1,14 @@
 import AppError from '@shared/errors/AppError';
-import { getRepository } from 'typeorm';
 import User from '../infra/typeorm/entities/User';
+import IUsersRepository from '../repositories/IUsersRepository';
 
 class ShowProfileUserService {
+  constructor(private usersRepository: IUsersRepository) {}
+
   async execute(username: string): Promise<User | undefined> {
-    const usersRepository = getRepository(User);
+    const user = await this.usersRepository.findByUsername(username);
 
-    const user = await usersRepository.findOne({
-      where: {username}
-    });
-
-    if(!user) {
+    if (!user) {
       throw new AppError('User not exist', 400);
     }
 

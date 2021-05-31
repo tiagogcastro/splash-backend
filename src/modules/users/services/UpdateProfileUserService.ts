@@ -2,6 +2,7 @@ import AppError from '@shared/errors/AppError';
 import { hash } from 'bcryptjs';
 import { getRepository } from 'typeorm';
 import User from '../infra/typeorm/entities/User';
+import IUsersRepository from '../repositories/IUsersRepository';
 
 interface Request {
   user_id: string;
@@ -13,6 +14,9 @@ interface Request {
 }
 
 class UpdateProfileUserService {
+  constructor(private usersRepository: IUsersRepository) {}
+
+  // eslint-disable-next-line consistent-return
   async execute({
     user_id,
     email,
@@ -23,17 +27,13 @@ class UpdateProfileUserService {
   }: Request): Promise<User | undefined> {
     const usersRepository = getRepository(User);
 
-    const userLogged = await usersRepository.findOne({
-      where: { id: user_id },
-    });
+    const userLogged = await this.usersRepository.findById(user_id);
 
     if (!userLogged) {
       throw new AppError('User not exist', 401);
     }
 
-    const emailExist = await usersRepository.findOne({
-      where: { email },
-    });
+    const emailExist = await this.usersRepository.findByEmail(email);
 
     if (emailExist && emailExist.id !== user_id) {
       throw new AppError('Este email já existe', 401);
@@ -68,7 +68,7 @@ class UpdateProfileUserService {
 
     const hashedPassword = await hash(String(password), 8);
 
-    const user = await usersRepository.update(userLogged.id, {
+    const user = await this.usersRepository.update(userLogged.id, {
       email,
       name,
       password: hashedPassword,
@@ -76,9 +76,7 @@ class UpdateProfileUserService {
     });
 
     if (user.affected === 1) {
-      const userUpdated = await usersRepository.findOne({
-        where: { id: user_id },
-      });
+      const userUpdated = await this.usersRepository.findById(user_id);
 
       return userUpdated;
     }

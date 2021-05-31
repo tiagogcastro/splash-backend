@@ -1,29 +1,23 @@
 import AppError from '@shared/errors/AppError';
-import { getRepository, Not } from 'typeorm';
 import Sponsoring from '../infra/typeorm/entities/Sponsoring';
-import User from '../infra/typeorm/entities/User';
+import ISponsoringRepository from '../repositories/ISponsoringRepository';
+import IUsersRepository from '../repositories/IUsersRepository';
 
 class ListUsersWhoSponsorTheUser {
-  async execute(user_id: string): Promise<Sponsoring[] | undefined> {
-    const usersRepository = getRepository(User);
-    const sponsoringRepository = getRepository(Sponsoring);
+  constructor(
+    private usersRepository: IUsersRepository,
+    private sponsoringRepository: ISponsoringRepository,
+  ) {}
 
-    const user = await usersRepository.findOne({
-      where: {
-        id: user_id,
-      },
-    });
+  async execute(user_id: string): Promise<Sponsoring[] | undefined> {
+    const user = await this.usersRepository.findById(user_id);
 
     if (!user) {
       throw new AppError('User not logged', 401);
     }
 
-    const usersSponsoring = await sponsoringRepository.find({
-      where: {
-        sponsored_userId: user_id,
-      },
-      relations: ['user_id_sponsoring'],
-    });
+    const usersSponsoring =
+      await this.sponsoringRepository.findAllBySponsoredUserId(user_id);
 
     return usersSponsoring;
   }
