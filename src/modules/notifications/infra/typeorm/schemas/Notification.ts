@@ -18,6 +18,9 @@ export default class Notification {
   @Column('uuid')
   recipient_id: string;
 
+  @Column('uuid')
+  sender_id: string;
+
   @Column({ default: false })
   read: boolean;
 
