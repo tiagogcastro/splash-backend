@@ -1,5 +1,5 @@
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
-import { getRepository, Repository } from 'typeorm';
+import { getRepository, Like, Repository } from 'typeorm';
 import ICreateUserDTO from '../../../dtos/ICreateUserDTO';
 import User from '../entities/User';
 
@@ -29,6 +29,15 @@ export default class PostgresUsersRepository implements IUsersRepository {
 
   async findById(id: string): Promise<User | undefined> {
     const user = await this.ormRepository.findOne(id);
+    return user;
+  }
+
+  async findByUsername(username: string): Promise<User | undefined> {
+    const user = await this.ormRepository.findOne({
+      where: {
+        username,
+      },
+    });
     return user;
   }
 }
