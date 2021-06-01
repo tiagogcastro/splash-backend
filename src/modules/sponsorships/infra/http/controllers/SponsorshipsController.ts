@@ -1,4 +1,4 @@
-import MongoNotificationsRepository from '@modules/notifications/infra/repositories/MongoNotificationsRepository';
+import MongoNotificationsRepository from '@modules/notifications/infra/typeorm/repositories/MongoNotificationsRepository';
 import SendSponsorshipService from '@modules/sponsorships/services/SendSponsorshipService';
 import PostgresUsersRepository from '@modules/users/infra/typeorm/repositories/PostgresUsersRepository';
 import { Request, Response } from 'express';
@@ -6,8 +6,9 @@ import PostgresSponsorshipsRepository from '../../typeorm/repositories/PostgresS
 
 export default class SponsorshipsController {
   async create(request: Request, response: Response): Promise<Response> {
-    const user_recipient_id = request.user.id;
-    const { sponsor_id, allow_withdrawal, money } = request.body;
+    const sponsor_id = request.user.id;
+    const { user_recipient_id, allow_withdrawal, balance_amount } =
+      request.body;
 
     const mongoNotificationsRepository = new MongoNotificationsRepository();
     const postgresSponsorshipsRepository = new PostgresSponsorshipsRepository();
@@ -23,7 +24,7 @@ export default class SponsorshipsController {
       user_recipient_id,
       sponsor_id,
       allow_withdrawal,
-      your_sponsor_balance: money,
+      balance_amount,
     });
 
     return response.status(201).json(sponsor);
