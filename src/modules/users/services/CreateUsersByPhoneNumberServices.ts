@@ -24,18 +24,17 @@ function createUsername() {
 }
 
 export default class CreateUsersByPhoneNumberService {
-  public async execute({ phoneNumber }: Request): Promise<Response> {
-    const usersRepository = getRepository(User);
+  constructor(private usersRepository: IUsersRepository) {}
 
-    const checkUserPhoneNumberExists = await usersRepository.findByPhoneNumber(
-      phoneNumber,
-    );
+  public async execute({ phoneNumber }: Request): Promise<Response> {
+    const checkUserPhoneNumberExists =
+      await this.usersRepository.findByPhoneNumber(phoneNumber);
 
     if (checkUserPhoneNumberExists) {
       throw new AppError('This phone number already used');
     }
 
-    const user = await usersRepository.create({
+    const user = await this.usersRepository.create({
       phoneNumber,
       username: createUsername(),
     });
