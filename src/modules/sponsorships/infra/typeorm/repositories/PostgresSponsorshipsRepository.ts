@@ -1,20 +1,22 @@
-import ICreateSponsorDTO from '@modules/sponsorships/dtos/ICreateSponsorDTO';
-import ISponsorsRepository from '@modules/sponsorships/repositories/ISponsorshipsRepository';
+import ICreateSponsorshipDTO from '@modules/sponsorships/dtos/ICreateSponsorshipDTO';
+import ISponsorshipsRepository from '@modules/sponsorships/repositories/ISponsorshipsRepository';
 import { getRepository, Repository } from 'typeorm';
-import Sponsor from '../entities/Sponsorship';
+import Sponsorship from '../entities/Sponsorship';
 
-export default class PostgresSponsorsRepository implements ISponsorsRepository {
-  private ormRepository: Repository<Sponsor>;
+export default class PostgresSponsorshipsRepository
+  implements ISponsorshipsRepository
+{
+  private ormRepository: Repository<Sponsorship>;
 
   constructor() {
-    this.ormRepository = getRepository(Sponsor);
+    this.ormRepository = getRepository(Sponsorship);
   }
 
-  async create(sponsorData: ICreateSponsorDTO): Promise<Sponsor> {
-    const sponsor = this.ormRepository.create(sponsorData);
+  async create(sponsorshipData: ICreateSponsorshipDTO): Promise<Sponsorship> {
+    const sponsorship = this.ormRepository.create(sponsorshipData);
 
-    await this.ormRepository.save(sponsor);
+    await this.ormRepository.save(sponsorship);
 
-    return sponsor;
+    return sponsorship;
   }
 }
