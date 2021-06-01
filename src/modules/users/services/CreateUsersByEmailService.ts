@@ -4,6 +4,7 @@ import jwtConfig from '@config/auth';
 import AppError from '@shared/errors/AppError';
 import { hash } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
+import { getRepository } from 'typeorm';
 import User from '../infra/typeorm/entities/User';
 import IUsersRepository from '../repositories/IUsersRepository';
 
@@ -28,11 +29,15 @@ export default class CreateUsersService {
     email,
     password,
   }: Request): Promise<Response> {
-    const checkUserEmailExist = await this.usersRepository.findByEmail(email);
+    const usersRepository = getRepository(User);
 
-    const checkUserUsernameExist = await this.usersRepository.findByUsername(
-      username,
-    );
+    const checkUserEmailExist = await usersRepository.findOne({
+      where: { email },
+    });
+
+    const checkUserUsernameExist = await usersRepository.findOne({
+      where: { username },
+    });
 
     if (checkUserEmailExist) {
       throw new AppError('E-mail address already used.');
@@ -57,7 +62,7 @@ export default class CreateUsersService {
 
     const hashedPassword = await hash(password, 8);
 
-    const user = await this.usersRepository.create({
+    const user = usersRepository.create({
       name: name || `name.lavimco-${Math.random().toFixed(4)}`,
       username,
       email,

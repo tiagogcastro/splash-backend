@@ -1,10 +1,10 @@
 import { Router } from 'express';
 
-import AuthenticationController from '@modules/users/infra/http/controllers/AuthenticationController';
+import AuthenticationByEmailController from '@modules/users/infra/http/controllers/AuthenticationByEmailController';
 
 const sessionsRoutes = Router();
 
-const authenticateUser = new AuthenticationController();
+const authenticateUser = new AuthenticationByEmailController();
 
 sessionsRoutes.post('/', authenticateUser.create);
 
