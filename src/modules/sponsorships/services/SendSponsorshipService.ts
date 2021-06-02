@@ -29,32 +29,42 @@ export default class SendSponsorshipService {
     if (!user) throw new AppError('The user does not exist', 401);
     if (!sponsor) throw new AppError('The sponsor does not exist', 401);
 
-    if (balance_amount <= 1 || balance_amount >= 500) {
+    if (balance_amount < 1 || balance_amount > 500) {
       throw new AppError(
         'You cannot report a balance of less than 1 or greater than 500',
         401,
       );
     }
-    if (!(sponsor.permissions === 'shop') && allow_withdrawal)
+    if (user_recipient_id === sponsor_id)
+      throw new AppError('You cannot send to yourself');
+
+    if (!(sponsor.permissions === 'shop') && !allow_withdrawal)
       throw new AppError('You are not allowed to access here', 401);
 
-    let subject = `você enviou R$${balance_amount} para ${user.username}`;
+    const [first, second] = String(balance_amount).split('.');
+
+    let balanceAmount = `${first}.00`;
+    if (second) balanceAmount = `${first}.${second.padEnd(2, '0')}`;
+
+    let subject = `você enviou R$${balanceAmount} para ${user.username}`;
+
+    if (user.permissions === 'shop') {
+      subject = `você pagou R$${balanceAmount} para ${user.username}`;
+    }
 
     if (sponsor.permissions === 'shop') {
-      subject = `você pagou R$${balance_amount} para ${user.username}`;
       withdrawal_balance_available = allow_withdrawal;
     }
 
     const messageFromRecipient = {
       name: user.username,
-      subject: `você recebeu R$${balance_amount} de ${sponsor.username}`,
+      subject: `você recebeu R$${balanceAmount} de ${sponsor.username}`,
     };
 
     const messageFromSender = {
       name: sponsor.username,
       subject,
     };
-
     await this.notificationsRepository.create({
       recipient_id: sponsor_id,
       sender_id: sponsor_id,
