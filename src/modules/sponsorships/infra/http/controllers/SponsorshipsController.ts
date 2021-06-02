@@ -20,13 +20,13 @@ export default class SponsorshipsController {
       mongoNotificationsRepository,
     );
 
-    const sponsor = await sendSponsorship.execute({
+    const sponsorship = await sendSponsorship.execute({
       user_recipient_id,
       sponsor_id,
       allow_withdrawal,
       balance_amount,
     });
 
-    return response.status(201).json(sponsor);
+    return response.status(201).json(sponsorship);
   }
 }
