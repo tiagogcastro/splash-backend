@@ -1,3 +1,4 @@
+import { classToClass } from 'class-transformer';
 import CreateUsersService from '@modules/users/services/CreateUsersByEmailService';
 import { Request, Response } from 'express';
 import PostgresUsersRepository from '../../typeorm/repositories/PostgresUsersRepository';
@@ -18,7 +19,7 @@ class UsersEmailController {
     });
 
     return response.json({
-      user,
+      user: classToClass(user),
       token,
     });
   }

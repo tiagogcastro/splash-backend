@@ -1,3 +1,4 @@
+import uploadConfig from '@config/upload';
 import {
   Entity,
   Column,
@@ -5,6 +6,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Exclude, Expose } from 'class-transformer';
 
 import { v4 as uuid } from 'uuid';
 
@@ -29,8 +31,9 @@ class User {
   email?: string;
 
   // @Column()
-  // avatar: string;
+  // avatar?: string;
 
+  @Exclude()
   @Column()
   password?: string;
 
@@ -58,6 +61,21 @@ class User {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  // @Expose({ name: 'avatar_url' })
+  // getAvatarUrl(): string | null {
+  //   if (!this.avatar) return null;
+
+  //   switch (uploadConfig.driver) {
+  //     case 'disk':
+  //       return `${process.env.APP_API_URL}/static/${this.avatar}`;
+  //     case 's3':
+  //       return ``;
+
+  //     default:
+  //       return null;
+  //   }
+  // }
 
   constructor() {
     if (!this.id) {

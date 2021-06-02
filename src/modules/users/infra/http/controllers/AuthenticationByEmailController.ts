@@ -1,6 +1,6 @@
-import { Request, Response } from 'express';
 import AuthenticateUserSession from '@modules/users/services/AuthenticateUserByEmailSession';
-import PostgresUsersRepository from '../../typeorm/repositories/PostgresUsersRepository';
+import { classToClass } from 'class-transformer';
+import { Request, Response } from 'express';
 
 export default class AuthenticationByEmailController {
   public async create(request: Request, response: Response): Promise<Response> {
@@ -17,7 +17,7 @@ export default class AuthenticationByEmailController {
     };
 
     return response.status(200).json({
-      user,
+      user: classToClass(user),
       token,
     });
   }

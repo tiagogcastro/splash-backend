@@ -1,3 +1,13 @@
-node_modules
-.env
 yarn-error.log
+
+/node_modules
+/build
+
+coverage
+
+.env
+
+tmp/**
+!tmp/.gitkeep
+!tmp/uploads/
+!tmp/uploads/.gitkeep

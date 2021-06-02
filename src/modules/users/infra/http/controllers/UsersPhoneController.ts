@@ -50,8 +50,10 @@ class UsersPhoneController {
       .catch(error => {
         return response.status(404).json({ error });
       });
-
-    const createUserByPhoneNumber = new CreateUsersByPhoneNumberService();
+    const postgresUsersRepository = new PostgresUsersRepository();
+    const createUserByPhoneNumber = new CreateUsersByPhoneNumberService(
+      postgresUsersRepository,
+    );
 
     const { user, token } = await createUserByPhoneNumber.execute({
       phoneNumber,
@@ -87,7 +89,10 @@ class UsersPhoneController {
         return response.status(404).json({ error });
       });
 
-    const createUserByPhoneNumber = new CreateUsersByPhoneNumberService();
+    const postgresUsersRepository = new PostgresUsersRepository();
+    const createUserByPhoneNumber = new CreateUsersByPhoneNumberService(
+      postgresUsersRepository,
+    );
     const { user, token } = await createUserByPhoneNumber.execute({
       phoneNumber,
     });
