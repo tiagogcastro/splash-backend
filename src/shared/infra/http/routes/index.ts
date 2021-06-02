@@ -5,6 +5,7 @@ import usersRouter from '@modules/users/infra/http/routes/users.routes';
 import userProfileRuter from '@modules/users/infra/http/routes/profileUsers.routes';
 import sponsorshipsRouter from '@modules/sponsorships/infra/http/routes/sponsorships.routes';
 import sessionsRoutes from '@modules/users/infra/http/routes/sessions.routes';
+import notificationsRouter from '@modules/notifications/infra/http/routes/notifications.routes';
 
 const router = Router();
 
@@ -14,5 +15,6 @@ router.use('/profile', userProfileRuter);
 router.use('/sms', smsRouter);
 router.use('/sponsors', sponsorsRouter);
 router.use('/sponsorships', sponsorshipsRouter);
+router.use('/notifications', notificationsRouter);
 
 export default router;

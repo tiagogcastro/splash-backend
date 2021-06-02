@@ -1,7 +1,10 @@
+import User from '@modules/users/infra/typeorm/entities/User';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -17,6 +20,14 @@ export default class Sponsorship {
 
   @Column('uuid')
   sponsor_id: string;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'user_recipient_id' })
+  user: User;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'sponsor_id' })
+  sponsor: User;
 
   @Column()
   your_sponsor_balance: number;
