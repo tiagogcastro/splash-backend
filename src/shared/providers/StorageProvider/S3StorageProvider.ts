@@ -1,8 +1,9 @@
-import aws, { S3 } from 'aws-sdk';
 import uploadConfig from '@config/upload';
-import path from 'path';
-import mime from 'mime';
+import AppError from '@shared/errors/AppError';
+import aws, { S3 } from 'aws-sdk';
 import fs from 'fs';
+import mime from 'mime';
+import path from 'path';
 import IStorageProvider from './models/IStorageProvider';
 
 export default class S3StorageProvider implements IStorageProvider {
@@ -15,23 +16,30 @@ export default class S3StorageProvider implements IStorageProvider {
   }
 
   async saveFile(file: string): Promise<string> {
-    const filePath = path.resolve(uploadConfig.tmpFolder, file);
+    const originalPath = path.resolve(uploadConfig.tmpFolder, file);
 
-    const fileType = mime.getType(filePath);
+    const fileContent = await fs.promises.readFile(originalPath);
 
-    const fileReaded = fs.promises.readFile(filePath);
+    const ContentType = mime.getType(originalPath);
 
-    if (!fileType) throw new Error('File not found');
+    if (!ContentType) throw new AppError('file not found.');
 
     await this.client
       .putObject({
         Bucket: uploadConfig.config.aws.bucket,
         Key: file,
         ACL: 'public-read',
-        Body: fileReaded,
-        ContentType: fileType,
+        Body: fileContent,
+        ContentType,
       })
       .promise();
+
+    // try {
+    //   await fs.promises.stat(originalPath);
+    // } catch {
+    //   return file;
+    // }
+    // await fs.promises.unlink(originalPath);
 
     return file;
   }
