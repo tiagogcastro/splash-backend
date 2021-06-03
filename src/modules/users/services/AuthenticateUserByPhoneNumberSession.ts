@@ -1,12 +1,10 @@
 /* eslint-disable import/no-unresolved */
 // eslint-disable-next-line import/no-unresolved
-import { getRepository } from 'typeorm';
 import authConfig from '@config/auth';
 import User from '@modules/users/infra/typeorm/entities/User';
 import AppError from '@shared/errors/AppError';
-import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
-import IUsersRepository from '../repositories/IUsersRepository';
+import { getRepository } from 'typeorm';
 
 interface Request {
   phoneNumber: string;
