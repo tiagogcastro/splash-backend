@@ -5,6 +5,7 @@ import AppError from '@shared/errors/AppError';
 import { hash } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import User from '../infra/typeorm/entities/User';
+import IUserBalanceRepository from '../repositories/IUserBalanceRepository';
 import IUsersRepository from '../repositories/IUsersRepository';
 
 interface Request {
@@ -20,7 +21,10 @@ interface Response {
 }
 
 export default class CreateUsersService {
-  constructor(private usersRepository: IUsersRepository) {}
+  constructor(
+    private usersRepository: IUsersRepository,
+    private userBalanceRepository: IUserBalanceRepository,
+  ) {}
 
   public async execute({
     name,
@@ -62,6 +66,10 @@ export default class CreateUsersService {
       username,
       email,
       password: hashedPassword,
+    });
+
+    await this.userBalanceRepository.create({
+      user_id: user.id,
     });
 
     const { secret, expiresIn } = jwtConfig.jwt;

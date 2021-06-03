@@ -10,11 +10,9 @@ export default class SearchListSponsoredFromUserService {
     sponsor_id,
   }: ISearchListSponsoredFromUserDTO): Promise<User[]> {
     const sponsorships =
-      await this.sponsorshipsRepository.findAllSponsoredFromUser({
-        sponsor_id,
-      });
+      await this.sponsorshipsRepository.findAllSponsoredFromUser(sponsor_id);
 
-    const users = sponsorships.map(sponsorship => sponsorship.user);
+    const users = sponsorships.map(sponsorship => sponsorship.sponsored);
     const usernames: string[] = [];
 
     const usersGrouped = users.filter(user => {

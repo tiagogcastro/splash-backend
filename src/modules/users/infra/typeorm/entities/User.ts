@@ -5,10 +5,13 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
 import { Exclude, Expose } from 'class-transformer';
 
 import { v4 as uuid } from 'uuid';
+import UserBalance from './UserBalance';
 
 enum Permissions {
   user = 'user',
@@ -48,36 +51,22 @@ class User {
   password: string;
 
   @Column({
-    default: 0,
-  })
-  sponsoring: number;
-
-  @Column({
-    default: 0,
-  })
-  sponsored: number;
-
-  @Column({
     unique: true,
+    nullable: true,
   })
   phone_number?: string;
-
-  @Column({
-    default: 0,
-  })
-  total_balance: number;
-
-  @Column({
-    default: 0,
-  })
-  balance_amount: number;
 
   @Column({
     type: 'enum',
     enum: Permissions,
     nullable: true,
   })
-  permissions: Permissions;
+  roles: Permissions;
+
+  @Column({
+    default: true,
+  })
+  activated_account: boolean;
 
   @CreateDateColumn()
   created_at: Date;

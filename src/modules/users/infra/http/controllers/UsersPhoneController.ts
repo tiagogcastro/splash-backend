@@ -4,6 +4,7 @@ import { Request, Response } from 'express';
 import client from 'twilio';
 import twilioConfig from '@config/twilio';
 import PostgresUsersRepository from '../../typeorm/repositories/PostgresUsersRepository';
+import PostgresUserBalanceRepository from '../../typeorm/repositories/PostgresUserBalanceRepository';
 
 const { accountSid, authToken, servicesSid } = twilioConfig.twilio;
 
@@ -50,9 +51,13 @@ class UsersPhoneController {
       .catch(error => {
         return response.status(404).json({ error });
       });
+
     const postgresUsersRepository = new PostgresUsersRepository();
+    const postgresUserBalanceRepository = new PostgresUserBalanceRepository();
+
     const createUserByPhoneNumber = new CreateUsersByPhoneNumberService(
       postgresUsersRepository,
+      postgresUserBalanceRepository,
     );
 
     const { user, token } = await createUserByPhoneNumber.execute({
@@ -61,7 +66,7 @@ class UsersPhoneController {
 
     request.user = {
       id: user.id,
-      phoneNumber: user.phoneNumber,
+      phoneNumber: user.phone_number,
     };
 
     return response.status(201).json({ user, token });
@@ -90,8 +95,10 @@ class UsersPhoneController {
       });
 
     const postgresUsersRepository = new PostgresUsersRepository();
+    const postgresUserBalanceRepository = new PostgresUserBalanceRepository();
     const createUserByPhoneNumber = new CreateUsersByPhoneNumberService(
       postgresUsersRepository,
+      postgresUserBalanceRepository,
     );
     const { user, token } = await createUserByPhoneNumber.execute({
       phoneNumber,
@@ -99,7 +106,7 @@ class UsersPhoneController {
 
     request.user = {
       id: user.id,
-      phoneNumber: user.phoneNumber,
+      phoneNumber: user.phone_number,
     };
 
     return response.status(201).json({ user, token });

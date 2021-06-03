@@ -16,24 +16,34 @@ export default class Sponsorship {
   readonly id: string;
 
   @Column('uuid')
-  user_recipient_id: string;
+  sponsored_user_id: string;
 
   @Column('uuid')
-  sponsor_id: string;
+  sponsor_user_id: string;
 
   @ManyToOne(() => User)
-  @JoinColumn({ name: 'user_recipient_id' })
-  user: User;
+  @JoinColumn({ name: 'sponsored_user_id' })
+  sponsored: User;
 
   @ManyToOne(() => User)
-  @JoinColumn({ name: 'sponsor_id' })
+  @JoinColumn({ name: 'sponsor_user_id' })
   sponsor: User;
 
   @Column()
-  your_sponsor_balance: number;
+  amount: number;
+
+  @Column({
+    default: false,
+  })
+  redeemed: boolean;
 
   @Column()
-  withdrawal_balance_available: boolean;
+  allow_withdrawal: boolean;
+
+  @Column({
+    nullable: true,
+  })
+  sponsorship_code: boolean;
 
   @UpdateDateColumn()
   updated_at: Date;

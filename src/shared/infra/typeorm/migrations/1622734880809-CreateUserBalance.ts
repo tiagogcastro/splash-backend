@@ -1,12 +1,12 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export default class CreateSponsorships1622409081262
+export default class CreateUserBalance1622734880809
   implements MigrationInterface
 {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'sponsorships',
+        name: 'user_balance',
         columns: [
           {
             name: 'id',
@@ -14,32 +14,24 @@ export default class CreateSponsorships1622409081262
             isPrimary: true,
           },
           {
-            name: 'sponsor_user_id',
+            name: 'user_id',
             type: 'uuid',
             isNullable: true,
           },
           {
-            name: 'sponsored_user_id',
-            type: 'uuid',
-            isNullable: true,
-          },
-          {
-            name: 'amount',
+            name: 'total_balance',
             type: 'float',
+            default: 0,
           },
           {
-            name: 'redeemed',
-            type: 'boolean',
-            default: false,
+            name: 'unvailable_balance_amount',
+            type: 'float',
+            default: 0,
           },
           {
-            name: 'allow_withdrawal',
-            type: 'boolean',
-          },
-          {
-            name: 'sponsorship_code',
-            type: 'varchar',
-            isNullable: true,
+            name: 'available_balance_amount',
+            type: 'float',
+            default: 0,
           },
           {
             name: 'created_at',
@@ -54,16 +46,8 @@ export default class CreateSponsorships1622409081262
         ],
         foreignKeys: [
           {
-            name: 'FKSponsorUserID',
-            columnNames: ['sponsor_user_id'],
-            referencedTableName: 'users',
-            referencedColumnNames: ['id'],
-            onDelete: 'SET NULL',
-            onUpdate: 'SET NULL',
-          },
-          {
-            name: 'FKSponsoredUserID',
-            columnNames: ['sponsored_user_id'],
+            name: 'FKUserBalanceUserID',
+            columnNames: ['user_id'],
             referencedTableName: 'users',
             referencedColumnNames: ['id'],
             onDelete: 'SET NULL',
@@ -75,6 +59,6 @@ export default class CreateSponsorships1622409081262
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('sponsorships');
+    await queryRunner.dropTable('user_balance');
   }
 }
