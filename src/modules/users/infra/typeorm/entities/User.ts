@@ -21,38 +21,61 @@ class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   name?: string;
 
-  @Column()
+  @Column({
+    unique: true,
+  })
   username: string;
 
-  @Column()
+  @Column({
+    unique: true,
+    nullable: true,
+  })
   email?: string;
 
-  // @Column()
-  // avatar?: string;
+  @Column({
+    unique: true,
+    nullable: true,
+  })
+  avatar?: string;
 
   @Exclude()
   @Column()
-  password?: string;
+  password: string;
 
-  @Column({ default: 0 })
+  @Column({
+    default: 0,
+  })
   sponsoring: number;
 
-  @Column({ default: 0 })
+  @Column({
+    default: 0,
+  })
   sponsored: number;
 
-  @Column('varchar')
-  phoneNumber?: string;
+  @Column({
+    unique: true,
+  })
+  phone_number?: string;
 
-  @Column({ default: 0 })
-  money: number;
+  @Column({
+    default: 0,
+  })
+  total_balance: number;
+
+  @Column({
+    default: 0,
+  })
+  balance_amount: number;
 
   @Column({
     type: 'enum',
     enum: Permissions,
-    default: 'user',
+    nullable: true,
   })
   permissions: Permissions;
 
@@ -62,20 +85,20 @@ class User {
   @UpdateDateColumn()
   updated_at: Date;
 
-  // @Expose({ name: 'avatar_url' })
-  // getAvatarUrl(): string | null {
-  //   if (!this.avatar) return null;
+  @Expose({ name: 'avatar_url' })
+  getAvatarUrl(): string | null {
+    if (!this.avatar) return null;
 
-  //   switch (uploadConfig.driver) {
-  //     case 'disk':
-  //       return `${process.env.APP_API_URL}/static/${this.avatar}`;
-  //     case 's3':
-  //       return ``;
+    switch (uploadConfig.driver) {
+      case 'disk':
+        return `${process.env.APP_API_URL}/static/${this.avatar}`;
+      case 's3':
+        return `https://${uploadConfig.config.aws.bucket}.s3.amazonaws.com/${this.avatar}`;
 
-  //     default:
-  //       return null;
-  //   }
-  // }
+      default:
+        return null;
+    }
+  }
 
   constructor() {
     if (!this.id) {
