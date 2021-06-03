@@ -16,6 +16,7 @@ export default class CreateUserSponsorsingSponsored1622735342066
           {
             name: 'user_id',
             type: 'uuid',
+            isUnique: true,
             isNullable: true,
           },
           {

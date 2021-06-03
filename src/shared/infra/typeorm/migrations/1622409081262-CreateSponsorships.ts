@@ -39,6 +39,7 @@ export default class CreateSponsorships1622409081262
           {
             name: 'sponsorship_code',
             type: 'varchar',
+            isUnique: true,
             isNullable: true,
           },
           {

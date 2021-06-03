@@ -51,7 +51,10 @@ export default class SendSponsorshipService {
     if (!(sponsor.roles === 'shop') && !allow_withdrawal_balance)
       throw new AppError('You are not allowed to access here', 401);
 
-    // if()
+    if (sponsorUserBalance.total_balance < amount) {
+      throw new AppError('You cannot send an amount that you do not have', 400);
+    }
+
     const [first, second] = String(amount).split('.');
 
     let balanceAmount = `${first}.00`;

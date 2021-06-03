@@ -16,6 +16,7 @@ export default class CreateUserBalance1622734880809
           {
             name: 'user_id',
             type: 'uuid',
+            isUnique: true,
             isNullable: true,
           },
           {

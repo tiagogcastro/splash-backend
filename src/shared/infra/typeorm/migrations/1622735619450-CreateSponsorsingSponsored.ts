@@ -16,11 +16,13 @@ export default class CreateSponsorsingSponsored1622735619450
           {
             name: 'sponsor_user_id',
             type: 'uuid',
+            isUnique: true,
             isNullable: true,
           },
           {
             name: 'sponsored_user_id',
             type: 'uuid',
+            isUnique: true,
             isNullable: true,
           },
           {
