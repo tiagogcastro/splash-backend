@@ -1,6 +1,6 @@
+import crypto from 'crypto';
 import multer, { StorageEngine } from 'multer';
 import path from 'path';
-import crypto from 'crypto';
 
 interface IUploadsConfig {
   driver: 'disk' | 's3';
@@ -16,26 +16,28 @@ interface IUploadsConfig {
   };
 }
 const tmpFolder = path.resolve(__dirname, '..', '..', 'tmp');
-const uploadsFolder = path.resolve(tmpFolder, 'uploads');
 
 export default {
   driver: process.env.STORAGE_DRIVER || 'disk',
   tmpFolder,
-  uploadsFolder,
+  uploadsFolder: path.resolve(tmpFolder, 'uploads'),
   multer: {
     storage: multer.diskStorage({
       destination: tmpFolder,
       filename: (request, file, callback) => {
         const hashed = crypto.randomBytes(10).toString('hex');
-        const filename = `${hashed}-${file.originalname}`;
+        const originalName = file.originalname.replace(' ', '-');
 
-        callback(null, filename);
+        const fileName = `${hashed}-${originalName}`;
+
+        callback(null, fileName);
       },
     }),
   },
   config: {
+    disk: {},
     aws: {
-      bucket: 's3',
+      bucket: 'app-lavimco',
     },
   },
 } as IUploadsConfig;
