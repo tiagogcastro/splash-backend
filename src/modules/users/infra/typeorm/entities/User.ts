@@ -11,7 +11,6 @@ import {
 import { Exclude, Expose } from 'class-transformer';
 
 import { v4 as uuid } from 'uuid';
-import UserBalance from './UserBalance';
 
 enum Permissions {
   user = 'user',
