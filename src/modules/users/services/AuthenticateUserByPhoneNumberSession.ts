@@ -21,10 +21,6 @@ export default class AuthenticateUserByPhoneNumberSession {
   public async create({ phoneNumber }: Request): Promise<Response> {
     const { expiresIn, secret } = authConfig.jwt;
 
-    if (!phoneNumber) {
-      console.log('teste');
-    }
-
     const usersRepository = getRepository(User);
 
     const user = await usersRepository.findOne({

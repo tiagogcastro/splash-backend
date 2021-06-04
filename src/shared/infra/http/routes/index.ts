@@ -5,6 +5,7 @@ import usersRouter from '@modules/users/infra/http/routes/users.routes';
 import userProfileRuter from '@modules/users/infra/http/routes/profileUsers.routes';
 import sponsorshipsRouter from '@modules/sponsorships/infra/http/routes/sponsorships.routes';
 import sessionsRoutes from '@modules/users/infra/http/routes/sessions.routes';
+import whatssapRoutes from '@modules/users/infra/http/routes/whatssap.routes';
 
 const router = Router();
 
@@ -12,6 +13,7 @@ router.use('/users', usersRouter);
 router.use('/sessions', sessionsRoutes);
 router.use('/profile', userProfileRuter);
 router.use('/sms', smsRouter);
+router.use('/whats', whatssapRoutes);
 router.use('/sponsors', sponsorsRouter);
 router.use('/sponsorships', sponsorshipsRouter);
 

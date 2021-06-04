@@ -12,11 +12,7 @@ const userValidationController = new AuthenticationByPhoneNumberController();
 
 smsRoutes.post('/sendcode', userPhone.sendCode);
 
-smsRoutes.post(
-  '/validation',
-  createUserByPhoneNumberMiddleware,
-  userPhone.create,
-);
+smsRoutes.post('/create', createUserByPhoneNumberMiddleware, userPhone.create);
 
 smsRoutes.post(
   '/authenticate',

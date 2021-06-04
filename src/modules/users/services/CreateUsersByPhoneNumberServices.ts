@@ -27,9 +27,9 @@ export default class CreateUsersByPhoneNumberService {
   public async execute({ phoneNumber }: Request): Promise<Response> {
     const usersRepository = getRepository(User);
 
-    const checkUserPhoneNumberExists = await usersRepository.findByPhoneNumber(
-      phoneNumber,
-    );
+    const checkUserPhoneNumberExists = await usersRepository.findOne({
+      where: { phoneNumber },
+    });
 
     if (checkUserPhoneNumberExists) {
       throw new AppError('This phone number already used');
@@ -39,6 +39,8 @@ export default class CreateUsersByPhoneNumberService {
       phoneNumber,
       username: createUsername(),
     });
+
+    await usersRepository.save(user);
 
     const { secret, expiresIn } = jwtConfig.jwt;
 
