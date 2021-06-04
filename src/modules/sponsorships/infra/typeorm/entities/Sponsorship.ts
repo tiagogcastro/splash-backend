@@ -41,9 +41,9 @@ export default class Sponsorship {
   allow_withdrawal: boolean;
 
   @Column({
-    nullable: true,
+    nullable: false,
   })
-  sponsorship_code: boolean;
+  sponsorship_code: string;
 
   @UpdateDateColumn()
   updated_at: Date;
