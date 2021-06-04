@@ -11,16 +11,16 @@ export default class AuthenticationByPhoneNumberController {
   public async create(request: Request, response: Response): Promise<Response> {
     const { code } = request.body;
 
-    const { phoneNumber } = request.user;
+    const { phone_number } = request.user;
 
-    if (!phoneNumber) {
+    if (!phone_number) {
       return response.status(400).json({ error: 'User number is missing' });
     }
 
     await clientSendMessage.verify
       .services(servicesSid)
       .verificationChecks.create({
-        to: phoneNumber,
+        to: phone_number,
         code: String(code),
       })
       .catch(error => {
@@ -31,12 +31,12 @@ export default class AuthenticationByPhoneNumberController {
       new AuthenticateUserByPhoneNumberSession();
 
     const { user, token } = await authenticationByPhoneNumber.create({
-      phoneNumber,
+      phone_number,
     });
 
     request.user = {
       id: user.id,
-      phoneNumber: user.phone_number,
+      phone_number: user.phone_number,
     };
 
     return response.status(200).json({ user, token });
