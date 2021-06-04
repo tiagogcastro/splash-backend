@@ -53,7 +53,6 @@ export default class CreateUsers1622143314249 implements MigrationInterface {
             name: 'roles',
             type: 'varchar',
             isNullable: true,
-            default: 'user',
           },
           {
             name: 'activated_account',
