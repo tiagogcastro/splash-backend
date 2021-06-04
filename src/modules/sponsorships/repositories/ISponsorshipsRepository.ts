@@ -1,6 +1,7 @@
 import ICreateSponsorshipDTO from '../dtos/ICreateSponsorshipDTO';
 import IFindSponsorshipDTO from '../dtos/IFindSponsorshipDTO';
 import IFindSponsorshipUnavailableDTO from '../dtos/IFindSponsorshipUnavailableDTO';
+import IUpdateSponsorshipDTO from '../dtos/IUpdateSponsorshipDTO';
 import Sponsorship from '../infra/typeorm/entities/Sponsorship';
 
 export default interface ISponsorshipsRepository {
@@ -16,4 +17,11 @@ export default interface ISponsorshipsRepository {
     sponsored_user_id: string,
   ): Promise<Sponsorship[]>;
   save(sponsorship: Sponsorship): Promise<Sponsorship>;
+  findBySponsorshipCode(
+    sponsorship_code: string,
+  ): Promise<Sponsorship | undefined>;
+  updateSponsorship(
+    sponsor_user_id: string,
+    data: IUpdateSponsorshipDTO,
+  ): Promise<Sponsorship | undefined>;
 }

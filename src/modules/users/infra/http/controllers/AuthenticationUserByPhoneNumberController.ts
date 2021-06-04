@@ -36,7 +36,7 @@ export default class AuthenticationByPhoneNumberController {
 
     request.user = {
       id: user.id,
-      phoneNumber: user.phoneNumber,
+      phoneNumber: user.phone_number,
     };
 
     return response.status(200).json({ user, token });
