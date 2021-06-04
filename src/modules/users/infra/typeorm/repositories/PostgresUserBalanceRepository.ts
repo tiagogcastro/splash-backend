@@ -17,6 +17,7 @@ export default class PostgresUserBalanceRepository
       where: {
         user_id,
       },
+      relations: ['user'],
     });
     return userBalance;
   }
