@@ -30,12 +30,7 @@ class UserBalance {
   @Column({
     default: 0,
   })
-  available_balance_amount: number;
-
-  @Column({
-    default: 0,
-  })
-  unvailable_balance_amount: number;
+  balance_amount: number;
 
   @CreateDateColumn()
   created_at: Date;

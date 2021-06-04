@@ -1,14 +1,14 @@
 import User from '@modules/users/infra/typeorm/entities/User';
-import ISearchListSponsoredFromUserDTO from '../dtos/ISearchListSponsoredFromUserDTO';
+import ISearchSponsoredFromUserDTO from '../dtos/ISearchSponsoredFromUserDTO';
 import ISponsorshipsRepository from '../repositories/ISponsorshipsRepository';
 
-export default class SearchListSponsoredFromUserService {
+export default class SearchSponsoredFromUserService {
   constructor(private sponsorshipsRepository: ISponsorshipsRepository) {}
 
   async execute({
     username,
     sponsor_id,
-  }: ISearchListSponsoredFromUserDTO): Promise<User[]> {
+  }: ISearchSponsoredFromUserDTO): Promise<User[]> {
     const sponsorships =
       await this.sponsorshipsRepository.findAllSponsoredFromUser(sponsor_id);
 

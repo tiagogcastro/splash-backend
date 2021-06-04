@@ -1,7 +1,8 @@
 import MongoNotificationsRepository from '@modules/notifications/infra/typeorm/repositories/MongoNotificationsRepository';
 import SendSponsorshipService from '@modules/sponsorships/services/SendSponsorshipService';
-import PostgresUsersRepository from '@modules/users/infra/typeorm/repositories/PostgresUsersRepository';
 import PostgresUserBalanceRepository from '@modules/users/infra/typeorm/repositories/PostgresUserBalanceRepository';
+import PostgresUsersRepository from '@modules/users/infra/typeorm/repositories/PostgresUsersRepository';
+import { classToClass } from 'class-transformer';
 import { Request, Response } from 'express';
 import PostgresSponsorshipsRepository from '../../typeorm/repositories/PostgresSponsorshipsRepository';
 
@@ -30,6 +31,6 @@ export default class SponsorshipsController {
       amount,
     });
 
-    return response.status(201).json(sponsorship);
+    return response.status(201).json(classToClass(sponsorship));
   }
 }

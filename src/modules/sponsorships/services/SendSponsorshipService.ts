@@ -3,7 +3,7 @@ import IUserBalanceRepository from '@modules/users/repositories/IUserBalanceRepo
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import AppError from '@shared/errors/AppError';
 import ISendSponsorshipServiceDTO from '../dtos/ISendSponsorshipServiceDTO';
-import Sponsor from '../infra/typeorm/entities/Sponsorship';
+import Sponsorship from '../infra/typeorm/entities/Sponsorship';
 import ISponsorshipsRepository from '../repositories/ISponsorshipsRepository';
 
 export default class SendSponsorshipService {
@@ -19,9 +19,8 @@ export default class SendSponsorshipService {
     sponsor_user_id,
     amount,
     allow_withdrawal_balance = false,
-  }: ISendSponsorshipServiceDTO): Promise<Sponsor> {
+  }: ISendSponsorshipServiceDTO): Promise<Sponsorship> {
     let allow_withdrawal = true;
-
     const user = await this.usersRepository.findById(user_recipient_id);
     const sponsor = await this.usersRepository.findById(sponsor_user_id);
 
@@ -32,6 +31,8 @@ export default class SendSponsorshipService {
       user_recipient_id,
     );
 
+    if (user_recipient_id === sponsor_user_id)
+      throw new AppError('You cannot send to yourself');
     if (!user) throw new AppError('The user does not exist', 401);
     if (!sponsor) throw new AppError('The sponsor does not exist', 401);
     if (!sponsorUserBalance)
@@ -45,14 +46,77 @@ export default class SendSponsorshipService {
         401,
       );
     }
-    if (user_recipient_id === sponsor_user_id)
-      throw new AppError('You cannot send to yourself');
 
-    if (!(sponsor.roles === 'shop') && !allow_withdrawal_balance)
+    if (!(sponsor.roles === 'shop') && allow_withdrawal_balance)
       throw new AppError('You are not allowed to access here', 401);
 
-    if (sponsorUserBalance.total_balance < amount) {
+    if (sponsorUserBalance.total_balance < amount)
       throw new AppError('You cannot send an amount that you do not have', 400);
+
+    if (
+      !(user.roles === 'shop') &&
+      sponsorUserBalance.balance_amount < amount
+    ) {
+      throw new AppError(
+        'You cannot send an available amount that you do not have',
+        400,
+      );
+    }
+    // Buscando se meu antigo patrocinador ( loja ) me patrocinou
+    const unvailableBalanceAmount =
+      await this.sponsorshipsRepository.findSponsorshipUnavailable({
+        sponsored_user_id: sponsor_user_id,
+        sponsor_user_id: user_recipient_id,
+      });
+
+    switch (sponsor.roles) {
+      case 'shop':
+        if (
+          unvailableBalanceAmount &&
+          unvailableBalanceAmount.amount >= amount
+        ) {
+          unvailableBalanceAmount.amount -= amount;
+
+          await this.sponsorshipsRepository.save(unvailableBalanceAmount);
+
+          sponsorUserBalance.total_balance -= amount;
+        } else {
+          if (sponsorUserBalance.balance_amount < amount) {
+            throw new AppError(
+              'You cannot send an available amount that you do not have',
+              400,
+            );
+          }
+          sponsorUserBalance.total_balance -= amount;
+          sponsorUserBalance.balance_amount -= amount;
+        }
+
+        if (!allow_withdrawal_balance) {
+          recipientUserBalance.total_balance += amount;
+        } else {
+          recipientUserBalance.total_balance += amount;
+          recipientUserBalance.balance_amount += amount;
+        }
+        allow_withdrawal = allow_withdrawal_balance;
+        break;
+
+      default:
+        if (
+          unvailableBalanceAmount &&
+          unvailableBalanceAmount.amount >= amount
+        ) {
+          unvailableBalanceAmount.amount -= amount;
+
+          await this.sponsorshipsRepository.save(unvailableBalanceAmount);
+
+          sponsorUserBalance.total_balance -= amount;
+        } else {
+          sponsorUserBalance.total_balance -= amount;
+          sponsorUserBalance.balance_amount -= amount;
+        }
+        recipientUserBalance.total_balance += amount;
+        recipientUserBalance.balance_amount += amount;
+        break;
     }
 
     const [first, second] = String(amount).split('.');
@@ -66,16 +130,11 @@ export default class SendSponsorshipService {
       name: sponsor.username,
       subject,
     };
-
     if (user.roles === 'shop') {
       messageFromSender = {
         name: sponsor.username,
         subject: `você pagou R$${balanceAmount} para ${user.username}`,
       };
-    }
-
-    if (sponsor.roles === 'shop') {
-      allow_withdrawal = allow_withdrawal_balance;
     }
 
     const messageFromRecipient = {
@@ -95,12 +154,34 @@ export default class SendSponsorshipService {
       content: JSON.stringify(messageFromRecipient),
     });
 
-    const sponsorship = await this.sponsorshipsRepository.create({
-      sponsored_user_id: user_recipient_id,
+    await this.userBalanceRepository.save(recipientUserBalance);
+    await this.userBalanceRepository.save(sponsorUserBalance);
+
+    const findSponsorship = await this.sponsorshipsRepository.findSponsorship({
       sponsor_user_id,
-      amount,
-      allow_withdrawal,
+      sponsored_user_id: user_recipient_id,
     });
+
+    let sponsorship: Sponsorship;
+
+    if (findSponsorship) {
+      if (sponsor.roles === 'shop')
+        findSponsorship.allow_withdrawal = allow_withdrawal_balance;
+      else findSponsorship.allow_withdrawal = allow_withdrawal;
+
+      findSponsorship.amount += amount;
+
+      await this.sponsorshipsRepository.save(findSponsorship);
+
+      sponsorship = findSponsorship;
+    } else {
+      sponsorship = await this.sponsorshipsRepository.create({
+        sponsored_user_id: user_recipient_id,
+        sponsor_user_id,
+        amount,
+        allow_withdrawal,
+      });
+    }
 
     return sponsorship;
   }

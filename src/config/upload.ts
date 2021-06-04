@@ -12,6 +12,7 @@ interface IUploadsConfig {
   config: {
     aws: {
       bucket: string;
+      region: string;
     };
   };
 }
@@ -38,6 +39,7 @@ export default {
     disk: {},
     aws: {
       bucket: 'app-lavimco',
+      region: 'sa-east-1',
     },
   },
 } as IUploadsConfig;

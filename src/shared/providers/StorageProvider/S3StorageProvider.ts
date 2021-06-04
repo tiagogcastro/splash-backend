@@ -11,7 +11,7 @@ export default class S3StorageProvider implements IStorageProvider {
 
   constructor() {
     this.client = new aws.S3({
-      region: 'sa-east-1',
+      region: uploadConfig.config.aws.region,
     });
   }
 
@@ -34,12 +34,12 @@ export default class S3StorageProvider implements IStorageProvider {
       })
       .promise();
 
-    // try {
-    //   await fs.promises.stat(originalPath);
-    // } catch {
-    //   return file;
-    // }
-    // await fs.promises.unlink(originalPath);
+    try {
+      await fs.promises.stat(originalPath);
+    } catch {
+      return file;
+    }
+    await fs.promises.unlink(originalPath);
 
     return file;
   }
