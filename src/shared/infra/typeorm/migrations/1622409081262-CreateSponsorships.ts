@@ -14,22 +14,33 @@ export default class CreateSponsorships1622409081262
             isPrimary: true,
           },
           {
-            name: 'user_recipient_id',
+            name: 'sponsor_user_id',
             type: 'uuid',
             isNullable: true,
           },
           {
-            name: 'sponsor_id',
+            name: 'sponsored_user_id',
             type: 'uuid',
             isNullable: true,
           },
           {
-            name: 'your_sponsor_balance',
+            name: 'amount',
             type: 'float',
           },
           {
-            name: 'withdrawal_balance_available',
+            name: 'redeemed',
             type: 'boolean',
+            default: false,
+          },
+          {
+            name: 'allow_withdrawal',
+            type: 'boolean',
+          },
+          {
+            name: 'sponsorship_code',
+            type: 'varchar',
+            isUnique: true,
+            isNullable: false,
           },
           {
             name: 'created_at',
@@ -44,16 +55,16 @@ export default class CreateSponsorships1622409081262
         ],
         foreignKeys: [
           {
-            name: 'FKUserRecipientID',
-            columnNames: ['user_recipient_id'],
+            name: 'FKSponsorUserID',
+            columnNames: ['sponsor_user_id'],
             referencedTableName: 'users',
             referencedColumnNames: ['id'],
             onDelete: 'SET NULL',
             onUpdate: 'SET NULL',
           },
           {
-            name: 'FKSponsorID',
-            columnNames: ['sponsor_id'],
+            name: 'FKSponsoredUserID',
+            columnNames: ['sponsored_user_id'],
             referencedTableName: 'users',
             referencedColumnNames: ['id'],
             onDelete: 'SET NULL',

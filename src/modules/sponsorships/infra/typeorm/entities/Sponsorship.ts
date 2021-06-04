@@ -1,7 +1,10 @@
+import User from '@modules/users/infra/typeorm/entities/User';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -13,16 +16,34 @@ export default class Sponsorship {
   readonly id: string;
 
   @Column('uuid')
-  user_recipient_id: string;
+  sponsored_user_id: string;
 
   @Column('uuid')
-  sponsor_id: string;
+  sponsor_user_id: string;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'sponsored_user_id' })
+  sponsored: User;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'sponsor_user_id' })
+  sponsor: User;
 
   @Column()
-  your_sponsor_balance: number;
+  amount: number;
+
+  @Column({
+    default: false,
+  })
+  redeemed: boolean;
 
   @Column()
-  withdrawal_balance_available: boolean;
+  allow_withdrawal: boolean;
+
+  @Column({
+    nullable: false,
+  })
+  sponsorship_code: string;
 
   @UpdateDateColumn()
   updated_at: Date;

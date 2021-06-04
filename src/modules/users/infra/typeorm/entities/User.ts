@@ -1,11 +1,12 @@
+import uploadConfig from '@config/upload';
+import { Exclude, Expose } from 'class-transformer';
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-
 import { v4 as uuid } from 'uuid';
 
 enum Permissions {
@@ -19,45 +20,70 @@ class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   name?: string;
 
-  @Column()
+  @Column({
+    unique: true,
+  })
   username: string;
 
-  @Column()
+  @Column({
+    unique: true,
+    nullable: true,
+  })
   email?: string;
 
-  // @Column()
-  // avatar: string;
+  @Column({
+    unique: true,
+    nullable: true,
+  })
+  avatar?: string;
 
+  @Exclude()
   @Column()
-  password?: string;
+  password: string;
 
-  @Column({ default: 0 })
-  sponsoring: number;
-
-  @Column({ default: 0 })
-  sponsored: number;
-
-  @Column('varchar')
-  phoneNumber?: string;
-
-  @Column({ default: 0 })
-  money: number;
+  @Column({
+    unique: true,
+    nullable: true,
+  })
+  phone_number?: string;
 
   @Column({
     type: 'enum',
     enum: Permissions,
-    default: 'user',
+    nullable: true,
   })
-  permissions: Permissions;
+  roles: Permissions;
+
+  @Column({
+    default: true,
+  })
+  activated_account: boolean;
 
   @CreateDateColumn()
   created_at: Date;
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @Expose({ name: 'avatar_url' })
+  getAvatarUrl(): string | null {
+    if (!this.avatar) return null;
+
+    switch (uploadConfig.driver) {
+      case 'disk':
+        return `${process.env.APP_API_URL}/static/${this.avatar}`;
+      case 's3':
+        return `https://${uploadConfig.config.aws.bucket}.s3.amazonaws.com/${this.avatar}`;
+
+      default:
+        return null;
+    }
+  }
 
   constructor() {
     if (!this.id) {

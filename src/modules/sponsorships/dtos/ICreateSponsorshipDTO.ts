@@ -1,6 +1,6 @@
 export default interface ICreateSponsorshipDTO {
-  user_recipient_id: string;
-  sponsor_id: string;
-  your_sponsor_balance: number;
-  withdrawal_balance_available: boolean;
+  sponsored_user_id: string;
+  sponsor_user_id: string;
+  amount: number;
+  allow_withdrawal: boolean;
 }

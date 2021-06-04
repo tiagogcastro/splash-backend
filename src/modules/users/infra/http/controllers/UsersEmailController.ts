@@ -1,24 +1,41 @@
+import { classToClass } from 'class-transformer';
 import CreateUsersService from '@modules/users/services/CreateUsersByEmailService';
 import { Request, Response } from 'express';
 import PostgresUsersRepository from '../../typeorm/repositories/PostgresUsersRepository';
+import PostgresUserBalanceRepository from '../../typeorm/repositories/PostgresUserBalanceRepository';
+import PostgresSponsorshipsRepository from '@modules/sponsorships/infra/typeorm/repositories/PostgresSponsorshipsRepository';
+import PostgresSponsoringRepository from '../../typeorm/repositories/PostgresSponsoringRepository';
+import PostgresSponsoringSponsoredCountRepository from '../../typeorm/repositories/PostgresSponsoringSponsoredCountRepository';
+
+const postgresUsersRepository = new PostgresUsersRepository();
+const postgresUserBalanceRepository = new PostgresUserBalanceRepository();
+const postgresSponsorshipsRepository = new PostgresSponsorshipsRepository();
+const postgresSponsoringRepository = new PostgresSponsoringRepository();
+const postgresSponsoringSponsoredCountRepository = new PostgresSponsoringSponsoredCountRepository();
 
 class UsersEmailController {
   async create(request: Request, response: Response): Promise<Response> {
-    const { name, username, email, password } = await request.body;
+    const { name, username, email, password, sponsorship_code, terms } = await request.body;
 
-    const usersRepository = new PostgresUsersRepository();
+    const createUser = new CreateUsersService(
+      postgresUsersRepository,
+      postgresUserBalanceRepository,
+      postgresSponsorshipsRepository,
+      postgresSponsoringRepository,
+      postgresSponsoringSponsoredCountRepository
+    );
 
-    const userService = new CreateUsersService(usersRepository);
-
-    const { user, token } = await userService.execute({
+    const { user, token } = await createUser.execute({
       name,
       username,
       email,
       password,
+      sponsorship_code,
+      terms
     });
 
     return response.json({
-      user,
+      user: classToClass(user),
       token,
     });
   }

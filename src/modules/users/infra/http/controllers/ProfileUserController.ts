@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import UpdateProfileUserService from '@modules/users/services/UpdateProfileUserService';
 import ShowProfileUserService from '@modules/users/services/ShowProfileUserService';
 import DeleteProfileUser from '@modules/users/services/DeleteProfileUser';
+import { classToClass } from 'class-transformer';
 import PostgresUsersRepository from '../../typeorm/repositories/PostgresUsersRepository';
 
 class ProfileUserController {
@@ -14,7 +15,7 @@ class ProfileUserController {
 
     const user = await showProfileUser.execute(username);
 
-    return response.json(user);
+    return response.json(classToClass(user));
   }
 
   async update(request: Request, response: Response): Promise<Response> {
@@ -32,7 +33,7 @@ class ProfileUserController {
       name,
     });
 
-    return response.json(userUpdated);
+    return response.json(classToClass(userUpdated));
   }
 
   async delete(request: Request, response: Response): Promise<Response> {

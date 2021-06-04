@@ -7,8 +7,10 @@ import PostgresSponsoringRepository from '../../typeorm/repositories/PostgresSpo
 class SponsoredController {
   async index(request: Request, response: Response): Promise<Response> {
     const { user_id } = request.params;
+
     const usersRepository = new PostgresUsersRepository();
     const sponsoringRepository = new PostgresSponsoringRepository();
+
     const listUsersSponsoredByUser = new ListUsersSponsoredByUser(
       usersRepository,
       sponsoringRepository,
