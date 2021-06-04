@@ -25,12 +25,7 @@ export default class CreateUserBalance1622734880809
             default: 0,
           },
           {
-            name: 'unvailable_balance_amount',
-            type: 'float',
-            default: 0,
-          },
-          {
-            name: 'available_balance_amount',
+            name: 'balance_amount',
             type: 'float',
             default: 0,
           },

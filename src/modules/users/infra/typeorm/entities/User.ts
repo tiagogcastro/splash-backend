@@ -1,17 +1,13 @@
 import uploadConfig from '@config/upload';
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-  OneToOne,
-  JoinColumn,
-} from 'typeorm';
 import { Exclude, Expose } from 'class-transformer';
-
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { v4 as uuid } from 'uuid';
-import UserBalance from './UserBalance';
 
 enum Permissions {
   user = 'user',
