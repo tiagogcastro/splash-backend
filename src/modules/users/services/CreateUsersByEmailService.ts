@@ -31,7 +31,7 @@ export default class CreateUsersService {
     private userBalanceRepository: IUserBalanceRepository,
     private sponsorships: ISponsorshipsRepository,
     private sponsoring: ISponsoringRepository,
-    private sponsoringSponsoredCount: ISponsoringSponsoredCountRepository
+    private sponsoringSponsoredCount: ISponsoringSponsoredCountRepository,
   ) {}
 
   public async execute({
@@ -40,11 +40,15 @@ export default class CreateUsersService {
     email,
     password,
     sponsorship_code,
-    terms
+    terms,
   }: Request): Promise<Response> {
     const checkUserEmailExist = await this.usersRepository.findByEmail(email);
-    const sponsorshipExist = await this.sponsorships.findBySponsorshipCode(sponsorship_code);
-    const checkUserUsernameExist = await this.usersRepository.findByUsername(username);
+    const sponsorshipExist = await this.sponsorships.findBySponsorshipCode(
+      sponsorship_code,
+    );
+    const checkUserUsernameExist = await this.usersRepository.findByUsername(
+      username,
+    );
 
     if (checkUserEmailExist) {
       throw new AppError('E-mail address already used.');
@@ -54,11 +58,15 @@ export default class CreateUsersService {
       throw new AppError('Username address already used.', 400);
     }
 
-    if(!sponsorshipExist || sponsorshipExist.sponsorship_code !== sponsorship_code || sponsorshipExist.redeemed == true) {
+    if (
+      !sponsorshipExist ||
+      sponsorshipExist.sponsorship_code !== sponsorship_code ||
+      sponsorshipExist.redeemed === true
+    ) {
       throw new AppError('Código de patrocínio inválido ou já usado.', 400);
     }
 
-    if(!terms) {
+    if (!terms) {
       throw new AppError('Você não aceitou os termos.', 400);
     }
 
@@ -69,7 +77,7 @@ export default class CreateUsersService {
       username = randomUsername;
     }
 
-    if(username.length > 24) {
+    if (username.length > 24) {
       throw new AppError('Username só pode ter no máximo 24 caracteres', 400);
     }
 
@@ -79,7 +87,7 @@ export default class CreateUsersService {
       name = `name.${Math.random().toFixed(4).replace('.', '')}`;
     }
 
-    if(name.length > 30) {
+    if (name.length > 30) {
       throw new AppError('O nome só pode ter no máximo 30 caracteres', 400);
     }
 
@@ -93,10 +101,13 @@ export default class CreateUsersService {
     });
 
     // Deixa o patrocinio resgatado e indisponivel
-    await this.sponsorships.updateSponsorship(sponsorshipExist.sponsor_user_id, {
-      sponsored_user_id: user.id,
-      redeemed: true,
-    });
+    await this.sponsorships.updateSponsorship(
+      sponsorshipExist.sponsor_user_id,
+      {
+        sponsored_user_id: user.id,
+        redeemed: true,
+      },
+    );
 
     // Cria o saldo e adiciona la
     await this.userBalanceRepository.create({
@@ -106,7 +117,7 @@ export default class CreateUsersService {
 
     // remove do saldo da loja o valor informado no patrocinio
     await this.userBalanceRepository.update(sponsorshipExist.sponsor_user_id, {
-      total_balance: - sponsorshipExist.amount,
+      total_balance: -sponsorshipExist.amount,
     });
 
     // A loja passa a patrocinar o usuário
@@ -116,12 +127,15 @@ export default class CreateUsersService {
     });
 
     // Loja fica com +1 patrocinado e o usuário fica com +1 patrocinando ele
-    await this.sponsoringSponsoredCount.updateCount(sponsorshipExist.sponsor_user_id, {
-      sponsor_count: + 1,
-    });
+    await this.sponsoringSponsoredCount.updateCount(
+      sponsorshipExist.sponsor_user_id,
+      {
+        sponsor_count: +1,
+      },
+    );
 
     await this.sponsoringSponsoredCount.updateCount(user.id, {
-      sponsored_count: + 1,
+      sponsored_count: +1,
     });
 
     const { secret, expiresIn } = jwtConfig.jwt;
