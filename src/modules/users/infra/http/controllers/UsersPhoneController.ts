@@ -13,18 +13,18 @@ const clientSendMessage = client(accountSid, authToken);
 class UsersPhoneController {
   async sendCode(request: Request, response: Response): Promise<Response> {
     try {
-      const { phoneNumber } = request.body;
+      const { phone_number } = request.body;
 
       await clientSendMessage.verify
         .services(servicesSid)
         .verifications.create({
-          to: `${String(phoneNumber)}`,
+          to: `${String(phone_number)}`,
           channel: 'sms',
         });
 
       request.user = {
         id: '',
-        phoneNumber,
+        phone_number,
       };
 
       return response.json({ message: 'Code sent successfully!' });
@@ -36,16 +36,16 @@ class UsersPhoneController {
   async create(request: Request, response: Response): Promise<Response> {
     const { code } = request.body;
 
-    const { phoneNumber } = request.user;
+    const { phone_number } = request.user;
 
-    if (!phoneNumber) {
+    if (!phone_number) {
       return response.status(400).json({ error: 'User number is missing' });
     }
 
     await clientSendMessage.verify
       .services(servicesSid)
       .verificationChecks.create({
-        to: phoneNumber,
+        to: phone_number,
         code: String(code),
       })
       .catch(error => {
@@ -61,12 +61,12 @@ class UsersPhoneController {
     );
 
     const { user, token } = await createUserByPhoneNumber.execute({
-      phoneNumber,
+      phone_number,
     });
 
     request.user = {
       id: user.id,
-      phoneNumber: user.phone_number,
+      phone_number: user.phone_number,
     };
 
     return response.status(201).json({ user, token });
@@ -78,16 +78,16 @@ class UsersPhoneController {
   ): Promise<Response> {
     const { code } = request.body;
 
-    const { phoneNumber } = request.user;
+    const { phone_number } = request.user;
 
-    if (!phoneNumber) {
+    if (!phone_number) {
       return response.status(400).json({ error: 'User number is missing' });
     }
 
     await clientSendMessage.verify
       .services(servicesSid)
       .verificationChecks.create({
-        to: phoneNumber,
+        to: phone_number,
         code: String(code),
       })
       .catch(error => {
@@ -101,12 +101,12 @@ class UsersPhoneController {
       postgresUserBalanceRepository,
     );
     const { user, token } = await createUserByPhoneNumber.execute({
-      phoneNumber,
+      phone_number,
     });
 
     request.user = {
       id: user.id,
-      phoneNumber: user.phone_number,
+      phone_number: user.phone_number,
     };
 
     return response.status(201).json({ user, token });

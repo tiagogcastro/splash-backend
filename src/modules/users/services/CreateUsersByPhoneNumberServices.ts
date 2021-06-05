@@ -8,7 +8,7 @@ import IUserBalanceRepository from '../repositories/IUserBalanceRepository';
 import IUsersRepository from '../repositories/IUsersRepository';
 
 interface Request {
-  phoneNumber: string;
+  phone_number: string;
 }
 interface Response {
   user: User;
@@ -28,16 +28,16 @@ export default class CreateUsersByPhoneNumberService {
     private userBalanceRepository: IUserBalanceRepository,
   ) {}
 
-  public async execute({ phoneNumber }: Request): Promise<Response> {
+  public async execute({ phone_number }: Request): Promise<Response> {
     const checkUserPhoneNumberExists =
-      await this.usersRepository.findByPhoneNumber(phoneNumber);
+      await this.usersRepository.findByPhoneNumber(phone_number);
 
     if (checkUserPhoneNumberExists) {
       throw new AppError('This phone number already used');
     }
 
     const user = await this.usersRepository.create({
-      phoneNumber,
+      phone_number,
       username: createUsername(),
     });
 

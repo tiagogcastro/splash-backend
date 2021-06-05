@@ -1,7 +1,7 @@
 export default {
   twilio: {
-    accountSid: 'AC110285eb414fefac458c659ce5e870c2',
-    authToken: '048254d5297419a792172391d872d10d',
-    servicesSid: 'VA759b607d79ca751b05be5b2e3d04c07e',
+    accountSid: 'AC70a1de47cc1504a374399d60a68ca073',
+    authToken: 'c08f87916304f32e48a92f45e3183aab',
+    servicesSid: 'MG69300be5833d2dc4e2fffba64b3e43ee',
   },
 };

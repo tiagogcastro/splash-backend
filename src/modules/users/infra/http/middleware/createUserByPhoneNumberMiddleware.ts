@@ -15,7 +15,7 @@ export default function createUserByPhoneNumberMiddleware(
 
   req.user = {
     id: '',
-    phoneNumber: String(userPhone),
+    phone_number: String(userPhone),
   };
 
   return next();

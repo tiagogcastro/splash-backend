@@ -7,7 +7,7 @@ import { sign } from 'jsonwebtoken';
 import { getRepository } from 'typeorm';
 
 interface Request {
-  phoneNumber: string;
+  phone_number: string;
 }
 
 interface Response {
@@ -16,13 +16,13 @@ interface Response {
 }
 
 export default class AuthenticateUserByPhoneNumberSession {
-  public async create({ phoneNumber }: Request): Promise<Response> {
+  public async create({ phone_number }: Request): Promise<Response> {
     const { expiresIn, secret } = authConfig.jwt;
 
     const usersRepository = getRepository(User);
 
     const user = await usersRepository.findOne({
-      where: { phoneNumber },
+      where: { phone_number },
     });
 
     if (!user) {
