@@ -2,20 +2,6 @@ import { RateLimiterMemory } from 'rate-limiter-flexible';
 import { NextFunction, Request, Response } from 'express';
 import AppError from '@shared/errors/AppError';
 
-// const redisClient = new RedisClient({
-//   host: process.env.REDIS_HOST,
-//   port: Number(process.env.REDIS_PORT),
-//   password: process.env.REDIS_PASS || undefined,
-// });
-
-// const limiter = new RateLimiterRedis({
-//   storeClient: redisClient,
-//   keyPrefix: 'rateLimiter',
-//   points: 5,
-//   duration: 1,
-//   blockDuration: 3600,
-// });
-
 const limiter = new RateLimiterMemory({
   points: 5,
   duration: 1,
