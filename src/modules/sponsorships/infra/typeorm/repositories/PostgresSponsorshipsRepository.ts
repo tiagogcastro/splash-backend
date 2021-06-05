@@ -65,7 +65,7 @@ export default class PostgresSponsorshipsRepository
         sponsor_user_id,
         sponsored_user_id,
         allow_withdrawal: false,
-        redeemed: false,
+        status: null,
       },
     });
     return sponsorship;
