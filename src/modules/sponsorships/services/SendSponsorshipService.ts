@@ -33,6 +33,7 @@ export default class SendSponsorshipService {
 
     if (user_recipient_id === sponsor_user_id)
       throw new AppError('You cannot send to yourself');
+
     if (!user) throw new AppError('The user does not exist', 401);
     if (!sponsor) throw new AppError('The sponsor does not exist', 401);
     if (!sponsorUserBalance)
@@ -53,6 +54,11 @@ export default class SendSponsorshipService {
     if (sponsorUserBalance.total_balance < amount)
       throw new AppError('You cannot send an amount that you do not have', 400);
 
+    const unvailableBalanceAmount =
+      await this.sponsorshipsRepository.findSponsorshipUnavailable({
+        sponsored_user_id: sponsor_user_id,
+        sponsor_user_id: user_recipient_id,
+      });
     if (
       !(user.roles === 'shop') &&
       sponsorUserBalance.balance_amount < amount
@@ -62,12 +68,6 @@ export default class SendSponsorshipService {
         400,
       );
     }
-    // Buscando se meu antigo patrocinador ( loja ) me patrocinou
-    const unvailableBalanceAmount =
-      await this.sponsorshipsRepository.findSponsorshipUnavailable({
-        sponsored_user_id: sponsor_user_id,
-        sponsor_user_id: user_recipient_id,
-      });
 
     switch (sponsor.roles) {
       case 'shop':

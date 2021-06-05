@@ -5,6 +5,7 @@ import 'express-async-errors';
 import uploadConfig from '@config/upload';
 import cors from 'cors';
 import express, { NextFunction, Request, Response } from 'express';
+import { errors } from 'celebrate';
 import rateLimiter from './middlewares/rateLimiter';
 import AppError from '../../errors/AppError';
 import router from './routes';
@@ -18,6 +19,8 @@ app.use('/static', express.static(uploadConfig.uploadsFolder));
 app.use(rateLimiter);
 
 app.use(router);
+
+app.use(errors());
 
 /**
  *  Global Exception Handler
