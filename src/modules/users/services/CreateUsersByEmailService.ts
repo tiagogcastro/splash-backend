@@ -61,7 +61,7 @@ export default class CreateUsersService {
     if (
       !sponsorshipExist ||
       sponsorshipExist.sponsorship_code !== sponsorship_code ||
-      sponsorshipExist.redeemed === true
+      sponsorshipExist.status === 'redeemed'
     ) {
       throw new AppError('Código de patrocínio inválido ou já usado.', 400);
     }
@@ -105,7 +105,7 @@ export default class CreateUsersService {
       sponsorshipExist.sponsor_user_id,
       {
         sponsored_user_id: user.id,
-        redeemed: true,
+        status: 'redeemed',
       },
     );
 
