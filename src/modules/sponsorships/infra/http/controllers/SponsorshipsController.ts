@@ -28,6 +28,7 @@ export default class SponsorshipsController {
       user_recipient_id,
       sponsor_user_id,
       allow_withdrawal_balance,
+      sponsorship_code: true,
       amount,
     });
 

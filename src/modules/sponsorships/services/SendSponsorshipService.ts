@@ -2,6 +2,7 @@ import INotificationsRepository from '@modules/notifications/repositories/INotif
 import IUserBalanceRepository from '@modules/users/repositories/IUserBalanceRepository';
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import AppError from '@shared/errors/AppError';
+import crypto from 'crypto';
 import ISendSponsorshipServiceDTO from '../dtos/ISendSponsorshipServiceDTO';
 import Sponsorship from '../infra/typeorm/entities/Sponsorship';
 import ISponsorshipsRepository from '../repositories/ISponsorshipsRepository';
@@ -18,10 +19,12 @@ export default class SendSponsorshipService {
     user_recipient_id,
     sponsor_user_id,
     amount,
+    sponsorship_code,
     allow_withdrawal_balance = false,
   }: ISendSponsorshipServiceDTO): Promise<Sponsorship> {
     let allow_withdrawal = true;
     let sponsorship = {} as Sponsorship;
+
     const user = await this.usersRepository.findById(user_recipient_id);
     const sponsor = await this.usersRepository.findById(sponsor_user_id);
 
@@ -31,6 +34,7 @@ export default class SendSponsorshipService {
     const recipientUserBalance = await this.userBalanceRepository.findByUserId(
       user_recipient_id,
     );
+    const code = crypto.randomBytes(3).toString('hex').toUpperCase();
     /**
      * Buscar patrocínio já existente
      */
@@ -136,6 +140,14 @@ export default class SendSponsorshipService {
      */
     if (sponsor.roles === null) recipientUserBalance.balance_amount += amount;
 
+    if (sponsor.roles === 'shop' && sponsorship_code) {
+      sponsorship = await this.sponsorshipsRepository.create({
+        sponsored_user_id: user_recipient_id,
+        sponsor_user_id,
+        amount,
+        allow_withdrawal,
+      });
+    }
     /**
      * Deve atribuir um patrocínio à uma variável, caso já exista ou não
      */
@@ -148,6 +160,7 @@ export default class SendSponsorshipService {
         sponsored_user_id: user_recipient_id,
         sponsor_user_id,
         amount,
+        sponsorship_code: code,
         allow_withdrawal,
       });
     }
