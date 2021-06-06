@@ -109,26 +109,26 @@ export default class CreateUsersService {
         status: 'redeemed'
       });
 
+      // remove do saldo da loja o valor informado no patrocinio
+      await this.userBalanceRepository.update(sponsorshipExist.sponsor_user_id, {
+        total_balance: - sponsorshipExist.amount,
+      });
+
       // Cria o saldo e adiciona la
       await this.userBalanceRepository.create({
         user_id: user.id,
         total_balance: sponsorshipExist.amount,
       });
 
-      // remove do saldo da loja o valor informado no patrocinio
-      await this.userBalanceRepository.update(sponsorshipExist.sponsor_user_id, {
-        total_balance: - sponsorshipExist.amount,
-      });
-
       // A loja passa a patrocinar o usuário
-      await this.sponsoring.create({
-        sponsoring_user_id: sponsorshipExist.sponsor_user_id,
-        sponsored_user_id: user.id,
-      });
+      // await this.sponsoring.create({
+      //   sponsor_user_id: sponsorshipExist.sponsor_user_id,
+      //   sponsored_user_id: user.id,
+      // });
 
       // Loja fica com +1 patrocinado e o usuário fica com +1 patrocinando ele
       await this.sponsoringSponsoredCount.updateCount(sponsorshipExist.sponsor_user_id, {
-        sponsor_count: + 1,
+        sponsoring_count: + 1,
       });
 
       await this.sponsoringSponsoredCount.updateCount(user.id, {
@@ -141,15 +141,17 @@ export default class CreateUsersService {
         status: 'redeemed',
         },
       );
-    }
-    await this.userBalanceRepository.create({
-      user_id: user.id,
-      total_balance: 0,
-    });
+    } else {
 
-    await this.usersRepository.update(user.id, {
-      roles: 'shop'
-    });
+      await this.userBalanceRepository.create({
+        user_id: user.id,
+        total_balance: 0,
+      });
+      
+      await this.usersRepository.update(user.id, {
+        roles: 'shop'
+      });
+    }
 
     const { secret, expiresIn } = jwtConfig.jwt;
 
