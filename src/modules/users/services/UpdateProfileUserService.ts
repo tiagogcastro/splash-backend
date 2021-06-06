@@ -1,5 +1,5 @@
 import AppError from '@shared/errors/AppError';
-import { hash } from 'bcryptjs';
+import { compare, hash } from 'bcryptjs';
 import { getRepository } from 'typeorm';
 import User from '../infra/typeorm/entities/User';
 import IUsersRepository from '../repositories/IUsersRepository';
@@ -8,6 +8,8 @@ interface Request {
   user_id: string;
   email?: string;
   name?: string;
+  bio?: string;
+  old_password?:string;
   password?: string;
   password_confirmation?: string;
   username: string;
@@ -21,6 +23,8 @@ class UpdateProfileUserService {
     user_id,
     email,
     name,
+    bio,
+    old_password,
     password,
     password_confirmation,
     username,
@@ -51,6 +55,19 @@ class UpdateProfileUserService {
       throw new AppError('Username obrigatório', 401);
     }
 
+    if(password && !old_password) {
+      throw new AppError('Você precisa informar sua senha antiga', 401);
+    }
+
+    if(password && old_password) {
+      const checkOldPassword = compare(old_password, userLogged.password);
+
+      if(!checkOldPassword) {
+        throw new AppError('Old password not matched', 401);
+      }
+
+    }
+
     if (
       (password && !password_confirmation) ||
       (!password && password_confirmation)
@@ -73,6 +90,7 @@ class UpdateProfileUserService {
       name,
       password: hashedPassword,
       username,
+      bio
     });
 
     if (user.affected === 1) {
