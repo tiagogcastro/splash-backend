@@ -7,15 +7,16 @@ import PostgresSponsorshipsRepository from '@modules/sponsorships/infra/typeorm/
 import PostgresSponsoringRepository from '../../typeorm/repositories/PostgresSponsoringRepository';
 import PostgresSponsoringSponsoredCountRepository from '../../typeorm/repositories/PostgresSponsoringSponsoredCountRepository';
 
-const postgresUsersRepository = new PostgresUsersRepository();
-const postgresUserBalanceRepository = new PostgresUserBalanceRepository();
-const postgresSponsorshipsRepository = new PostgresSponsorshipsRepository();
-const postgresSponsoringRepository = new PostgresSponsoringRepository();
-const postgresSponsoringSponsoredCountRepository = new PostgresSponsoringSponsoredCountRepository();
 
 class UsersEmailController {
   async create(request: Request, response: Response): Promise<Response> {
-    const { name, username, email, password, sponsorship_code, terms } = await request.body;
+    const { name, username, email, password, sponsorship_code, terms, isShop } = request.body;
+
+    const postgresUsersRepository = new PostgresUsersRepository();
+    const postgresUserBalanceRepository = new PostgresUserBalanceRepository();
+    const postgresSponsorshipsRepository = new PostgresSponsorshipsRepository();
+    const postgresSponsoringRepository = new PostgresSponsoringRepository();
+    const postgresSponsoringSponsoredCountRepository = new PostgresSponsoringSponsoredCountRepository();
 
     const createUser = new CreateUsersService(
       postgresUsersRepository,
@@ -31,7 +32,8 @@ class UsersEmailController {
       email,
       password,
       sponsorship_code,
-      terms
+      terms,
+      isShop
     });
 
     return response.json({
