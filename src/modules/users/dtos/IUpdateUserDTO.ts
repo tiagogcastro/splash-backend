@@ -5,5 +5,7 @@ export default interface IUpdateUserDTO {
   name?: string;
   password?: string;
   username?: string;
-  roles?: Permissions
+  roles?: Permissions;
+  bio?: string;
+  
 }
