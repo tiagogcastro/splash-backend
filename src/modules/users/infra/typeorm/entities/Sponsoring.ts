@@ -18,14 +18,14 @@ class Sponsoring {
 
   // No banco de dados
   @Column('uuid')
-  sponsoring_user_id: string;
+  sponsor_user_id: string;
   
   @Column('uuid')
   sponsored_user_id: string;
   
   @ManyToOne(() => User)
-  @JoinColumn({ name: 'sponsoring_user_id' })
-  sponsoring_userId: User;
+  @JoinColumn({ name: 'sponsor_user_id' })
+  sponsor_userId: User;
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'sponsored_user_id' })
