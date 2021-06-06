@@ -18,7 +18,7 @@ export default interface ISponsorshipsRepository {
   ): Promise<Sponsorship[]>;
   save(sponsorship: Sponsorship): Promise<Sponsorship>;
   findBySponsorshipCode(
-    sponsorship_code: string,
+    sponsorship_code?: string,
   ): Promise<Sponsorship | undefined>;
   updateSponsorship(
     sponsor_user_id: string,
