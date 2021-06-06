@@ -1,4 +1,4 @@
 export default interface IUpdateSponsoringSponsoredCountDTO {
-  sponsor_count?: number;
+  sponsoring_count?: number;
   sponsored_count?: number;
 }
