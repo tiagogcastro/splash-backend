@@ -11,25 +11,25 @@ import {
 import { v4 as uuid } from 'uuid';
 import User from './User';
 
-@Entity('sponsoring')
+@Entity('sponsoring_sponsored')
 class Sponsoring {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   // No banco de dados
   @Column('uuid')
-  sponsoring_userId: string;
-
+  sponsoring_user_id: string;
+  
   @Column('uuid')
-  sponsored_userId: string;
+  sponsored_user_id: string;
+  
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'sponsoring_user_id' })
+  sponsoring_userId: User;
 
   @ManyToOne(() => User)
-  @JoinColumn({ name: 'sponsoring_userId' })
-  user_id_sponsoring: string;
-
-  @ManyToOne(() => User)
-  @JoinColumn({ name: 'sponsored_userId' })
-  user_id_sponsored: User;
+  @JoinColumn({ name: 'sponsored_user_id' })
+  sponsored_userId: User;
 
   @CreateDateColumn()
   created_at: Date;
