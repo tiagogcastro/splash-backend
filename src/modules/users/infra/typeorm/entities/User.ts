@@ -37,7 +37,6 @@ class User {
   email?: string;
 
   @Column({
-    unique: true,
     nullable: true,
   })
   avatar?: string;
