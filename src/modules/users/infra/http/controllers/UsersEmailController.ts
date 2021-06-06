@@ -6,24 +6,12 @@ import PostgresUsersRepository from '../../typeorm/repositories/PostgresUsersRep
 import PostgresUserBalanceRepository from '../../typeorm/repositories/PostgresUserBalanceRepository';
 import PostgresSponsoringRepository from '../../typeorm/repositories/PostgresSponsoringRepository';
 import PostgresSponsoringSponsoredCountRepository from '../../typeorm/repositories/PostgresSponsoringSponsoredCountRepository';
-
-<<<<<<< HEAD
+import AddEmailAndPasswordUserService from '@modules/users/services/AddEmailAndPasswordUserService';
 
 class UsersEmailController {
   async create(request: Request, response: Response): Promise<Response> {
-    const { name, username, email, password, sponsorship_code, terms, isShop } = request.body;
-
-    const postgresUsersRepository = new PostgresUsersRepository();
-    const postgresUserBalanceRepository = new PostgresUserBalanceRepository();
-    const postgresSponsorshipsRepository = new PostgresSponsorshipsRepository();
-    const postgresSponsoringRepository = new PostgresSponsoringRepository();
-    const postgresSponsoringSponsoredCountRepository = new PostgresSponsoringSponsoredCountRepository();
-=======
-class UsersEmailController {
-  async create(request: Request, response: Response): Promise<Response> {
-    const { name, username, email, password, sponsorship_code, terms } =
+    const { name, username, email, password, sponsorship_code, terms, isShop } =
       await request.body;
->>>>>>> 53fe0ef763d25fee921e63c0931095e68d82ee09
 
     const postgresUsersRepository = new PostgresUsersRepository();
     const postgresUserBalanceRepository = new PostgresUserBalanceRepository();
@@ -46,15 +34,34 @@ class UsersEmailController {
       password,
       sponsorship_code,
       terms,
-<<<<<<< HEAD
       isShop
-=======
->>>>>>> 53fe0ef763d25fee921e63c0931095e68d82ee09
     });
 
     return response.json({
       user: classToClass(user),
       token,
+    });
+  }
+
+  async update(request: Request, response: Response): Promise<Response> {
+    const user_id = request.user.id;
+    const { email, password, password_confirmation } =
+      await request.body;
+
+    const postgresUsersRepository = new PostgresUsersRepository();
+    const addEmailAndPassword = new AddEmailAndPasswordUserService(
+      postgresUsersRepository
+    );
+
+    const user = await addEmailAndPassword.execute({
+      user_id,
+      email,
+      password,
+      password_confirmation
+    });
+
+    return response.json({
+      user: classToClass(user),
     });
   }
 }
