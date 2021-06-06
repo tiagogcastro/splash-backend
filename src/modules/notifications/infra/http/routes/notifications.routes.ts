@@ -17,4 +17,9 @@ notificationsRouter.get(
 );
 notificationsRouter.get('/sponsorships', notificationsController.index);
 
+notificationsRouter.post(
+  '/send-notifications-for-ios',
+  notificationsController.sendNotificationForIos,
+);
+
 export default notificationsRouter;

@@ -32,7 +32,7 @@ export default class CreateUsersService {
     private userBalanceRepository: IUserBalanceRepository,
     private sponsorships: ISponsorshipsRepository,
     private sponsoring: ISponsoringRepository,
-    private sponsoringSponsoredCount: ISponsoringSponsoredCountRepository
+    private sponsoringSponsoredCount: ISponsoringSponsoredCountRepository,
   ) {}
 
   public async execute({
@@ -42,11 +42,18 @@ export default class CreateUsersService {
     password,
     sponsorship_code,
     terms,
+<<<<<<< HEAD
     isShop
+=======
+>>>>>>> 53fe0ef763d25fee921e63c0931095e68d82ee09
   }: Request): Promise<Response> {
     const checkUserEmailExist = await this.usersRepository.findByEmail(email);
-    const sponsorshipExist = await this.sponsorships.findBySponsorshipCode(sponsorship_code);
-    const checkUserUsernameExist = await this.usersRepository.findByUsername(username);
+    const sponsorshipExist = await this.sponsorships.findBySponsorshipCode(
+      sponsorship_code,
+    );
+    const checkUserUsernameExist = await this.usersRepository.findByUsername(
+      username,
+    );
 
     if (checkUserEmailExist) {
       throw new AppError('E-mail address already used.');
@@ -56,7 +63,19 @@ export default class CreateUsersService {
       throw new AppError('Username address already used.', 400);
     }
 
+<<<<<<< HEAD
     if(!terms) {
+=======
+    if (
+      !sponsorshipExist ||
+      sponsorshipExist.sponsorship_code !== sponsorship_code ||
+      sponsorshipExist.status === 'redeemed'
+    ) {
+      throw new AppError('Código de patrocínio inválido ou já usado.', 400);
+    }
+
+    if (!terms) {
+>>>>>>> 53fe0ef763d25fee921e63c0931095e68d82ee09
       throw new AppError('Você não aceitou os termos.', 400);
     }
 
@@ -67,7 +86,7 @@ export default class CreateUsersService {
       username = randomUsername;
     }
 
-    if(username.length > 24) {
+    if (username.length > 24) {
       throw new AppError('Username só pode ter no máximo 24 caracteres', 400);
     }
 
@@ -77,7 +96,7 @@ export default class CreateUsersService {
       name = `name.${Math.random().toFixed(4).replace('.', '')}`;
     }
 
-    if(name.length > 30) {
+    if (name.length > 30) {
       throw new AppError('O nome só pode ter no máximo 30 caracteres', 400);
     }
 
@@ -90,6 +109,7 @@ export default class CreateUsersService {
       password: hashedPassword,
     });
 
+<<<<<<< HEAD
     if(!isShop) {
       if(!sponsorshipExist || sponsorshipExist.sponsorship_code !== sponsorship_code) {
         throw new AppError('Código de patrocínio inválido ou já usado.', 400);
@@ -131,14 +151,51 @@ export default class CreateUsersService {
         sponsored_count: + 1,
       });
     }
+=======
+    // Deixa o patrocinio resgatado e indisponivel
+    await this.sponsorships.updateSponsorship(
+      sponsorshipExist.sponsor_user_id,
+      {
+        sponsored_user_id: user.id,
+        status: 'redeemed',
+      },
+    );
+>>>>>>> 53fe0ef763d25fee921e63c0931095e68d82ee09
 
     await this.userBalanceRepository.create({
       user_id: user.id,
+<<<<<<< HEAD
       total_balance: 0,
     });
 
     await this.usersRepository.update(user.id, {
       roles: 'shop'
+=======
+      total_balance: sponsorshipExist.amount,
+    });
+
+    // remove do saldo da loja o valor informado no patrocinio
+    await this.userBalanceRepository.update(sponsorshipExist.sponsor_user_id, {
+      total_balance: -sponsorshipExist.amount,
+    });
+
+    // A loja passa a patrocinar o usuário
+    await this.sponsoring.create({
+      sponsoring_userId: sponsorshipExist.sponsor_user_id,
+      sponsored_userId: user.id,
+    });
+
+    // Loja fica com +1 patrocinado e o usuário fica com +1 patrocinando ele
+    await this.sponsoringSponsoredCount.updateCount(
+      sponsorshipExist.sponsor_user_id,
+      {
+        sponsor_count: +1,
+      },
+    );
+
+    await this.sponsoringSponsoredCount.updateCount(user.id, {
+      sponsored_count: +1,
+>>>>>>> 53fe0ef763d25fee921e63c0931095e68d82ee09
     });
 
     const { secret, expiresIn } = jwtConfig.jwt;

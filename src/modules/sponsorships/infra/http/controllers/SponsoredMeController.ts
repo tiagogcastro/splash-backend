@@ -1,19 +1,22 @@
-import ListShopBalanceAmountService from '@modules/sponsorships/services/ListShopBalanceAmountService';
+import SearchSponsoredFromUserService from '@modules/sponsorships/services/SearchSponsoredFromUserService';
 import { classToClass } from 'class-transformer';
 import { Request, Response } from 'express';
 import PostgresSponsorshipsRepository from '../../typeorm/repositories/PostgresSponsorshipsRepository';
 
-export default class SponsoredController {
+export default class SponsoredMeController {
   async index(request: Request, response: Response): Promise<Response> {
-    const user_id = request.user.id;
-
+    const { username } = request.query;
+    const sponsor_id = request.user.id;
     const postgresSponsorshipsRepository = new PostgresSponsorshipsRepository();
 
-    const listShopBalanceAmount = new ListShopBalanceAmountService(
+    const searchSponsoredFromUser = new SearchSponsoredFromUserService(
       postgresSponsorshipsRepository,
     );
 
-    const sponsorships = await listShopBalanceAmount.execute(user_id);
+    const sponsorships = await searchSponsoredFromUser.execute({
+      username: String(username),
+      sponsor_id,
+    });
 
     return response.status(201).json(classToClass(sponsorships));
   }

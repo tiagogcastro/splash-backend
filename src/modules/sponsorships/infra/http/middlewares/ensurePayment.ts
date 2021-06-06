@@ -4,11 +4,10 @@ import AppError from '@shared/errors/AppError';
 
 const limiter = new RateLimiterMemory({
   points: 5,
-  duration: 1,
-  blockDuration: 3600,
+  duration: 180,
 });
 
-export default async function rateLimiter(
+export default async function ensurePayment(
   request: Request,
   response: Response,
   next: NextFunction,
@@ -18,6 +17,6 @@ export default async function rateLimiter(
 
     return next();
   } catch {
-    throw new AppError('Too many requests', 429);
+    throw new AppError('You can send a sponsorship after 3 minutes', 429);
   }
 }

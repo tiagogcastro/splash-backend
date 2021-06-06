@@ -35,7 +35,10 @@ export default class Sponsorship {
   @Column({
     default: false,
   })
-  redeemed: boolean;
+  @Column({
+    nullable: true,
+  })
+  status: 'redeemed' | 'expired';
 
   @Column()
   allow_withdrawal: boolean;

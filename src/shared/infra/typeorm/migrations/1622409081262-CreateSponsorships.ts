@@ -28,9 +28,9 @@ export default class CreateSponsorships1622409081262
             type: 'float',
           },
           {
-            name: 'redeemed',
-            type: 'boolean',
-            default: false,
+            name: 'status',
+            type: 'varchar',
+            isNullable: true,
           },
           {
             name: 'allow_withdrawal',
@@ -40,7 +40,7 @@ export default class CreateSponsorships1622409081262
             name: 'sponsorship_code',
             type: 'varchar',
             isUnique: true,
-            isNullable: false,
+            isNullable: true,
           },
           {
             name: 'created_at',

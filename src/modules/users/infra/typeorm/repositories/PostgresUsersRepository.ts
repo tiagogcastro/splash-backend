@@ -52,10 +52,10 @@ export default class PostgresUsersRepository implements IUsersRepository {
     return user;
   }
 
-  async findByPhoneNumber(phoneNumber: string): Promise<User | undefined> {
+  async findByPhoneNumber(phone_number: string): Promise<User | undefined> {
     const user = await this.ormRepository.findOne({
       where: {
-        phoneNumber,
+        phone_number,
       },
     });
     return user;
