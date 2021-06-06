@@ -21,7 +21,7 @@ sponsorshipsRouter.post(
   ensurePayment,
   celebrate({
     [Segments.BODY]: {
-      user_recipient_id: Joi.string().uuid().required(),
+      user_recipient_id: Joi.string().uuid(),
       allow_withdrawal_balance: Joi.boolean(),
       amount: Joi.number().required(),
     },
