@@ -1,20 +1,24 @@
 import ListShopBalanceAmountService from '@modules/sponsorships/services/ListShopBalanceAmountService';
+import PostgresSponsorBalanceRepository from '@modules/users/infra/typeorm/repositories/PostgresSponsorBalanceRepository';
+import PostgresUserBalanceRepository from '@modules/users/infra/typeorm/repositories/PostgresUserBalanceRepository';
 import { classToClass } from 'class-transformer';
 import { Request, Response } from 'express';
-import PostgresSponsorshipsRepository from '../../typeorm/repositories/PostgresSponsorshipsRepository';
 
 export default class SponsoredController {
   async index(request: Request, response: Response): Promise<Response> {
     const user_id = request.user.id;
 
-    const postgresSponsorshipsRepository = new PostgresSponsorshipsRepository();
+    const postgresSponsorBalanceRepository =
+      new PostgresSponsorBalanceRepository();
+    const postgresUserBalanceRepository = new PostgresUserBalanceRepository();
 
     const listShopBalanceAmount = new ListShopBalanceAmountService(
-      postgresSponsorshipsRepository,
+      postgresSponsorBalanceRepository,
+      postgresUserBalanceRepository,
     );
 
     const sponsorships = await listShopBalanceAmount.execute(user_id);
 
-    return response.status(201).json(classToClass(sponsorships));
+    return response.status(200).json(classToClass(sponsorships));
   }
 }
