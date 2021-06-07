@@ -24,9 +24,10 @@ usersRoutes.post(
         is: Joi.exist(),
         then: Joi.string().min(8).max(100).required(),
       }),
+      isShop: Joi.boolean().required(),
       username: Joi.string().min(2).max(30),
-      sponsorship_code: Joi.string().min(2).max(30).required(),
       terms: Joi.boolean(),
+      sponsorship_code: Joi.string()
     },
   }),
   usersEmailController.create,
@@ -42,5 +43,7 @@ usersRoutes.post(
   createUserByPhoneNumberMiddleware,
   userPhoneController.create,
 );
+
+usersRoutes.put('/add-email', ensureAuthenticated, usersEmailController.update);
 
 export default usersRoutes;

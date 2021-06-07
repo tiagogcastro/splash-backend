@@ -1,4 +1,4 @@
 export default interface ICreateSponsoringDTO {
-  sponsoring_userId?: string;
-  sponsored_userId?: string;
+  sponsor_user_id?: string;
+  sponsored_user_id?: string;
 }

@@ -32,7 +32,7 @@ export default class PostgresSponsorshipsRepository
   }
 
   async findBySponsorshipCode(
-    sponsorship_code: string,
+    sponsorship_code?: string,
   ): Promise<Sponsorship | undefined> {
     const sponsorship = await this.ormRepository.findOne({
       where: {

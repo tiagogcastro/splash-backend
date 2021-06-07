@@ -1,36 +1,25 @@
 import AppError from '@shared/errors/AppError';
-import { compare, hash } from 'bcryptjs';
-import { getRepository } from 'typeorm';
+import { hash } from 'bcryptjs';
 import User from '../infra/typeorm/entities/User';
 import IUsersRepository from '../repositories/IUsersRepository';
 
 interface Request {
   user_id: string;
-  email?: string;
-  name?: string;
-  bio?: string;
-  old_password?:string;
-  password?: string;
-  password_confirmation?: string;
-  username: string;
+  email: string;
+  password: string;
+  password_confirmation: string;
 }
 
-class UpdateProfileUserService {
+class AddEmailAndPasswordUserService {
   constructor(private usersRepository: IUsersRepository) {}
 
   // eslint-disable-next-line consistent-return
   async execute({
     user_id,
     email,
-    name,
-    bio,
-    old_password,
     password,
     password_confirmation,
-    username,
   }: Request): Promise<User | undefined> {
-    const usersRepository = getRepository(User);
-
     const userLogged = await this.usersRepository.findById(user_id);
 
     if (!userLogged) {
@@ -43,31 +32,9 @@ class UpdateProfileUserService {
       throw new AppError('Este email já existe', 401);
     }
 
-    const usernameExist = await usersRepository.findOne({
-      where: { username },
-    });
-
-    if (usernameExist && usernameExist.id !== user_id) {
-      throw new AppError('Este username já existe', 401);
+    if(userLogged.email && userLogged.password) {
+      throw new AppError('Você já tem um e-mail e senha registrado em sua conta', 401);
     }
-
-    if (!username) {
-      throw new AppError('Username obrigatório', 401);
-    }
-
-    if(password && !old_password) {
-      throw new AppError('Você precisa informar sua senha antiga', 401);
-    }
-
-    if(password && old_password) {
-      const checkOldPassword = compare(old_password, userLogged.password);
-
-      if(!checkOldPassword) {
-        throw new AppError('Old password not matched', 401);
-      }
-
-    }
-
     if (
       (password && !password_confirmation) ||
       (!password && password_confirmation)
@@ -87,10 +54,7 @@ class UpdateProfileUserService {
 
     const user = await this.usersRepository.update(userLogged.id, {
       email,
-      name,
       password: hashedPassword,
-      username,
-      bio
     });
 
     if (user.affected === 1) {
@@ -101,4 +65,4 @@ class UpdateProfileUserService {
   }
 }
 
-export default UpdateProfileUserService;
+export default AddEmailAndPasswordUserService;
