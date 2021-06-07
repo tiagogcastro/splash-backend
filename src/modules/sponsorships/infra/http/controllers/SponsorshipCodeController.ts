@@ -6,7 +6,7 @@ import { classToClass } from 'class-transformer';
 import { Request, Response } from 'express';
 import PostgresSponsorshipsRepository from '../../typeorm/repositories/PostgresSponsorshipsRepository';
 
-export default class SponsorshipsController {
+export default class SponsorshipCodeController {
   async create(request: Request, response: Response): Promise<Response> {
     const sponsor_user_id = request.user.id;
     const { allow_withdrawal_balance, amount } = request.body;
