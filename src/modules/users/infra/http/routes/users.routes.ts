@@ -1,5 +1,6 @@
 import { celebrate, Joi, Segments } from 'celebrate';
 import { Router } from 'express';
+import QRCodeController from '../controllers/QRCodeController';
 import UsersController from '../controllers/UsersController';
 import UsersEmailController from '../controllers/UsersEmailController';
 import UsersPhoneController from '../controllers/UsersPhoneController';
@@ -10,6 +11,7 @@ const usersRoutes = Router();
 
 const usersEmailController = new UsersEmailController();
 const userPhoneController = new UsersPhoneController();
+const qrcodeController = new QRCodeController();
 const usersController = new UsersController();
 
 usersRoutes.post(
@@ -32,6 +34,8 @@ usersRoutes.post(
 usersRoutes.get('/balance-amount', ensureAuthenticated, usersController.show);
 
 usersRoutes.post('/sms/send-code', userPhoneController.sendCode);
+
+usersRoutes.post('/qrcode', qrcodeController.create);
 
 usersRoutes.post(
   '/sms',
