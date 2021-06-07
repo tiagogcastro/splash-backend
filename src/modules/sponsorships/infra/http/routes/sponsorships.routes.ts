@@ -23,6 +23,7 @@ sponsorshipsRouter.post(
     [Segments.BODY]: {
       user_recipient_id: Joi.string().uuid().required(),
       allow_withdrawal_balance: Joi.boolean(),
+      sponsorship_code: Joi.boolean(),
       amount: Joi.number().required(),
     },
   }),
