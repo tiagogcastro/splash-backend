@@ -186,10 +186,6 @@ ___
 
 </div>
 
-</br>
-
-___
-
 <div align="left">
   <h1 id="license">✔ Licença</h1>
   <p>  Este projeto está sobre Licença MIT, veja: 
