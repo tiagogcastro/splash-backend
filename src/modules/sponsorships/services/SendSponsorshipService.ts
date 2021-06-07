@@ -1,4 +1,5 @@
 import INotificationsRepository from '@modules/notifications/repositories/INotificationsRepository';
+import ISponsorBalanceRepository from '@modules/users/repositories/ISponsorBalanceRepository';
 import IUserBalanceRepository from '@modules/users/repositories/IUserBalanceRepository';
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import AppError from '@shared/errors/AppError';
@@ -12,6 +13,7 @@ export default class SendSponsorshipService {
     private usersRepository: IUsersRepository,
     private userBalanceRepository: IUserBalanceRepository,
     private sponsorshipsRepository: ISponsorshipsRepository,
+    private sponsorBalanceRepository: ISponsorBalanceRepository,
     private notificationsRepository: INotificationsRepository,
   ) {}
 
@@ -23,34 +25,28 @@ export default class SendSponsorshipService {
     allow_withdrawal_balance = false,
   }: ISendSponsorshipServiceDTO): Promise<Sponsorship> {
     let allow_withdrawal = true;
-    let sponsorship = {} as Sponsorship;
+    let code: string | undefined;
 
-    const user = await this.usersRepository.findById(user_recipient_id);
     const sponsor = await this.usersRepository.findById(sponsor_user_id);
 
     const sponsorUserBalance = await this.userBalanceRepository.findByUserId(
       sponsor_user_id,
     );
+    const user = await this.usersRepository.findById(user_recipient_id);
+
+    const unavailableSponsorBalance =
+      await this.sponsorBalanceRepository.findSponsorBalance({
+        sponsored_user_id: sponsor_user_id,
+        sponsor_shop_id: user_recipient_id,
+      });
+    const isSponsorBalance =
+      await this.sponsorBalanceRepository.findSponsorBalance({
+        sponsored_user_id: user_recipient_id,
+        sponsor_shop_id: sponsor_user_id,
+      });
     const recipientUserBalance = await this.userBalanceRepository.findByUserId(
       user_recipient_id,
     );
-    const code = crypto.randomBytes(3).toString('hex').toUpperCase();
-    /**
-     * Buscar patrocínio já existente
-     */
-    const existingSponsorship =
-      await this.sponsorshipsRepository.findSponsorship({
-        sponsor_user_id,
-        sponsored_user_id: user_recipient_id,
-      });
-    /**
-     * Buscar saldo indisponível da loja
-     */
-    const unavailableBalanceAmount =
-      await this.sponsorshipsRepository.findSponsorshipUnavailable({
-        sponsored_user_id: sponsor_user_id,
-        sponsor_user_id: user_recipient_id,
-      });
 
     if (user_recipient_id === sponsor_user_id)
       throw new AppError('You cannot send to yourself');
@@ -68,15 +64,13 @@ export default class SendSponsorshipService {
         401,
       );
     }
+    const unavailableBalance =
+      unavailableSponsorBalance &&
+      unavailableSponsorBalance.balance_amount -
+        unavailableSponsorBalance.available_for_withdrawal;
 
-    if (!(sponsor.roles === 'shop') && allow_withdrawal_balance)
-      throw new AppError('You are not allowed to access here', 401);
-
-    if (sponsorUserBalance.total_balance < amount)
-      throw new AppError('You cannot send an amount that you do not have', 400);
     if (
-      (unavailableBalanceAmount?.amount || 0) +
-        sponsorUserBalance.balance_amount <
+      (unavailableBalance || 0) + sponsorUserBalance.balance_amount <
       amount
     ) {
       throw new AppError(
@@ -84,90 +78,51 @@ export default class SendSponsorshipService {
         400,
       );
     }
+    if (!(sponsor.roles === 'shop') && allow_withdrawal_balance)
+      throw new AppError('You are not allowed to access here', 401);
 
-    /**
-     * Retirar o valor de patrocínio do remetente
-     */
+    if (sponsorUserBalance.total_balance < amount)
+      throw new AppError('You cannot send an amount that you do not have', 400);
+
     sponsorUserBalance.total_balance -= amount;
 
-    /**
-     * Verificar se o usuário remetente possuí algum patrocínio enviado pela loja destinatária
-     */
-    if (unavailableBalanceAmount) {
-      if (unavailableBalanceAmount.amount >= amount) {
-        unavailableBalanceAmount.amount -= amount;
-      } else {
-        const remaining = (unavailableBalanceAmount.amount - amount) * -1;
-
-        unavailableBalanceAmount.amount -= amount - remaining;
-        sponsorUserBalance.balance_amount -= remaining;
-      }
-      await this.sponsorshipsRepository.save(unavailableBalanceAmount);
-    } else {
-      sponsorUserBalance.balance_amount -= amount;
-    }
-    /**
-     * Adicionar patrocínio ao destinatário
-     */
     recipientUserBalance.total_balance += amount;
 
-    /**
-     * Caso já exista um patrocínio, irá incrementar o valor de patrocínio
-     */
-    if (existingSponsorship) {
-      existingSponsorship.amount += amount;
-    }
-
-    /**
-     * Se o remetente for uma loja e já possuí um patrocínio enviado anteriormente, poderá ou não permitir o uso livre do patrocínio
-     */
     if (sponsor.roles === 'shop') {
-      if (
-        existingSponsorship &&
-        existingSponsorship.allow_withdrawal !== allow_withdrawal_balance
-      ) {
-        if (allow_withdrawal_balance)
-          recipientUserBalance.balance_amount += existingSponsorship.amount;
-        else
-          recipientUserBalance.balance_amount -=
-            existingSponsorship.amount - amount;
-      } else if (allow_withdrawal_balance)
-        recipientUserBalance.balance_amount += amount;
+      if (!isSponsorBalance) {
+        await this.sponsorBalanceRepository.create({
+          balance_amount: amount,
+          sponsor_shop_id: sponsor_user_id,
+          sponsored_user_id: user_recipient_id,
+        });
+      } else {
+        isSponsorBalance.balance_amount += amount;
+
+        await this.sponsorBalanceRepository.save(isSponsorBalance);
+      }
+
+      if (sponsorship_code) {
+        code = crypto.randomBytes(3).toString('hex').toUpperCase();
+
+        const checkSponsorship =
+          await this.sponsorshipsRepository.findBySponsorshipCode(code);
+
+        if (checkSponsorship) throw new AppError('Try again');
+      }
+
       allow_withdrawal = allow_withdrawal_balance;
     }
-    /**
-     * Se o remetente for um usuário o valor enviado deve ser disponível
-     */
-    if (sponsor.roles === null) recipientUserBalance.balance_amount += amount;
 
-    if (sponsor.roles === 'shop' && sponsorship_code) {
-      sponsorship = await this.sponsorshipsRepository.create({
-        sponsored_user_id: user_recipient_id,
-        sponsor_user_id,
-        amount,
-        allow_withdrawal,
-      });
-    }
-    /**
-     * Deve atribuir um patrocínio à uma variável, caso já exista ou não
-     */
-    if (existingSponsorship) {
-      existingSponsorship.allow_withdrawal = allow_withdrawal;
+    if (sponsor.roles === null) recipientUserBalance.balance_amount -= amount;
 
-      sponsorship = await this.sponsorshipsRepository.save(existingSponsorship);
-    } else {
-      sponsorship = await this.sponsorshipsRepository.create({
-        sponsored_user_id: user_recipient_id,
-        sponsor_user_id,
-        amount,
-        sponsorship_code: code,
-        allow_withdrawal,
-      });
-    }
+    const sponsorship = await this.sponsorshipsRepository.create({
+      allow_withdrawal,
+      amount,
+      sponsor_user_id,
+      sponsored_user_id: user_recipient_id,
+      sponsorship_code: code,
+    });
 
-    /**
-     * Salvar alterações dos valores do remetente e destinatário
-     */
     await this.userBalanceRepository.save(sponsorUserBalance);
     await this.userBalanceRepository.save(recipientUserBalance);
 
