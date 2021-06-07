@@ -1,53 +1,46 @@
 import AppError from '@shared/errors/AppError';
-import { getRepository } from 'typeorm';
 import Sponsoring from '../infra/typeorm/entities/Sponsoring';
-import User from '../infra/typeorm/entities/User';
+import ISponsoringRepository from '../repositories/ISponsoringRepository';
+import IUsersRepository from '../repositories/IUsersRepository';
 
 class SponsorUserService {
-  async execute(sponsoring_userId: string, sponsored_userId: string): Promise<Sponsoring | null> {
-    const usersRepository = getRepository(User);
-    const sponsoringRepository = getRepository(Sponsoring);
+  constructor(
+    private usersRepository: IUsersRepository,
+    private sponsoringRepository: ISponsoringRepository,
+  ) {}
 
-    const userLogged = await usersRepository.findOne({
-      where: {
-        id: sponsoring_userId
-      }}
-    );
+  async execute(
+    sponsoring_userId: string,
+    sponsored_userId: string,
+  ): Promise<Sponsoring | null> {
+    const userLogged = await this.usersRepository.findById(sponsoring_userId);
 
-    const userToSponsor = await usersRepository.findOne({
-      where: {
-        id: sponsored_userId
-      }}
-    );
+    const userToSponsor = await this.usersRepository.findById(sponsored_userId);
 
-    if(!userLogged) {
+    if (!userLogged) {
       throw new AppError('User not logged', 401);
     }
 
-    if(!userToSponsor) {
+    if (!userToSponsor) {
       throw new AppError('User not exist', 401);
     }
 
-    const sponsoringExist = await sponsoringRepository.findOne({
-      where: {
+    const sponsoringExist =
+      await this.sponsoringRepository.findBySponsoringAndSponsored(
         sponsoring_userId,
-        sponsored_userId
-      }
-    });
+        sponsored_userId,
+      );
 
-    if(sponsoringExist) {
+    if (sponsoringExist) {
       return sponsoringExist;
     }
 
-    const sponsorUser = sponsoringRepository.create({
+    const sponsorUser = await this.sponsoringRepository.create({
       sponsoring_userId,
-      sponsored_userId
+      sponsored_userId,
     });
 
-    await sponsoringRepository.save(sponsorUser);
-
     return sponsorUser;
-
   }
 }
 
