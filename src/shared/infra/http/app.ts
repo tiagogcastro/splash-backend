@@ -1,7 +1,7 @@
 import 'reflect-metadata';
-import '../typeorm/connection';
 import 'dotenv/config';
 import 'express-async-errors';
+import '../typeorm/connection';
 import uploadConfig from '@config/upload';
 import cors from 'cors';
 import express, { NextFunction, Request, Response } from 'express';

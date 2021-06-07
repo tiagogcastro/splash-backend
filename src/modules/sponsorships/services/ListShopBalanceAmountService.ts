@@ -1,18 +1,33 @@
-import Sponsorship from '../infra/typeorm/entities/Sponsorship';
-import ISponsorshipsRepository from '../repositories/ISponsorshipsRepository';
+import SponsorBalance from '@modules/users/infra/typeorm/entities/SponsorBalance';
+import ISponsorBalanceRepository from '@modules/users/repositories/ISponsorBalanceRepository';
+import IUserBalanceRepository from '@modules/users/repositories/IUserBalanceRepository';
+import AppError from '@shared/errors/AppError';
 
 export default class ListShopBalanceAmountService {
-  constructor(private sponsorshipsRepository: ISponsorshipsRepository) {}
+  constructor(
+    private sponsorBalanceRepository: ISponsorBalanceRepository,
+    private userBalanceRepository: IUserBalanceRepository,
+  ) {}
 
-  async execute(user_id: string): Promise<Sponsorship[]> {
-    const sponsorships =
-      await this.sponsorshipsRepository.findAllSponsorshipsFromUser(user_id);
+  async execute(user_id: string): Promise<SponsorBalance[]> {
+    const sponsorBalance =
+      await this.sponsorBalanceRepository.findAllSponsorBalanceBySponsoredUserId(
+        user_id,
+      );
+    const userBalance = await this.userBalanceRepository.findByUserId(user_id);
 
-    const shops = sponsorships.filter(
-      sponsorship =>
-        sponsorship.sponsor.roles === 'shop' && sponsorship.amount !== 0,
+    if (!userBalance) throw new AppError('User does not exist');
+
+    const sponsorBalancePlusBalanceAvailable = sponsorBalance.map(
+      sponsorBalanceItem => {
+        return {
+          ...sponsorBalanceItem,
+          balance_amount:
+            sponsorBalanceItem.balance_amount + userBalance.balance_amount,
+        };
+      },
     );
 
-    return shops;
+    return sponsorBalancePlusBalanceAvailable;
   }
 }

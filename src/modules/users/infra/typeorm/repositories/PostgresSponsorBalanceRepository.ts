@@ -1,6 +1,6 @@
 import IFindSponsorBalanceDTO from '@modules/users/dtos/IFindSponsorBalanceDTO';
 import ISponsorBalanceRepository from '@modules/users/repositories/ISponsorBalanceRepository';
-import { getRepository, Repository } from 'typeorm';
+import { getRepository, Not, Repository } from 'typeorm';
 import ICreateSponsorBalanceDTO from '../../../repositories/ICreateSponsorBalanceDTO';
 import UserBalance from '../entities/SponsorBalance';
 
@@ -11,6 +11,20 @@ export default class PostgresSponsorBalanceRepository
 
   constructor() {
     this.ormRepository = getRepository(UserBalance);
+  }
+
+  async findAllSponsorBalanceBySponsoredUserId(
+    sponsored_user_id: string,
+  ): Promise<UserBalance[]> {
+    const sponsorBalance = await this.ormRepository.find({
+      where: {
+        sponsored_user_id,
+        balance_amount: Not(0),
+      },
+      relations: ['sponsor'],
+    });
+
+    return sponsorBalance;
   }
 
   async findSponsorBalance({

@@ -8,4 +8,7 @@ export default interface ISponsorBalanceRepository {
   findSponsorBalance(
     findData: IFindSponsorBalanceDTO,
   ): Promise<SponsorBalance | undefined>;
+  findAllSponsorBalanceBySponsoredUserId(
+    sponsored_user_id: string,
+  ): Promise<SponsorBalance[]>;
 }

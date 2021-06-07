@@ -5,12 +5,14 @@ import ensurePayment from '../middlewares/ensurePayment';
 import SponsoredController from '../controllers/SponsoredController';
 import SponsorshipsController from '../controllers/SponsorshipsController';
 import SponsoredMeController from '../controllers/SponsoredMeController';
+import SponsorshipCodeController from '../controllers/SponsorshipCodeController';
 
 const sponsorshipsRouter = Router();
 
 const sponsorshipsController = new SponsorshipsController();
 const sponsoredController = new SponsoredController();
 const sponsoredMeController = new SponsoredMeController();
+const sponsorshipCodeController = new SponsorshipCodeController();
 
 sponsorshipsRouter.use(ensureAuthenticated);
 
@@ -23,11 +25,21 @@ sponsorshipsRouter.post(
     [Segments.BODY]: {
       user_recipient_id: Joi.string().uuid(),
       allow_withdrawal_balance: Joi.boolean(),
-      sponsorship_code: Joi.boolean(),
       amount: Joi.number().required(),
     },
   }),
   sponsorshipsController.create,
+);
+sponsorshipsRouter.post(
+  '/sponsorship-code',
+  ensurePayment,
+  celebrate({
+    [Segments.BODY]: {
+      allow_withdrawal_balance: Joi.boolean(),
+      amount: Joi.number().required(),
+    },
+  }),
+  sponsorshipCodeController.create,
 );
 
 export default sponsorshipsRouter;

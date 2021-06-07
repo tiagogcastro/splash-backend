@@ -14,6 +14,18 @@ export default class PostgresSponsorshipsRepository
     this.ormRepository = getRepository(Sponsorship);
   }
 
+  async findByUnreadSponsorshipCode(
+    sponsorship_code?: string,
+  ): Promise<Sponsorship | undefined> {
+    const sponsorship = await this.ormRepository.findOne({
+      where: {
+        sponsorship_code,
+      },
+    });
+
+    return sponsorship;
+  }
+
   async updateSponsorship(
     sponsor_user_id: string,
     sponsorshipsUpdateData: IUpdateSponsorshipDTO,

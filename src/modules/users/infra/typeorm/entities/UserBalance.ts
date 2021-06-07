@@ -27,6 +27,9 @@ class UserBalance {
   @Column()
   total_balance: number;
 
+  @Column()
+  balance_amount: number;
+
   @CreateDateColumn()
   created_at: Date;
 

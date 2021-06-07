@@ -16,9 +16,6 @@ class SponsorBalance {
   id: string;
 
   @Column()
-  available_for_withdrawal: number;
-
-  @Column()
   balance_amount: number;
 
   @Column()

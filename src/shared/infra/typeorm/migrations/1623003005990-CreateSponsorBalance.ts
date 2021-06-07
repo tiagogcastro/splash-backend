@@ -14,10 +14,6 @@ export default class CreateSponsorBalance1623003005990
             isPrimary: true,
           },
           {
-            name: 'available_for_withdrawal',
-            type: 'float',
-          },
-          {
             name: 'balance_amount',
             type: 'float',
           },

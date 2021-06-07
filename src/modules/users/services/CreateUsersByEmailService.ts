@@ -6,6 +6,7 @@ import AppError from '@shared/errors/AppError';
 import { hash } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import User from '../infra/typeorm/entities/User';
+import ISponsorBalanceRepository from '../repositories/ISponsorBalanceRepository';
 import ISponsoringRepository from '../repositories/ISponsoringRepository';
 import ISponsoringSponsoredCountRepository from '../repositories/ISponsoringSponsoredCountRepository';
 import IUserBalanceRepository from '../repositories/IUserBalanceRepository';
@@ -18,7 +19,7 @@ interface Request {
   password: string;
   sponsorship_code?: string;
   terms: boolean;
-  isShop: boolean
+  isShop: boolean;
 }
 
 interface Response {
@@ -30,7 +31,8 @@ export default class CreateUsersService {
   constructor(
     private usersRepository: IUsersRepository,
     private userBalanceRepository: IUserBalanceRepository,
-    private sponsorships: ISponsorshipsRepository,
+    private sponsorBalanceRepository: ISponsorBalanceRepository,
+    private sponsorshipsRepository: ISponsorshipsRepository,
     private sponsoring: ISponsoringRepository,
     private sponsoringSponsoredCount: ISponsoringSponsoredCountRepository,
   ) {}
@@ -42,12 +44,11 @@ export default class CreateUsersService {
     password,
     sponsorship_code,
     terms,
-    isShop
+    isShop,
   }: Request): Promise<Response> {
     const checkUserEmailExist = await this.usersRepository.findByEmail(email);
-    const sponsorshipExist = await this.sponsorships.findBySponsorshipCode(
-      sponsorship_code,
-    );
+    const sponsorshipExist =
+      await this.sponsorshipsRepository.findBySponsorshipCode(sponsorship_code);
     const checkUserUsernameExist = await this.usersRepository.findByUsername(
       username,
     );
@@ -60,7 +61,7 @@ export default class CreateUsersService {
       throw new AppError('Username address already used.', 400);
     }
 
-    if(!terms) {
+    if (!terms) {
       throw new AppError('Você não aceitou os termos.', 400);
     }
 
@@ -94,31 +95,45 @@ export default class CreateUsersService {
       password: hashedPassword,
     });
 
-    if(!isShop) {
-      if(!sponsorshipExist || sponsorshipExist.sponsorship_code !== sponsorship_code) {
+    if (!isShop) {
+      if (
+        !sponsorshipExist ||
+        sponsorshipExist.sponsorship_code !== sponsorship_code
+      ) {
         throw new AppError('Código de patrocínio inválido ou já usado.', 400);
       }
-  
+
       await this.usersRepository.update(user.id, {
-        roles: 'user'
+        roles: 'user',
       });
 
       // Deixa o patrocinio resgatado e indisponivel
-      await this.sponsorships.updateSponsorship(sponsorshipExist.sponsor_user_id, {
-        sponsored_user_id: user.id,
-        status: 'redeemed'
-      });
-
-      // remove do saldo da loja o valor informado no patrocinio
-      await this.userBalanceRepository.update(sponsorshipExist.sponsor_user_id, {
-        total_balance: - sponsorshipExist.amount,
-      });
+      await this.sponsorshipsRepository.updateSponsorship(
+        sponsorshipExist.sponsor_user_id,
+        {
+          sponsored_user_id: user.id,
+          status: 'redeemed',
+        },
+      );
 
       // Cria o saldo e adiciona la
-      await this.userBalanceRepository.create({
-        user_id: user.id,
-        total_balance: sponsorshipExist.amount,
-      });
+      if (sponsorshipExist.allow_withdrawal) {
+        await this.userBalanceRepository.create({
+          user_id: user.id,
+          total_balance: sponsorshipExist.amount,
+          balance_amount: sponsorshipExist.amount,
+        });
+      } else {
+        await this.userBalanceRepository.create({
+          user_id: user.id,
+          total_balance: sponsorshipExist.amount,
+        });
+        await this.sponsorBalanceRepository.create({
+          sponsor_shop_id: sponsorshipExist.sponsor_user_id,
+          sponsored_user_id: user.id,
+          balance_amount: sponsorshipExist.amount,
+        });
+      }
 
       // A loja passa a patrocinar o usuário
       // await this.sponsoring.create({
@@ -127,29 +142,33 @@ export default class CreateUsersService {
       // });
 
       // Loja fica com +1 patrocinado e o usuário fica com +1 patrocinando ele
-      await this.sponsoringSponsoredCount.updateCount(sponsorshipExist.sponsor_user_id, {
-        sponsoring_count: + 1,
-      });
+      await this.sponsoringSponsoredCount.updateCount(
+        sponsorshipExist.sponsor_user_id,
+        {
+          sponsoring_count: +1,
+        },
+      );
 
       await this.sponsoringSponsoredCount.updateCount(user.id, {
-        sponsored_count: + 1,
+        sponsored_count: +1,
       });
       // Deixa o patrocinio resgatado e indisponivel
 
-      await this.sponsorships.updateSponsorship(sponsorshipExist.sponsor_user_id, {
-        sponsored_user_id: user.id,
-        status: 'redeemed',
+      await this.sponsorshipsRepository.updateSponsorship(
+        sponsorshipExist.sponsor_user_id,
+        {
+          sponsored_user_id: user.id,
+          status: 'redeemed',
         },
       );
     } else {
-
       await this.userBalanceRepository.create({
         user_id: user.id,
         total_balance: 0,
       });
-      
+
       await this.usersRepository.update(user.id, {
-        roles: 'shop'
+        roles: 'shop',
       });
     }
 

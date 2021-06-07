@@ -3,7 +3,6 @@ import ISponsorBalanceRepository from '@modules/users/repositories/ISponsorBalan
 import IUserBalanceRepository from '@modules/users/repositories/IUserBalanceRepository';
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import AppError from '@shared/errors/AppError';
-import crypto from 'crypto';
 import ISendSponsorshipServiceDTO from '../dtos/ISendSponsorshipServiceDTO';
 import Sponsorship from '../infra/typeorm/entities/Sponsorship';
 import ISponsorshipsRepository from '../repositories/ISponsorshipsRepository';
@@ -21,25 +20,23 @@ export default class SendSponsorshipService {
     user_recipient_id,
     sponsor_user_id,
     amount,
-    sponsorship_code,
     allow_withdrawal_balance = false,
   }: ISendSponsorshipServiceDTO): Promise<Sponsorship> {
     let allow_withdrawal = true;
-    let code: string | undefined;
 
-    const sponsor = await this.usersRepository.findById(sponsor_user_id);
+    const sender = await this.usersRepository.findById(sponsor_user_id);
+    const recipient = await this.usersRepository.findById(user_recipient_id);
 
-    const sponsorUserBalance = await this.userBalanceRepository.findByUserId(
+    const userBalance = await this.userBalanceRepository.findByUserId(
       sponsor_user_id,
     );
-    const user = await this.usersRepository.findById(user_recipient_id);
 
-    const unavailableSponsorBalance =
+    const nonDrawableBalance =
       await this.sponsorBalanceRepository.findSponsorBalance({
         sponsored_user_id: sponsor_user_id,
         sponsor_shop_id: user_recipient_id,
       });
-    const isSponsorBalance =
+    const sponsorBalance =
       await this.sponsorBalanceRepository.findSponsorBalance({
         sponsored_user_id: user_recipient_id,
         sponsor_shop_id: sponsor_user_id,
@@ -51,9 +48,9 @@ export default class SendSponsorshipService {
     if (user_recipient_id === sponsor_user_id)
       throw new AppError('You cannot send to yourself');
 
-    if (!user) throw new AppError('The user does not exist', 401);
-    if (!sponsor) throw new AppError('The sponsor does not exist', 401);
-    if (!sponsorUserBalance)
+    if (!recipient) throw new AppError('The user does not exist', 401);
+    if (!sender) throw new AppError('The sponsor does not exist', 401);
+    if (!userBalance)
       throw new AppError('The sponsor balance does not exist', 401);
     if (!recipientUserBalance)
       throw new AppError('The recipient balance does not exist', 401);
@@ -64,66 +61,65 @@ export default class SendSponsorshipService {
         401,
       );
     }
-    const unavailableBalance =
-      unavailableSponsorBalance &&
-      unavailableSponsorBalance.balance_amount -
-        unavailableSponsorBalance.available_for_withdrawal;
 
-    if (
-      (unavailableBalance || 0) + sponsorUserBalance.balance_amount <
-      amount
-    ) {
+    const totalAmountForRecipient =
+      (nonDrawableBalance?.balance_amount || 0) + userBalance.balance_amount;
+
+    if (totalAmountForRecipient < amount) {
       throw new AppError(
         'You cannot send an available amount that you do not have',
         400,
       );
     }
-    if (!(sponsor.roles === 'shop') && allow_withdrawal_balance)
+
+    if (!(sender.roles === 'shop') && allow_withdrawal_balance)
       throw new AppError('You are not allowed to access here', 401);
 
-    if (sponsorUserBalance.total_balance < amount)
+    if (userBalance.total_balance < amount)
       throw new AppError('You cannot send an amount that you do not have', 400);
 
-    sponsorUserBalance.total_balance -= amount;
-
+    userBalance.total_balance -= amount;
     recipientUserBalance.total_balance += amount;
 
-    if (sponsor.roles === 'shop') {
-      if (!isSponsorBalance) {
+    if (nonDrawableBalance && nonDrawableBalance.balance_amount >= amount) {
+      nonDrawableBalance.balance_amount -= amount;
+
+      await this.sponsorBalanceRepository.save(nonDrawableBalance);
+    } else {
+      userBalance.balance_amount -= amount;
+    }
+
+    if (sender.roles === 'shop') {
+      if (!sponsorBalance) {
         await this.sponsorBalanceRepository.create({
           balance_amount: amount,
           sponsor_shop_id: sponsor_user_id,
           sponsored_user_id: user_recipient_id,
         });
       } else {
-        isSponsorBalance.balance_amount += amount;
+        if (allow_withdrawal_balance) {
+          recipientUserBalance.balance_amount += amount;
+        } else {
+          sponsorBalance.balance_amount += amount;
+        }
 
-        await this.sponsorBalanceRepository.save(isSponsorBalance);
-      }
-
-      if (sponsorship_code) {
-        code = crypto.randomBytes(3).toString('hex').toUpperCase();
-
-        const checkSponsorship =
-          await this.sponsorshipsRepository.findBySponsorshipCode(code);
-
-        if (checkSponsorship) throw new AppError('Try again');
+        await this.sponsorBalanceRepository.save(sponsorBalance);
       }
 
       allow_withdrawal = allow_withdrawal_balance;
     }
 
-    if (sponsor.roles === null) recipientUserBalance.balance_amount -= amount;
+    if (sender.roles === null || sender.roles === 'user')
+      recipientUserBalance.balance_amount += amount;
 
     const sponsorship = await this.sponsorshipsRepository.create({
       allow_withdrawal,
       amount,
       sponsor_user_id,
       sponsored_user_id: user_recipient_id,
-      sponsorship_code: code,
     });
 
-    await this.userBalanceRepository.save(sponsorUserBalance);
+    await this.userBalanceRepository.save(userBalance);
     await this.userBalanceRepository.save(recipientUserBalance);
 
     const [first, second] = String(amount).split('.');
@@ -132,19 +128,19 @@ export default class SendSponsorshipService {
     if (second) balanceAmount = `${first}.${second.padEnd(2, '0')}`;
 
     let messageFromSender = {
-      name: sponsor.username,
-      subject: `você enviou R$${balanceAmount} para ${user.username}`,
+      name: sender.username,
+      subject: `você enviou R$${balanceAmount} para ${recipient.username}`,
     };
-    if (user.roles === 'shop') {
+    if (recipient.roles === 'shop') {
       messageFromSender = {
-        name: sponsor.username,
-        subject: `você pagou R$${balanceAmount} para ${user.username}`,
+        name: sender.username,
+        subject: `você pagou R$${balanceAmount} para ${recipient.username}`,
       };
     }
 
     const messageFromRecipient = {
-      name: user.username,
-      subject: `você recebeu R$${balanceAmount} de ${sponsor.username}`,
+      name: recipient.username,
+      subject: `você recebeu R$${balanceAmount} de ${sender.username}`,
     };
 
     /**
