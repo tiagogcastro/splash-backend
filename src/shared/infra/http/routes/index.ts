@@ -1,12 +1,20 @@
-import express, { Router } from 'express';
-
-import sponsoringRoutes from './sponsoring.routes';
-import usersRoutes from './users.routes';
+import notificationsRouter from '@modules/notifications/infra/http/routes/notifications.routes';
+import sponsorshipsRouter from '@modules/sponsorships/infra/http/routes/sponsorships.routes';
+import profileRuter from '@modules/users/infra/http/routes/profile.routes';
+import sessionsRoutes from '@modules/users/infra/http/routes/sessions.routes';
+import sponsorsRouter from '@modules/users/infra/http/routes/sponsors.routes';
+import usersRouter from '@modules/users/infra/http/routes/users.routes';
+import whatssapRoutes from '@modules/users/infra/http/routes/whatssap.routes';
+import { Router } from 'express';
 
 const router = Router();
 
-router.use(express.json());
-router.use('/users', usersRoutes);
-router.use('/sponsor', sponsoringRoutes);
+router.use('/users', usersRouter);
+router.use('/sessions', sessionsRoutes);
+router.use('/profile', profileRuter);
+router.use('/whats', whatssapRoutes);
+router.use('/sponsors', sponsorsRouter);
+router.use('/sponsorships', sponsorshipsRouter);
+router.use('/notifications', notificationsRouter);
 
 export default router;
