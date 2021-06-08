@@ -29,6 +29,9 @@ class User {
     unique: true,
   })
   username: string;
+  
+  @Column()
+  bio: string;
 
   @Exclude()
   @Column({
