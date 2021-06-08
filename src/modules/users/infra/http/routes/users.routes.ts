@@ -44,6 +44,4 @@ usersRoutes.post(
   userPhoneController.create,
 );
 
-usersRoutes.put('/add-email', ensureAuthenticated, usersEmailController.update);
-
 export default usersRoutes;
