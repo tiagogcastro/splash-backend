@@ -18,8 +18,10 @@
     "name": "mongo",
     "type": "mongodb",
     "host": "localhost",
-    "port": 27017,
-    "database": "lavimco_mongodb",
+    "port": 47017,
+    "username": "mongodb",
+    "password": "50bf00980ec0ac7f98e94b55d170d248",
+    "database": "lavimco",
     "useUnifiedTopology": true,
     "entities": [
       "./build/modules/**/infra/typeorm/schemas/*.js"
