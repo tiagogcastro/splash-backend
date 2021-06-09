@@ -1,5 +1,4 @@
 /* eslint-disable no-param-reassign */
-// eslint-disable-next-line import/no-unresolved
 import jwtConfig from '@config/auth';
 import ISponsorshipsRepository from '@modules/sponsorships/repositories/ISponsorshipsRepository';
 import AppError from '@shared/errors/AppError';
@@ -48,24 +47,31 @@ export default class CreateUsersService {
     sponsorship_code,
     terms,
   }: Request): Promise<Response> {
-    const checkUserEmailExist = await this.usersRepository.findByEmail(email);
-    const sponsorshipExist =
-      await this.sponsorshipsRepository.findBySponsorshipCode(sponsorship_code);
+    const checkEmailAlreadyExist = await this.usersRepository.findByEmail(
+      email,
+    );
+    const sponsorship =
+      await this.sponsorshipsRepository.findByUnreadSponsorshipCode(
+        sponsorship_code,
+      );
 
     const checkUserUsernameExist = await this.usersRepository.findByUsername(
       username,
     );
 
-    if (checkUserEmailExist) {
-      throw new AppError('E-mail address already used.');
+    if (checkEmailAlreadyExist) {
+      throw new AppError('This e-mail address already exists.');
     }
 
     if (checkUserUsernameExist) {
-      throw new AppError('Username address already used.', 400);
+      throw new AppError('This username already exists.', 400);
     }
 
     if (!terms && !roles) {
-      throw new AppError('Você não aceitou os termos.', 400);
+      throw new AppError(
+        'You cannot to create a account without accepting the terms',
+        400,
+      );
     }
 
     if (!username) {
@@ -80,65 +86,65 @@ export default class CreateUsersService {
     if (!name) {
       name = `name.${Math.random().toFixed(4).replace('.', '')}`;
     }
-
-    if (name.length > 30) {
-      throw new AppError('O nome só pode ter no máximo 30 caracteres', 400);
-    }
-
     const hashedPassword = await hash(password, 8);
 
-    const user = await this.usersRepository.create({
-      name,
-      username,
-      email,
-      password: hashedPassword,
-    });
+    let user: User;
 
     if (!roles) {
+      if (!sponsorship)
+        throw new AppError('This sponsorship code does not exist', 400);
+
       if (
-        !sponsorshipExist ||
-        sponsorshipExist.sponsorship_code !== sponsorship_code
+        sponsorship.status === 'redeemed' ||
+        sponsorship.status === 'expired'
       ) {
-        throw new AppError('Código de patrocínio inválido ou já usado.', 400);
+        throw new AppError(
+          'This sponsorship code does not available or has already expired',
+          400,
+        );
       }
 
+      user = await this.usersRepository.create({
+        name,
+        username,
+        email,
+        password: hashedPassword,
+      });
+
       // Deixa o patrocinio resgatado e indisponivel
-      await this.sponsorshipsRepository.updateSponsorship(
-        sponsorshipExist.sponsor_user_id,
-        {
-          sponsored_user_id: user.id,
-          status: 'redeemed',
-        },
-      );
+      sponsorship.sponsored_user_id = user.id;
+      sponsorship.status = 'redeemed';
+
+      await this.sponsorshipsRepository.save(sponsorship);
 
       // Cria o saldo e adiciona la
-      if (sponsorshipExist.allow_withdrawal) {
+      if (sponsorship.allow_withdrawal) {
         await this.userBalanceRepository.create({
           user_id: user.id,
-          total_balance: sponsorshipExist.amount,
-          balance_amount: sponsorshipExist.amount,
+          total_balance: sponsorship.amount,
+          balance_amount: sponsorship.amount,
         });
       } else {
         await this.userBalanceRepository.create({
           user_id: user.id,
-          total_balance: sponsorshipExist.amount,
+          total_balance: sponsorship.amount,
         });
         await this.sponsorBalanceRepository.create({
-          sponsor_shop_id: sponsorshipExist.sponsor_user_id,
+          sponsor_shop_id: sponsorship.sponsor_user_id,
           sponsored_user_id: user.id,
-          balance_amount: sponsorshipExist.amount,
+          balance_amount: sponsorship.amount,
         });
       }
 
       // A loja passa a patrocinar o usuário
       // await this.sponsoring.create({
-      //   sponsor_user_id: sponsorshipExist.sponsor_user_id,
+      //   sponsor_user_id: sponsorship.sponsor_user_id,
       //   sponsored_user_id: user.id,
       // });
 
       // Loja fica com +1 patrocinado e o usuário fica com +1 patrocinando ele
       await this.sponsoringSponsoredCount.updateCount(
-        sponsorshipExist.sponsor_user_id,
+        sponsorship.sponsor_user_id,
         {
           sponsoring_count: +1,
         },
@@ -150,13 +156,20 @@ export default class CreateUsersService {
       // Deixa o patrocinio resgatado e indisponivel
 
       await this.sponsorshipsRepository.updateSponsorship(
-        sponsorshipExist.sponsor_user_id,
+        sponsorship.sponsor_user_id,
         {
           sponsored_user_id: user.id,
           status: 'redeemed',
         },
       );
     } else {
+      user = await this.usersRepository.create({
+        name,
+        username,
+        email,
+        password: hashedPassword,
+      });
+
       await this.userBalanceRepository.create({
         user_id: user.id,
         balance_amount,
