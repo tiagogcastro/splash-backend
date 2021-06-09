@@ -13,10 +13,10 @@ export default async function ensurePayment(
   next: NextFunction,
 ): Promise<void> {
   try {
-    // await limiter.consume(request.ip);
+    await limiter.consume(request.ip);
 
     return next();
   } catch {
-    throw new AppError('You can send a sponsorship after 3 minutes', 429);
+    throw new AppError('You can send a sponsorship after 5 seconds', 429);
   }
 }

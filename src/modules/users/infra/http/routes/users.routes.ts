@@ -1,4 +1,3 @@
-import ensureAdministrator from '@shared/infra/http/middlewares/ensureAdministrator';
 import { celebrate, Joi, Segments } from 'celebrate';
 import { Router } from 'express';
 import QRCodeController from '../controllers/QRCodeController';
@@ -32,24 +31,7 @@ usersRoutes.post(
   }),
   usersEmailController.create,
 );
-usersRoutes.post(
-  '/dashboard',
-  celebrate({
-    [Segments.BODY]: {
-      name: Joi.string().min(2).max(30).required(),
-      email: Joi.string().email().min(4).max(100).required(),
-      password: Joi.when('email', {
-        is: Joi.exist(),
-        then: Joi.string().min(8).max(100).required(),
-      }),
-      // balance_amount: Joi.number().required(),
-      roles: Joi.string().min(2).max(10).required(),
-    },
-  }),
-  ensureAuthenticated,
-  ensureAdministrator,
-  usersEmailController.create,
-);
+
 usersRoutes.get('/balance-amount', ensureAuthenticated, usersController.show);
 
 usersRoutes.post('/sms/send-code', userPhoneController.sendCode);
