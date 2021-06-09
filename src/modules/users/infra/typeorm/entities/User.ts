@@ -9,12 +9,6 @@ import {
 } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
-enum Permissions {
-  user = 'user',
-  shop = 'shop',
-  admin = 'admin',
-}
-
 @Entity('users')
 class User {
   @PrimaryGeneratedColumn('uuid')
@@ -29,7 +23,7 @@ class User {
     unique: true,
   })
   username: string;
-  
+
   @Column()
   bio: string;
 
@@ -59,7 +53,7 @@ class User {
   @Column({
     nullable: true,
   })
-  roles: 'user' | 'shop' | 'admin';
+  roles: string;
 
   @Column({
     default: true,

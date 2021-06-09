@@ -8,10 +8,10 @@
     "password": "lavimco",
     "database": "lavimco_postgres",
 
-    "migrations": ["./src/shared/infra/typeorm/migrations/*.ts"],
-    "entities": ["./src/modules/**/infra/typeorm/entities/**.ts"],
+    "migrations": ["./{src,build}/shared/infra/typeorm/migrations/*{.ts,.js}"],
+    "entities": ["./{src,build}/modules/**/infra/typeorm/entities/*{.ts,.js}"],
     "cli": {
-      "migrationsDir": "./src/shared/infra/typeorm/migrations"
+      "migrationsDir": "./{src,build}/shared/infra/typeorm/migrations"
     }
   },
   {
@@ -22,7 +22,7 @@
     "database": "lavimco_mongodb",
     "useUnifiedTopology": true,
     "entities": [
-      "./src/modules/**/infra/typeorm/schemas/*.ts"
+      "./{src,build}/modules/**/infra/typeorm/schemas/*{.ts,.js}"
     ]
   }
 ]

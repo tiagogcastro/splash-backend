@@ -4,7 +4,7 @@ import IQRCodeProvider from './models/IQRCodeProvider';
 export default class QRImageProvider implements IQRCodeProvider {
   async generate(payload: string): Promise<NodeJS.ReadableStream> {
     const code = QRImage.image(payload, {
-      type: 'svg',
+      type: 'png',
     });
     return code;
   }

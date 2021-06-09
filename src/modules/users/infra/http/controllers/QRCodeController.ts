@@ -21,7 +21,7 @@ class QRCodeController {
 
     code.pipe(response);
 
-    return response.type('svg');
+    return response.type('png');
   }
 }
 

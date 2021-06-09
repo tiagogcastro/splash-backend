@@ -16,6 +16,7 @@ interface Request {
   roles?: string;
   name?: string;
   email: string;
+  balance_amount?: number;
   username?: string;
   password: string;
   sponsorship_code?: string;
@@ -42,6 +43,7 @@ export default class CreateUsersService {
     name,
     username,
     email,
+    balance_amount = 0,
     password,
     sponsorship_code,
     terms,
@@ -100,10 +102,6 @@ export default class CreateUsersService {
         throw new AppError('Código de patrocínio inválido ou já usado.', 400);
       }
 
-      // await this.usersRepository.update(user.id, {
-      //   roles: 'user',
-      // });
-
       // Deixa o patrocinio resgatado e indisponivel
       await this.sponsorshipsRepository.updateSponsorship(
         sponsorshipExist.sponsor_user_id,
@@ -161,7 +159,8 @@ export default class CreateUsersService {
     } else {
       await this.userBalanceRepository.create({
         user_id: user.id,
-        total_balance: 0,
+        balance_amount,
+        total_balance: balance_amount,
       });
 
       await this.usersRepository.update(user.id, {
