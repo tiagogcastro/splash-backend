@@ -25,38 +25,38 @@ export default class PostgresSponsoringRepository
   }
 
   async findBySponsoringAndSponsored(
-    sponsoring_userId: string,
-    sponsored_userId: string,
+    sponsor_user_id: string,
+    sponsored_user_id: string,
   ): Promise<Sponsoring | undefined> {
     const userSponsoring = await this.ormRepository.findOne({
       where: {
-        sponsoring_userId,
-        sponsored_userId,
+        sponsor_user_id,
+        sponsored_user_id,
       },
     });
     return userSponsoring;
   }
 
   async findAllBySponsoringUserId(
-    sponsoring_userId: string,
+    sponsoring_user_id: string,
   ): Promise<Sponsoring[]> {
     const usersSponsoring = await this.ormRepository.find({
       where: {
-        sponsoring_userId,
+        sponsoring_user_id,
       },
-      relations: ['user_id_sponsored'],
+      relations: ['sponsored_userId'],
     });
     return usersSponsoring;
   }
 
   async findAllBySponsoredUserId(
-    sponsored_userId: string,
+    sponsored_user_id: string,
   ): Promise<Sponsoring[]> {
     const usersSponsored = await this.ormRepository.find({
       where: {
-        sponsored_userId,
+        sponsored_user_id,
       },
-      relations: ['user_id_sponsoring'],
+      relations: ['sponsor_userId'],
     });
     return usersSponsored;
   }

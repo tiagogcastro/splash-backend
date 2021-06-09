@@ -13,14 +13,18 @@ export default class PostgresUserBalanceRepository
     this.ormRepository = getRepository(UserBalance);
   }
 
-  async update(user_id: string, data: IUpdateUserBalanceDTO): Promise<UserBalance | undefined> {
+  async update(
+    user_id: string,
+    data: IUpdateUserBalanceDTO,
+  ): Promise<UserBalance | undefined> {
     const userBalance = await this.ormRepository.update(user_id, data);
 
-    if(userBalance.affected === 1) {
+    if (userBalance.affected === 1) {
       const userBalanceUpdated = await this.ormRepository.findOne(user_id);
 
       return userBalanceUpdated;
     }
+    return undefined;
   }
 
   async findByUserId(user_id: string): Promise<UserBalance | undefined> {

@@ -2,5 +2,8 @@ import IUpdateSponsoringSponsoredCountDTO from '../dtos/IUpdateSponsoringSponsor
 import SponsoringSponsoredCount from '../infra/typeorm/entities/SponsoringSponsoredCount';
 
 export default interface ISponsoringSponsoredCountRepository {
-  updateCount(user_id: string, data: IUpdateSponsoringSponsoredCountDTO): Promise<SponsoringSponsoredCount | undefined>;
+  updateCount(
+    user_id: string,
+    data: IUpdateSponsoringSponsoredCountDTO,
+  ): Promise<SponsoringSponsoredCount | undefined>;
 }

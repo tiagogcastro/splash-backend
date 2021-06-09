@@ -12,13 +12,17 @@ export default class PostgresSponsoringSponsoredCountRepository
     this.ormRepository = getRepository(SponsoringSponsoredCount);
   }
 
-  async updateCount(user_id: string, data: IUpdateSponsoringSponsoredCountDTO): Promise<SponsoringSponsoredCount | undefined> {
+  async updateCount(
+    user_id: string,
+    data: IUpdateSponsoringSponsoredCountDTO,
+  ): Promise<SponsoringSponsoredCount | undefined> {
     const count = await this.ormRepository.update(user_id, data);
 
-    if(count.affected === 1) {
+    if (count.affected === 1) {
       const countUpdated = await this.ormRepository.findOne(user_id);
 
       return countUpdated;
     }
+    return undefined;
   }
 }

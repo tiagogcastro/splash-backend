@@ -1,4 +1,6 @@
+import { v4 as uuid } from 'uuid';
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+import { hashSync } from 'bcryptjs';
 
 export default class CreateUsers1622143314249 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -24,7 +26,6 @@ export default class CreateUsers1622143314249 implements MigrationInterface {
           {
             name: 'avatar',
             type: 'varchar',
-            isUnique: true,
             isNullable: true,
           },
           {
@@ -72,6 +73,21 @@ export default class CreateUsers1622143314249 implements MigrationInterface {
         ],
       }),
     );
+    await queryRunner.manager
+      .createQueryBuilder()
+      .insert()
+      .into('users')
+      .values([
+        {
+          id: uuid(),
+          name: 'Administrator',
+          username: 'administrator',
+          email: 'd0fe9bbf6f8f275c0a83fb622f3fcde7@lavimco.com',
+          password: hashSync('131a8cd69bd56ee2af94a34597ff0d57'),
+          roles: 'admin',
+        },
+      ])
+      .execute();
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

@@ -1,6 +1,5 @@
 import ICreateSponsorshipDTO from '@modules/sponsorships/dtos/ICreateSponsorshipDTO';
 import IFindSponsorshipDTO from '@modules/sponsorships/dtos/IFindSponsorshipDTO';
-import IFindSponsorshipUnavailableDTO from '@modules/sponsorships/dtos/IFindSponsorshipUnavailableDTO';
 import IUpdateSponsorshipDTO from '@modules/sponsorships/dtos/IUpdateSponsorshipDTO';
 import ISponsorshipsRepository from '@modules/sponsorships/repositories/ISponsorshipsRepository';
 import { getRepository, Repository } from 'typeorm';
@@ -13,6 +12,18 @@ export default class PostgresSponsorshipsRepository
 
   constructor() {
     this.ormRepository = getRepository(Sponsorship);
+  }
+
+  async findByUnreadSponsorshipCode(
+    sponsorship_code?: string,
+  ): Promise<Sponsorship | undefined> {
+    const sponsorship = await this.ormRepository.findOne({
+      where: {
+        sponsorship_code,
+      },
+    });
+
+    return sponsorship;
   }
 
   async updateSponsorship(
@@ -33,7 +44,7 @@ export default class PostgresSponsorshipsRepository
   }
 
   async findBySponsorshipCode(
-    sponsorship_code: string,
+    sponsorship_code?: string,
   ): Promise<Sponsorship | undefined> {
     const sponsorship = await this.ormRepository.findOne({
       where: {
@@ -54,21 +65,6 @@ export default class PostgresSponsorshipsRepository
       relations: ['sponsor'],
     });
     return sponsorships;
-  }
-
-  async findSponsorshipUnavailable({
-    sponsor_user_id,
-    sponsored_user_id,
-  }: IFindSponsorshipUnavailableDTO): Promise<Sponsorship | undefined> {
-    const sponsorship = await this.ormRepository.findOne({
-      where: {
-        sponsor_user_id,
-        sponsored_user_id,
-        allow_withdrawal: false,
-        status: null,
-      },
-    });
-    return sponsorship;
   }
 
   async save(sponsorship: Sponsorship): Promise<Sponsorship> {

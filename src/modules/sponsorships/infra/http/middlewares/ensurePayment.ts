@@ -3,8 +3,8 @@ import { NextFunction, Request, Response } from 'express';
 import AppError from '@shared/errors/AppError';
 
 const limiter = new RateLimiterMemory({
-  points: 5,
-  duration: 180,
+  points: 1,
+  duration: 5,
 });
 
 export default async function ensurePayment(
@@ -17,6 +17,6 @@ export default async function ensurePayment(
 
     return next();
   } catch {
-    throw new AppError('You can send a sponsorship after 3 minutes', 429);
+    throw new AppError('You can send a sponsorship after 5 seconds', 429);
   }
 }

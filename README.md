@@ -8,7 +8,7 @@
   [![](https://img.shields.io/badge/-Tecnologias-5276f2)](#techs)
   [![](https://img.shields.io/badge/-Começando-5276f2)](#rodar-projeto)
   [![](https://img.shields.io/badge/-Contribuir-5276f2)](#contribuir)
-  <!-- [![](https://img.shields.io/badge/-Social-5276f2)](#rede-social) -->
+  [![](https://img.shields.io/badge/-Rotas-5276f2)](#rotas)
   [![](https://img.shields.io/badge/-Licença-5276f2)](#license)
 
 </div>
@@ -113,14 +113,49 @@ ___
 
   <h1>Users</h1>
 
-  post - '/users'
+  post - '/users' -
     
   - Cria um usuário pelo e-mail informando:
-    - name?: string
-    - username?: string
+    - name?: string (max 30 caracter)
+    - username?: string (max 30 caracter)
     - email: string
     - password: string
+    - isShop: boolean (botão switch)
+    - sponsorship_code?: string 
+    - terms: boolean
+
+  Obs: O isShop é para verificar se é uma loja(true) ou um usuário qualquer(false). <br/>
+  Obs²: O sponsorship_code é o código de patrocínio, e se for isShop: true, o código de patrocínio não é obrigatório, pois a conta a ser criada é uma loja.
+
+  <h1> </h1>
+
+  get - '/users/balance-amount'
+
+  - Mostra o saldo do usuário logado.
+    - user_id: string;  
   
+  Obs: Id do usuário logado.
+  
+  <h1> </h1>
+
+  post - '/users/sms/send-code'
+
+  - Informa o número de celular para receber um código sms para usar na proxíma tela
+    - phone_number: string
+
+  <h1> </h1>
+
+  post '/users/sms'
+
+  - Informa o código recebido após informar o número de celular
+    - code: String;
+
+  <h1> </h1>
+
+  post - '/users/qrcode'
+
+  - ❎ Falta informar
+
   ___
 
   <h1>Profile</h1>
@@ -134,18 +169,136 @@ ___
   put - '/profile/'
 
   - Atualiza o perfil do usuário logado informando:
+    - user_id: string
     - username: string
-    - email? string
+    - email?: string
+    - old_password?: string
     - password?: string 
     - password_confirmation?: string
     - name? string <br/>
-      Obs: Se informar o password, é necessário a password_confirmation ser igual.
+
+  Obs: user_id é o id do usuário logado.
+  Obs²: Se informar o old_password, é necessário informar os 2 outros campos abaixo.
+  Obs³: Se informar o password, é necessário a password_confirmation ser igual.
+
+  <h1> </h1>
+
+  put - '/users/add-email'
+
+  - Adiciona e-mail e senha caso não exista nenhum e-mail ou senha na conta do usuário logado.
+    - email: string
+    - password: string
+    - password_confirmation: string
+
+  Obs: Se informar o password, é necessário a password_confirmation ser igual.
+
+  <h1> </h1>
+
+  patch - '/profile/avatar'
+
+  - user_id: string
+  - avatarFileName: string
+
+  Obs: user_id é o id do usuário logado.
+  Obs²: O avatar é request.file
 
   <h1> </h1>
 
   delete - '/profile/'
   
   - Deleta o perfil do usuário logado.
+    - user_id: string
+
+  Obs: user_id é o id do usuário logado.
+
+  ___
+
+  <h1>Session</h1>
+  
+  post - '/sessions/'
+    
+  - Loga o usuário informando:
+    - email: string
+    - password: string
+
+  Obs: Retorna o usuário e o token jwt após logar.
+
+  <h1> </h1>
+
+  post - '/sessions/sms'
+
+  - Informa o código recebido após informar o número de celular
+    - code: String;
+
+  ___
+ 
+  <h1>sponsorships</h1>
+  
+  get - '/sponsored/me'
+
+  - Pesquisa um usuário que eu patrocino
+    - username: string
+    - sponsor_id: string
+
+  Obs: ❎ Não está finalizada. Não precisa fazer.
+
+  <h1> </h1>
+
+  get - '/sponsored'
+    
+  - Lista o saldo total de cada loja que me enviou patrocinio.
+    - user_id: string
+
+  Exemplo: Loja A me enviou 50,00 2x, então deve listar está loja com o valor de 100,00(saldo total da loja).
+
+  <h1> </h1>
+
+  get - '/sponsorship-code'
+
+  - Somente cria um código de patrocínio </br>
+  - Precisa criar o código de patrocínio primeiro para depois usar a rota de qrcode
+    - sponsor_user_id: string
+    - user_recipient_id?: string
+    - allow_withdrawal_balance: boolean
+    - amount: number
+
+
+  Obs: O sponsor_user_id é o usuário logado. <br/>
+  Obs²: O allow_withdrawal_balance é para se vai permitir usar este saldo livremente ou não.
+
+  ___
+
+  <h1>notifications</h1>
+  
+  get - '/notifications/sponsorships-history/:sender_id'
+    
+  - Lista o histórico de notificações entre 2 usuários(quando clica no usuário la no feed)
+    - user_id: string
+    - sender_id: string
+
+  Obs: O sponsor_user_id é o usuário logado. <br/>
+  Obs²: sender_id é o usuário que eu quero ver o histórico entre nós 2. 
+
+  <h1> </h1>
+
+  get - '/notifications/sponsorships'
+
+  - Lista todos as notificações no feed, porém só mostra a última notificação enviada de algum outro usuário(como se fosse o whatsapp).
+  
+  <h1> </h1>
+
+  get - '/notifications/send-notifications-for-ios'
+
+  - ❎ Falta informar.
+
+  ___
+
+ <h1>whats</h1>
+  
+  post - '/whats/'
+    
+  - ❎ Falta informar.
+
 </div>
 
 </br>
@@ -185,10 +338,6 @@ ___
   [![](https://img.shields.io/badge/-Discord-5276f2)](https://discord.com/users/586186122611130368)
 
 </div>
-
-</br>
-
-___
 
 <div align="left">
   <h1 id="license">✔ Licença</h1>

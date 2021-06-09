@@ -3,32 +3,34 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  OneToOne,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import User from './User';
 
-@Entity('user_balance')
-class UserBalance {
+@Entity('sponsor_balance')
+class SponsorBalance {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({
-    unique: true,
-  })
-  user_id: string;
-
-  @OneToOne(() => User)
-  @JoinColumn({ name: 'user_id' })
-  user: User;
-
-  @Column()
-  total_balance: number;
-
   @Column()
   balance_amount: number;
+
+  @Column()
+  sponsored_user_id: string;
+
+  @Column()
+  sponsor_shop_id: string;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'sponsored_user_id' })
+  sponsored: User;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'sponsor_shop_id' })
+  sponsor: User;
 
   @CreateDateColumn()
   created_at: Date;
@@ -43,4 +45,4 @@ class UserBalance {
   }
 }
 
-export default UserBalance;
+export default SponsorBalance;

@@ -6,9 +6,12 @@ import ProfileUserController from '../controllers/ProfileUserController';
 import UserAvatarController from '../controllers/UserAvatarController';
 import ensureAuthenticated from '../middleware/ensureAuthenticated';
 
+import UsersEmailController from '../controllers/UsersEmailController';
+
 const upload = multer(uploadConfig.multer);
 const profileRoutes = Router();
 
+const usersEmailController = new UsersEmailController();
 const profileUserController = new ProfileUserController();
 const userAvatarController = new UserAvatarController();
 
@@ -18,11 +21,11 @@ profileRoutes.put(
   '/',
   celebrate({
     [Segments.BODY]: {
-      name: Joi.string().min(2).max(30),
-      email: Joi.string().email().min(4).max(100),
-      username: Joi.string().min(2).max(30),
-      // bio: Joi.string().min(2).max(80),
-      // old_password: Joi.string(),
+      name: Joi.string().min(1).max(30),
+      email: Joi.string().email().max(100),
+      username: Joi.string().min(1).max(30),
+      bio: Joi.string().min(2).max(80),
+      old_password: Joi.string(),
       password: Joi.when('email', {
         is: Joi.exist(),
         then: Joi.string().required(),
@@ -43,5 +46,11 @@ profileRoutes.patch(
 );
 
 profileRoutes.delete('/', profileUserController.delete);
+
+profileRoutes.put(
+  '/add-email',
+  ensureAuthenticated,
+  usersEmailController.update,
+);
 
 export default profileRoutes;

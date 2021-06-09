@@ -1,5 +1,4 @@
 import {
-  ObjectID,
   Entity,
   CreateDateColumn,
   UpdateDateColumn,
@@ -11,7 +10,7 @@ import {
 import { v4 as uuid } from 'uuid';
 import User from './User';
 
-@Entity('sponsorsing_sponsored')
+@Entity('user_sponsorsing_sponsored')
 class SponsoringSponsoredCount {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -22,8 +21,10 @@ class SponsoringSponsoredCount {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  sponsor_count: number;
+  @Column()
+  sponsoring_count: number;
 
+  @Column()
   sponsored_count: number;
 
   @CreateDateColumn()

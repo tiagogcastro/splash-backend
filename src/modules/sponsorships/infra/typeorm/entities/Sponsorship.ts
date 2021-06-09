@@ -1,4 +1,3 @@
-import User from '@modules/users/infra/typeorm/entities/User';
 import {
   Column,
   CreateDateColumn,
@@ -9,6 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { v4 as uuid } from 'uuid';
+import User from '../../../../users/infra/typeorm/entities/User';
 
 @Entity('sponsorships')
 export default class Sponsorship {
