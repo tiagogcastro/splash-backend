@@ -21,6 +21,10 @@ export default class AuthenticateUserByPhoneNumberSession {
   public async create({ phone_number, password }: Request): Promise<Response> {
     const { expiresIn, secret } = authConfig.jwt;
 
+    if (!phone_number) {
+      throw new AppError('User number is missing');
+    }
+
     const usersRepository = getRepository(User);
 
     const user = await usersRepository.findOne({
