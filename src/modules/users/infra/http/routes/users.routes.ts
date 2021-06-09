@@ -19,15 +19,15 @@ usersRoutes.post(
   '/',
   celebrate({
     [Segments.BODY]: {
-      name: Joi.string().min(2).max(30),
-      email: Joi.string().email().min(4).max(100),
+      name: Joi.string().min(1).max(30),
+      email: Joi.string().email().max(100),
       password: Joi.when('email', {
         is: Joi.exist(),
         then: Joi.string().min(8).max(100).required(),
       }),
+      username: Joi.string().min(1).max(30),
       terms: Joi.boolean(),
       sponsorship_code: Joi.string(),
-      username: Joi.string().min(2).max(24),
     },
   }),
   usersEmailController.create,

@@ -24,6 +24,7 @@ class ProfileUserController {
       username,
       password,
       old_password,
+      bio,
       password_confirmation,
       email,
       name,
@@ -38,6 +39,7 @@ class ProfileUserController {
       old_password,
       password_confirmation,
       email,
+      bio,
       name,
     });
 

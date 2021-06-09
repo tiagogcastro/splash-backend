@@ -64,26 +64,26 @@ class UpdateProfileUserService {
       if (!checkOldPassword) {
         throw new AppError('Old password not matched', 401);
       }
-    }
 
-    if (password && password.length < 6) {
-      throw new AppError('A senha precisa ter no mínimo 6 digitos', 401);
-    }
+      if (password && password.length < 6) {
+        throw new AppError('A senha precisa ter no mínimo 6 digitos', 401);
+      }
 
-    const hashedPassword = await hash(String(password), 8);
+      const hashedPassword = await hash(String(password), 8);
 
-    const user = await this.usersRepository.update(userLogged.id, {
-      email,
-      name,
-      password: hashedPassword,
-      username,
-      bio,
-    });
+      const user = await this.usersRepository.update(userLogged.id, {
+        email,
+        name,
+        password: hashedPassword,
+        username,
+        bio,
+      });
 
-    if (user.affected === 1) {
-      const userUpdated = await this.usersRepository.findById(user_id);
+      if (user.affected === 1) {
+        const userUpdated = await this.usersRepository.findById(user_id);
 
-      return userUpdated;
+        return userUpdated;
+      }
     }
   }
 }
