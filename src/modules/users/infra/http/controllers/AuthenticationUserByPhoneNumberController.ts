@@ -9,13 +9,7 @@ const clientSendMessage = client(accountSid, authToken);
 
 export default class AuthenticationByPhoneNumberController {
   public async create(request: Request, response: Response): Promise<Response> {
-    const { password } = request.body;
-
-    const { phone_number } = request.user;
-
-    if (!phone_number) {
-      return response.status(400).json({ error: 'User number is missing' });
-    }
+    const { password, phone_number } = request.body;
 
     const authenticationByPhoneNumber =
       new AuthenticateUserByPhoneNumberSession();
