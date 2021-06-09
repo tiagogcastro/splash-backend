@@ -11,7 +11,7 @@ import PostgresSponsorBalanceRepository from '../../typeorm/repositories/Postgre
 
 class UsersEmailController {
   async create(request: Request, response: Response): Promise<Response> {
-    const { name, username, email, password, sponsorship_code, terms, isShop } =
+    const { name, email, password, username, roles, sponsorship_code, terms } =
       await request.body;
 
     const postgresUsersRepository = new PostgresUsersRepository();
@@ -35,10 +35,10 @@ class UsersEmailController {
       name,
       username,
       email,
+      roles,
       password,
       sponsorship_code,
       terms,
-      isShop,
     });
 
     return response.json({

@@ -23,10 +23,10 @@ profileRoutes.put(
     [Segments.BODY]: {
       name: Joi.string().min(2).max(30),
       email: Joi.string().email().min(4).max(100),
-      username: Joi.string().min(2).max(30),
+      username: Joi.string().min(1).max(24),
       // bio: Joi.string().min(2).max(80),
-      old_password: Joi.string(),
-      password: Joi.when('email', {
+      old_password: Joi.string().required(),
+      password: Joi.when('old_password', {
         is: Joi.exist(),
         then: Joi.string().required(),
       }),
@@ -47,6 +47,10 @@ profileRoutes.patch(
 
 profileRoutes.delete('/', profileUserController.delete);
 
-profileRoutes.put('/add-email', ensureAuthenticated, usersEmailController.update);
+profileRoutes.put(
+  '/add-email',
+  ensureAuthenticated,
+  usersEmailController.update,
+);
 
 export default profileRoutes;

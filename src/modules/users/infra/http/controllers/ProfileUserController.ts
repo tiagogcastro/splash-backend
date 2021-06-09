@@ -19,8 +19,15 @@ class ProfileUserController {
   }
 
   async update(request: Request, response: Response): Promise<Response> {
-    const { user_id, username, password, password_confirmation, email, name } =
-      request.body;
+    const {
+      user_id,
+      username,
+      password,
+      old_password,
+      password_confirmation,
+      email,
+      name,
+    } = request.body;
     const usersRepository = new PostgresUsersRepository();
     const updateProfile = new UpdateProfileUserService(usersRepository);
 
@@ -28,6 +35,7 @@ class ProfileUserController {
       user_id,
       username,
       password,
+      old_password,
       password_confirmation,
       email,
       name,

@@ -9,7 +9,7 @@ interface Request {
   email?: string;
   name?: string;
   bio?: string;
-  old_password?:string;
+  old_password?: string;
   password?: string;
   password_confirmation?: string;
   username: string;
@@ -26,7 +26,6 @@ class UpdateProfileUserService {
     bio,
     old_password,
     password,
-    password_confirmation,
     username,
   }: Request): Promise<User | undefined> {
     const usersRepository = getRepository(User);
@@ -55,28 +54,16 @@ class UpdateProfileUserService {
       throw new AppError('Username obrigatório', 401);
     }
 
-    if(password && !old_password) {
+    if (password && !old_password) {
       throw new AppError('Você precisa informar sua senha antiga', 401);
     }
 
-    if(password && old_password) {
+    if (password && old_password) {
       const checkOldPassword = compare(old_password, userLogged.password);
 
-      if(!checkOldPassword) {
+      if (!checkOldPassword) {
         throw new AppError('Old password not matched', 401);
       }
-
-    }
-
-    if (
-      (password && !password_confirmation) ||
-      (!password && password_confirmation)
-    ) {
-      throw new AppError('A senha e confirmação de senha é obrigatório', 401);
-    }
-
-    if (password !== password_confirmation) {
-      throw new AppError('A senha é diferente da confirmação de senha', 401);
     }
 
     if (password && password.length < 6) {
@@ -90,7 +77,7 @@ class UpdateProfileUserService {
       name,
       password: hashedPassword,
       username,
-      bio
+      bio,
     });
 
     if (user.affected === 1) {

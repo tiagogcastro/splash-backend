@@ -13,13 +13,13 @@ import IUserBalanceRepository from '../repositories/IUserBalanceRepository';
 import IUsersRepository from '../repositories/IUsersRepository';
 
 interface Request {
+  roles?: string;
   name?: string;
   email: string;
   username?: string;
   password: string;
   sponsorship_code?: string;
   terms: boolean;
-  isShop: boolean;
 }
 
 interface Response {
@@ -38,17 +38,18 @@ export default class CreateUsersService {
   ) {}
 
   public async execute({
+    roles,
     name,
     username,
     email,
     password,
     sponsorship_code,
     terms,
-    isShop,
   }: Request): Promise<Response> {
     const checkUserEmailExist = await this.usersRepository.findByEmail(email);
     const sponsorshipExist =
       await this.sponsorshipsRepository.findBySponsorshipCode(sponsorship_code);
+
     const checkUserUsernameExist = await this.usersRepository.findByUsername(
       username,
     );
@@ -61,19 +62,15 @@ export default class CreateUsersService {
       throw new AppError('Username address already used.', 400);
     }
 
-    if (!terms) {
+    if (!terms && !roles) {
       throw new AppError('Você não aceitou os termos.', 400);
     }
 
     if (!username) {
-      const randomUsername = `username.${Math.random()
+      const randomUsername = `user${Math.random()
         .toFixed(4)
         .replace('.', '')}${new Date().getTime()}`;
       username = randomUsername;
-    }
-
-    if (username.length > 24) {
-      throw new AppError('Username só pode ter no máximo 24 caracteres', 400);
     }
 
     username = username.replace(/\s/g, '');
@@ -95,7 +92,7 @@ export default class CreateUsersService {
       password: hashedPassword,
     });
 
-    if (!isShop) {
+    if (!roles) {
       if (
         !sponsorshipExist ||
         sponsorshipExist.sponsorship_code !== sponsorship_code
@@ -103,9 +100,9 @@ export default class CreateUsersService {
         throw new AppError('Código de patrocínio inválido ou já usado.', 400);
       }
 
-      await this.usersRepository.update(user.id, {
-        roles: 'user',
-      });
+      // await this.usersRepository.update(user.id, {
+      //   roles: 'user',
+      // });
 
       // Deixa o patrocinio resgatado e indisponivel
       await this.sponsorshipsRepository.updateSponsorship(
@@ -168,7 +165,7 @@ export default class CreateUsersService {
       });
 
       await this.usersRepository.update(user.id, {
-        roles: 'shop',
+        roles,
       });
     }
 

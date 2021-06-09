@@ -54,11 +54,9 @@ class User {
   phone_number?: string;
 
   @Column({
-    type: 'enum',
-    enum: Permissions,
     nullable: true,
   })
-  roles: Permissions;
+  roles: 'user' | 'shop' | 'admin';
 
   @Column({
     default: true,
