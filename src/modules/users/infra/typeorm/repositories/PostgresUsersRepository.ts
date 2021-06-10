@@ -1,9 +1,11 @@
+import ICreateUserByEmailDTO from '@modules/users/dtos/ICreateUserByEmailDTO';
+import ICreateUserByPhoneNumberDTO from '@modules/users/dtos/ICreateUserByPhoneNumberDTO';
 import IUpdateUserDTO from '@modules/users/dtos/IUpdateUserDTO';
 import IUsersRepository, {
   IUpdateResult,
 } from '@modules/users/repositories/IUsersRepository';
 import { getRepository, Repository } from 'typeorm';
-import ICreateUserDTO from '../../../dtos/ICreateUserDTO';
+
 import User from '../entities/User';
 
 export default class PostgresUsersRepository implements IUsersRepository {
@@ -13,18 +15,28 @@ export default class PostgresUsersRepository implements IUsersRepository {
     this.ormRepository = getRepository(User);
   }
 
-  async update(id: string, userData: IUpdateUserDTO): Promise<IUpdateResult> {
-    const { affected } = await this.ormRepository.update(id, userData);
-
-    return { affected };
-  }
-
-  async create(userData: ICreateUserDTO): Promise<User> {
+  async createByEmail(userData: ICreateUserByEmailDTO): Promise<User> {
     const user = this.ormRepository.create(userData);
 
     await this.ormRepository.save(user);
 
     return user;
+  }
+
+  async createByPhoneNumber(
+    userData: ICreateUserByPhoneNumberDTO,
+  ): Promise<User> {
+    const user = this.ormRepository.create(userData);
+
+    await this.ormRepository.save(user);
+
+    return user;
+  }
+
+  async update(id: string, userData: IUpdateUserDTO): Promise<IUpdateResult> {
+    const { affected } = await this.ormRepository.update(id, userData);
+
+    return { affected };
   }
 
   async findByEmail(email: string | undefined): Promise<User | undefined> {
