@@ -4,7 +4,7 @@ import ListUsersWhoSponsorTheUser from '@modules/users/services/ListUsersWhoSpon
 import PostgresUsersRepository from '../../typeorm/repositories/PostgresUsersRepository';
 import PostgresSponsoringRepository from '../../typeorm/repositories/PostgresSponsoringRepository';
 
-class ListSponsoringController {
+class SponsoringController {
   async index(request: Request, response: Response): Promise<Response> {
     const { user_id } = request.params;
 
@@ -22,4 +22,4 @@ class ListSponsoringController {
   }
 }
 
-export default ListSponsoringController;
+export default SponsoringController;
