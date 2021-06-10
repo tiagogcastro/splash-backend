@@ -4,10 +4,12 @@ import authConfig from '@config/auth';
 import User from '@modules/users/infra/typeorm/entities/User';
 import AppError from '@shared/errors/AppError';
 import { sign } from 'jsonwebtoken';
+import { compare } from 'bcryptjs';
 import { getRepository } from 'typeorm';
 
 interface Request {
   phone_number: string;
+  password: string;
 }
 
 interface Response {
@@ -16,8 +18,12 @@ interface Response {
 }
 
 export default class AuthenticateUserByPhoneNumberSession {
-  public async create({ phone_number }: Request): Promise<Response> {
+  public async create({ phone_number, password }: Request): Promise<Response> {
     const { expiresIn, secret } = authConfig.jwt;
+
+    if (!phone_number) {
+      throw new AppError('User number is missing');
+    }
 
     const usersRepository = getRepository(User);
 
@@ -28,6 +34,13 @@ export default class AuthenticateUserByPhoneNumberSession {
     if (!user) {
       throw new AppError('User does not exist');
     }
+
+    const verifyUserPassword = await compare(password, user.password);
+
+    if (!verifyUserPassword) {
+      throw new AppError('Password invalid');
+    }
+
     const token = sign({}, secret, { subject: user.id, expiresIn });
 
     return {
