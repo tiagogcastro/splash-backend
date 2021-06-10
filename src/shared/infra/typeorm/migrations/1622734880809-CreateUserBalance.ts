@@ -25,7 +25,7 @@ export default class CreateUserBalance1622734880809
             default: 0,
           },
           {
-            name: 'balance_amount',
+            name: 'available_for_withdraw',
             type: 'float',
             default: 0,
           },

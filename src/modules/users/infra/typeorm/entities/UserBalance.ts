@@ -28,7 +28,7 @@ class UserBalance {
   total_balance: number;
 
   @Column()
-  balance_amount: number;
+  available_for_withdraw: number;
 
   @CreateDateColumn()
   created_at: Date;

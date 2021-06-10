@@ -1,5 +1,5 @@
 import IFindSponsorBalanceDTO from '../dtos/IFindSponsorBalanceDTO';
-import ICreateSponsorBalanceDTO from './ICreateSponsorBalanceDTO';
+import ICreateSponsorBalanceDTO from '../dtos/ICreateSponsorBalanceDTO';
 import SponsorBalance from '../infra/typeorm/entities/SponsorBalance';
 
 export default interface ISponsorBalanceRepository {

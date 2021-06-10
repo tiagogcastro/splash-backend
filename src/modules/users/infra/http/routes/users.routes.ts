@@ -24,7 +24,10 @@ usersRoutes.post(
         is: Joi.exist(),
         then: Joi.string().min(8).max(100).required(),
       }),
-      username: Joi.string().min(1).max(30),
+      username: Joi.string()
+        .regex(/^[A-Z0-9_.]+$/i)
+        .min(1)
+        .max(30),
       terms: Joi.boolean(),
       sponsorship_code: Joi.string(),
     },

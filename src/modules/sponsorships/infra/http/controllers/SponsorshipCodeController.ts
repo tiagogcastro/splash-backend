@@ -1,3 +1,4 @@
+import MongoNotificationsRepository from '@modules/notifications/infra/typeorm/repositories/MongoNotificationsRepository';
 import memory from '@modules/sponsorships/in-memory';
 import CreateSponsorshipCodeService from '@modules/sponsorships/services/CreateSponsorshipCodeService';
 import PostgresUserBalanceRepository from '@modules/users/infra/typeorm/repositories/PostgresUserBalanceRepository';
@@ -13,12 +14,14 @@ export default class SponsorshipCodeController {
 
     const postgresSponsorshipsRepository = new PostgresSponsorshipsRepository();
     const postgresUserBalanceRespository = new PostgresUserBalanceRepository();
+    const mongoNotificationsRepository = new MongoNotificationsRepository();
     const postgresUsersRepository = new PostgresUsersRepository();
 
     const sendSponsorship = new CreateSponsorshipCodeService(
       postgresUsersRepository,
       postgresUserBalanceRespository,
       postgresSponsorshipsRepository,
+      mongoNotificationsRepository,
     );
 
     const sponsorship = await sendSponsorship.execute({

@@ -1,10 +1,14 @@
 import { Request, Response } from 'express';
-
+import mailConfig from '@config/mail';
 import UpdateProfileUserService from '@modules/users/services/UpdateProfileUserService';
 import ShowProfileUserService from '@modules/users/services/ShowProfileUserService';
 import DeleteProfileUser from '@modules/users/services/DeleteProfileUser';
 import { classToClass } from 'class-transformer';
+import SESMailProvider from '@shared/providers/MailProvider/SESMailProvider';
+import HandlebarsMailTemplateProvider from '@shared/providers/MailTemplateProvider/HandlebarsMailTemplateProvider';
+import EtherealMailProvider from '@shared/providers/MailProvider/EtherealMailProvider';
 import PostgresUsersRepository from '../../typeorm/repositories/PostgresUsersRepository';
+import MongoUserTokensRepository from '../../typeorm/repositories/MongoUserTokensRepository';
 
 class ProfileUserController {
   async show(request: Request, response: Response): Promise<Response> {
@@ -27,16 +31,29 @@ class ProfileUserController {
       bio,
       password_confirmation,
       email,
+      token,
       name,
     } = request.body;
-    const usersRepository = new PostgresUsersRepository();
-    const updateProfile = new UpdateProfileUserService(usersRepository);
+    const postgresUsersRepository = new PostgresUsersRepository();
+    const mongoUserTokensRepository = new MongoUserTokensRepository();
+    const handlebarsMailTemplateProvider = new HandlebarsMailTemplateProvider();
+    const providers = {
+      ses: new SESMailProvider(handlebarsMailTemplateProvider),
+      ethereal: new EtherealMailProvider(handlebarsMailTemplateProvider),
+    };
+
+    const updateProfile = new UpdateProfileUserService(
+      postgresUsersRepository,
+      mongoUserTokensRepository,
+      providers[mailConfig.driver],
+    );
 
     const userUpdated = await updateProfile.execute({
       user_id,
       username,
       password,
       old_password,
+      token,
       password_confirmation,
       email,
       bio,
