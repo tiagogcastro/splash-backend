@@ -321,4 +321,31 @@ ___
       </a>  
     </p>
   </div>
+<<<<<<< HEAD
+=======
+</div>
+
+</br>
+
+___
+
+<div align="left">
+  <h1 id="rede-social">📱 Minhas redes sociais</h1>
+  <p> Eu me chamo Tiago Gonçalves, abaixo deixo os links das minhas principais redes na qual participo.
+  </p>
+
+  [![](https://img.shields.io/badge/-Github-434140)](https://github.com/Tiaguin061)
+  [![](https://img.shields.io/badge/-Linkedin-3DC3C9)](https://www.linkedin.com/in/tiagogoncalves200428/)
+  [![](https://img.shields.io/badge/-Instagram-EA3C7A)](https://www.instagram.com/tiaguinho_gon1/?hl=pt-br)
+  [![](https://img.shields.io/badge/-Discord-5276f2)](https://discord.com/users/586186122611130368)
+
+</div>
+
+<div align="left">
+  <h1 id="license">✔ Licença</h1>
+  <p>  Este projeto está sobre Licença MIT, veja: 
+
+  [![](https://img.shields.io/badge/-✔Licença-3CEA5A)]()
+
+>>>>>>> 7c88d970f5d5c14f45b5a24600d9fb4612abb647
 </div>
