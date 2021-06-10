@@ -27,7 +27,6 @@ class User {
   @Column()
   bio: string;
 
-  @Exclude()
   @Column({
     unique: true,
     nullable: true,
@@ -43,7 +42,6 @@ class User {
   @Column()
   password: string;
 
-  @Exclude()
   @Column({
     unique: true,
     nullable: true,
