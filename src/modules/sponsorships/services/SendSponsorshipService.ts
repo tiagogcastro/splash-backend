@@ -109,7 +109,7 @@ export default class SendSponsorshipService {
       allow_withdrawal = allow_withdrawal_balance;
     }
 
-    if (sender.roles === null || sender.roles === 'user')
+    if (sender.roles === null || sender.roles === 'default')
       recipientUserBalance.balance_amount += amount;
 
     const sponsorship = await this.sponsorshipsRepository.create({

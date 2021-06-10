@@ -7,7 +7,8 @@ import createUserByPhoneNumberMiddleware from '../middleware/createUserByPhoneNu
 
 const sessionsRoutes = Router();
 
-const userValidationController = new AuthenticationByPhoneNumberController();
+const authenticationByPhoneNumberController =
+  new AuthenticationByPhoneNumberController();
 const authenticateUser = new AuthenticationByEmailController();
 
 sessionsRoutes.post(
@@ -26,7 +27,16 @@ sessionsRoutes.post(
 
 sessionsRoutes.post(
   '/sms',
+  celebrate({
+    [Segments.BODY]: {
+      phone_number: Joi.string().regex(/^\+[0-9]+$/i),
+      password: Joi.when('phone_number', {
+        is: Joi.exist(),
+        then: Joi.string().required().min(8).max(100),
+      }),
+    },
+  }),
   createUserByPhoneNumberMiddleware,
-  userValidationController.create,
+  authenticationByPhoneNumberController.create,
 );
 export default sessionsRoutes;
