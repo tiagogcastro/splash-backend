@@ -23,8 +23,12 @@ profileRoutes.put(
     [Segments.BODY]: {
       name: Joi.string().min(1).max(30),
       email: Joi.string().email().max(100),
-      username: Joi.string().min(1).max(30),
+      username: Joi.string()
+        .regex(/^[A-Z0-9_.]+$/i)
+        .min(1)
+        .max(30),
       bio: Joi.string().min(2).max(80),
+      token: Joi.string().uuid(),
       old_password: Joi.string(),
       password: Joi.when('email', {
         is: Joi.exist(),

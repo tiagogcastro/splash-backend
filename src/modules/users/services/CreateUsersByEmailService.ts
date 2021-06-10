@@ -122,7 +122,7 @@ export default class CreateUsersService {
         await this.userBalanceRepository.create({
           user_id: user.id,
           total_balance: sponsorship.amount,
-          balance_amount: sponsorship.amount,
+          available_for_withdraw: sponsorship.amount,
         });
       } else {
         await this.userBalanceRepository.create({
@@ -172,7 +172,7 @@ export default class CreateUsersService {
 
       await this.userBalanceRepository.create({
         user_id: user.id,
-        balance_amount,
+        available_for_withdraw: balance_amount,
         total_balance: balance_amount,
       });
 
