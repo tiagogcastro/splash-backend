@@ -30,7 +30,7 @@ profileRoutes.put(
       bio: Joi.string().min(2).max(80),
       token: Joi.string().uuid(),
       old_password: Joi.string(),
-      password: Joi.when('email', {
+      password: Joi.when('old_password', {
         is: Joi.exist(),
         then: Joi.string().required(),
       }),
