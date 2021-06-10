@@ -321,6 +321,11 @@ ___
       </a>  
     </p>
   </div>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> f81de3d6dd1db750105a504aca5545644db04bda
 </div>
 
 </br>
@@ -345,4 +350,8 @@ ___
 
   [![](https://img.shields.io/badge/-✔Licença-3CEA5A)]()
 
+<<<<<<< HEAD
+>>>>>>> 7c88d970f5d5c14f45b5a24600d9fb4612abb647
+=======
+>>>>>>> f81de3d6dd1db750105a504aca5545644db04bda
 </div>
