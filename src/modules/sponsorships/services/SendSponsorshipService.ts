@@ -63,7 +63,8 @@ export default class SendSponsorshipService {
     }
 
     const totalAmountForRecipient =
-      (nonDrawableBalance?.balance_amount || 0) + userBalance.balance_amount;
+      (nonDrawableBalance?.balance_amount || 0) +
+      userBalance.available_for_withdraw;
 
     if (totalAmountForRecipient < amount) {
       throw new AppError(
@@ -86,7 +87,7 @@ export default class SendSponsorshipService {
 
       await this.sponsorBalanceRepository.save(nonDrawableBalance);
     } else {
-      userBalance.balance_amount -= amount;
+      userBalance.available_for_withdraw -= amount;
     }
 
     if (sender.roles === 'shop') {
@@ -98,7 +99,7 @@ export default class SendSponsorshipService {
         });
       } else {
         if (allow_withdrawal_balance) {
-          recipientUserBalance.balance_amount += amount;
+          recipientUserBalance.available_for_withdraw += amount;
         } else {
           sponsorBalance.balance_amount += amount;
         }
@@ -110,7 +111,7 @@ export default class SendSponsorshipService {
     }
 
     if (sender.roles === null || sender.roles === 'default')
-      recipientUserBalance.balance_amount += amount;
+      recipientUserBalance.available_for_withdraw += amount;
 
     const sponsorship = await this.sponsorshipsRepository.create({
       allow_withdrawal,
@@ -143,18 +144,12 @@ export default class SendSponsorshipService {
       subject: `você recebeu R$${balanceAmount} de ${sender.username}`,
     };
 
-    /**
-     * Enviar mensagem para o usuário remetente
-     */
     await this.notificationsRepository.create({
       recipient_id: sponsor_user_id,
       sender_id: sponsor_user_id,
       content: JSON.stringify(messageFromSender),
     });
 
-    /**
-     * Enviar mensagem para o usuário destinatário
-     */
     await this.notificationsRepository.create({
       recipient_id: user_recipient_id,
       sender_id: sponsor_user_id,

@@ -1,3 +1,4 @@
+import INotificationsRepository from '@modules/notifications/repositories/INotificationsRepository';
 import IUserBalanceRepository from '@modules/users/repositories/IUserBalanceRepository';
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import AppError from '@shared/errors/AppError';
@@ -11,6 +12,7 @@ export default class CreateSponsorshipCodeService {
     private usersRepository: IUsersRepository,
     private userBalanceRepository: IUserBalanceRepository,
     private sponsorshipsRepository: ISponsorshipsRepository,
+    private notificationsRepository: INotificationsRepository,
   ) {}
 
   async execute({
@@ -35,7 +37,7 @@ export default class CreateSponsorshipCodeService {
         401,
       );
     }
-    if (sponsorUserBalance.balance_amount < amount) {
+    if (sponsorUserBalance.available_for_withdraw < amount) {
       throw new AppError(
         'You cannot send an available amount that you do not have',
         400,
@@ -45,7 +47,7 @@ export default class CreateSponsorshipCodeService {
       throw new AppError('You cannot send an amount that you do not have', 400);
 
     sponsorUserBalance.total_balance -= amount;
-    sponsorUserBalance.balance_amount -= amount;
+    sponsorUserBalance.available_for_withdraw -= amount;
 
     await this.userBalanceRepository.save(sponsorUserBalance);
 
@@ -61,6 +63,20 @@ export default class CreateSponsorshipCodeService {
       amount,
       sponsor_user_id,
       sponsorship_code: code,
+    });
+    const [first, second] = String(amount).split('.');
+
+    let balanceAmount = `${first}.00`;
+    if (second) balanceAmount = `${first}.${second.padEnd(2, '0')}`;
+
+    const message = {
+      subject: `você criou um patrocínio de R$${balanceAmount} Código: ${code} `,
+    };
+
+    await this.notificationsRepository.create({
+      recipient_id: sponsor_user_id,
+      sender_id: sponsor_user_id,
+      content: JSON.stringify(message),
     });
 
     return sponsorship;

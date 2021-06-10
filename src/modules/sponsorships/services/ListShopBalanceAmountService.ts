@@ -23,7 +23,8 @@ export default class ListShopBalanceAmountService {
         return {
           ...sponsorBalanceItem,
           balance_amount:
-            sponsorBalanceItem.balance_amount + userBalance.balance_amount,
+            sponsorBalanceItem.balance_amount +
+            userBalance.available_for_withdraw,
         };
       },
     );

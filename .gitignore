@@ -6,6 +6,7 @@ yarn-error.log
 coverage
 
 .env
+.env.production
 
 ormconfig.production.json
 ormconfig.json
