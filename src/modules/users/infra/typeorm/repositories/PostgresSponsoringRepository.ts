@@ -38,11 +38,11 @@ export default class PostgresSponsoringRepository
   }
 
   async findAllBySponsoringUserId(
-    sponsoring_user_id: string,
+    sponsor_user_id: string,
   ): Promise<Sponsoring[]> {
     const usersSponsoring = await this.ormRepository.find({
       where: {
-        sponsoring_user_id,
+        sponsor_user_id,
       },
       relations: ['sponsored_userId'],
     });
