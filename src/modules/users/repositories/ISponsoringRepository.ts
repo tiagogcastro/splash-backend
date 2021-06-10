@@ -1,13 +1,13 @@
 import ICreateSponsoringDTO from '../dtos/ICreateSponsoringDTO';
-import Sponsoring from '../infra/typeorm/entities/Sponsoring';
+import Sponsoring_Sponsored from '../infra/typeorm/entities/Sponsoring_Sponsored';
 
 export default interface ISponsoringRepository {
-  findAllBySponsoringUserId(sponsor_user_id: string): Promise<Sponsoring[]>;
-  findAllBySponsoredUserId(sponsored_user_id: string): Promise<Sponsoring[]>;
+  findAllBySponsoringUserId(user_id: string): Promise<Sponsoring_Sponsored[]>;
+  findAllBySponsoredUserId(user_id: string): Promise<Sponsoring_Sponsored[]>;
   findBySponsoringAndSponsored(
     sponsor_user_id: string,
     sponsored_user_id: string,
-  ): Promise<Sponsoring | undefined>;
-  create(sponsorData: ICreateSponsoringDTO): Promise<Sponsoring>;
+  ): Promise<Sponsoring_Sponsored | undefined>;
+  create(sponsorData: ICreateSponsoringDTO): Promise<Sponsoring_Sponsored>;
   deleteById(id: string): Promise<void>;
 }

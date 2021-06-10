@@ -1,5 +1,5 @@
 import AppError from '@shared/errors/AppError';
-import Sponsoring from '../infra/typeorm/entities/Sponsoring';
+import Sponsoring_Sponsored from '../infra/typeorm/entities/Sponsoring_Sponsored';
 import ISponsoringRepository from '../repositories/ISponsoringRepository';
 import IUsersRepository from '../repositories/IUsersRepository';
 
@@ -10,12 +10,12 @@ class SponsorUserService {
   ) {}
 
   async execute(
-    sponsoring_userId: string,
-    sponsored_userId: string,
-  ): Promise<Sponsoring | null> {
-    const userLogged = await this.usersRepository.findById(sponsoring_userId);
+    sponsor_user_id: string,
+    sponsored_user_id: string,
+  ): Promise<Sponsoring_Sponsored | null> {
+    const userLogged = await this.usersRepository.findById(sponsor_user_id);
 
-    const userToSponsor = await this.usersRepository.findById(sponsored_userId);
+    const userToSponsor = await this.usersRepository.findById(sponsored_user_id);
 
     if (!userLogged) {
       throw new AppError('User not logged', 401);
@@ -27,8 +27,8 @@ class SponsorUserService {
 
     const sponsoringExist =
       await this.sponsoringRepository.findBySponsoringAndSponsored(
-        sponsoring_userId,
-        sponsored_userId,
+        sponsor_user_id,
+        sponsored_user_id,
       );
 
     if (sponsoringExist) {
@@ -36,8 +36,8 @@ class SponsorUserService {
     }
 
     const sponsorUser = await this.sponsoringRepository.create({
-      sponsoring_userId,
-      sponsored_userId,
+      sponsor_user_id,
+      sponsored_user_id,
     });
 
     return sponsorUser;
