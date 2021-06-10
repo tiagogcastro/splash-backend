@@ -104,7 +104,7 @@ export default class CreateUsersService {
         );
       }
 
-      user = await this.usersRepository.create({
+      user = await this.usersRepository.createByEmail({
         name,
         username,
         email,
@@ -163,7 +163,7 @@ export default class CreateUsersService {
         },
       );
     } else {
-      user = await this.usersRepository.create({
+      user = await this.usersRepository.createByEmail({
         name,
         username,
         email,
