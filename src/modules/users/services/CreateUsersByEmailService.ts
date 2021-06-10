@@ -137,10 +137,10 @@ export default class CreateUsersService {
       }
 
       // A loja passa a patrocinar o usuário
-      // await this.sponsoring.create({
-      //   sponsor_user_id: sponsorship.sponsor_user_id,
-      //   sponsored_user_id: user.id,
-      // });
+      await this.sponsoring.create({
+        sponsor_user_id: sponsorship.sponsor_user_id,
+        sponsored_user_id: user.id,
+      });
 
       // Loja fica com +1 patrocinado e o usuário fica com +1 patrocinando ele
       await this.sponsoringSponsoredCount.updateCount(
