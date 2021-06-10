@@ -1,7 +1,7 @@
 import IFindSponsorBalanceDTO from '@modules/users/dtos/IFindSponsorBalanceDTO';
 import ISponsorBalanceRepository from '@modules/users/repositories/ISponsorBalanceRepository';
 import { getRepository, Not, Repository } from 'typeorm';
-import ICreateSponsorBalanceDTO from '../../../repositories/ICreateSponsorBalanceDTO';
+import ICreateSponsorBalanceDTO from '../../../dtos/ICreateSponsorBalanceDTO';
 import UserBalance from '../entities/SponsorBalance';
 
 export default class PostgresSponsorBalanceRepository
