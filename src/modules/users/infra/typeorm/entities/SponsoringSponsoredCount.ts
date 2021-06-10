@@ -10,7 +10,7 @@ import {
 import { v4 as uuid } from 'uuid';
 import User from './User';
 
-@Entity('user_sponsorsing_sponsored')
+@Entity('user_sponsorsing_sponsored_count')
 class SponsoringSponsoredCount {
   @PrimaryGeneratedColumn('uuid')
   id: string;
