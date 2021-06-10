@@ -111,7 +111,6 @@ export default class CreateUsersByPhoneNumberService {
         await this.userBalanceRepository.create({
           user_id: user.id,
           total_balance: sponsorship.amount,
-          balance_amount: sponsorship.amount,
         });
       } else {
         await this.userBalanceRepository.create({
@@ -159,7 +158,6 @@ export default class CreateUsersByPhoneNumberService {
 
       await this.userBalanceRepository.create({
         user_id: user.id,
-        balance_amount,
         total_balance: balance_amount,
       });
 
