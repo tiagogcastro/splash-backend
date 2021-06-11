@@ -1,4 +1,5 @@
-import ICreateUserDTO from '../dtos/ICreateUserDTO';
+import ICreateUserByEmailDTO from '../dtos/ICreateUserByEmailDTO';
+import ICreateUserPhoneNumberDTO from '../dtos/ICreateUserByPhoneNumberDTO';
 import IUpdateUserDTO from '../dtos/IUpdateUserDTO';
 import User from '../infra/typeorm/entities/User';
 
@@ -7,7 +8,8 @@ export interface IUpdateResult {
   user: User;
 }
 export default interface IUsersRepository {
-  create(userData: ICreateUserDTO): Promise<User>;
+  createByEmail(userData: ICreateUserByEmailDTO): Promise<User>;
+  createByPhoneNumber(userData: ICreateUserPhoneNumberDTO): Promise<User>;
   findByEmail(email: string | undefined): Promise<User | undefined>;
   findById(id: string | number): Promise<User | undefined>;
   findByUsername(username: string | undefined): Promise<User | undefined>;

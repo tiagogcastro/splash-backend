@@ -6,7 +6,7 @@ export default class CreateUserSponsorsingSponsored1622735342066
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'user_sponsorsing_sponsored',
+        name: 'user_sponsorsing_sponsored_count',
         columns: [
           {
             name: 'id',
