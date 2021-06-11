@@ -1,3 +1,6 @@
+import User from '@modules/users/infra/typeorm/entities/User';
+import IUsersRepository from '@modules/users/repositories/IUsersRepository';
+import AppError from '@shared/errors/AppError';
 import Notification from '../infra/typeorm/schemas/Notification';
 import INotificationsRepository from '../repositories/INotificationsRepository';
 
@@ -6,7 +9,10 @@ interface IListSponsorshipHistoryNotificationsDTO {
   sender_id: string;
 }
 export default class ListSponsorshipHistoryNotificationsService {
-  constructor(private notificationsRepository: INotificationsRepository) {}
+  constructor(
+    private notificationsRepository: INotificationsRepository,
+    private usersRepository: IUsersRepository,
+  ) {}
 
   async execute({
     sender_id,
@@ -19,7 +25,17 @@ export default class ListSponsorshipHistoryNotificationsService {
           sender_id,
         },
       );
+    const user = await this.usersRepository.findById(sender_id);
 
-    return notifications;
+    if (!user) throw new AppError('User does not exist');
+
+    const notificationsWithSender = notifications.map(notification => {
+      return {
+        ...notification,
+        sender: user,
+      };
+    });
+
+    return notificationsWithSender;
   }
 }
