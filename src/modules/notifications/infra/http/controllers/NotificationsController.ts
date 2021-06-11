@@ -1,6 +1,7 @@
-import ListGroupedSponsorshipNotificationsService from '@modules/notifications/services/ListGroupedSponsorshipNotificationsService';
+import ListSponsorshipNotificationsService from '@modules/notifications/services/ListSponsorshipNotificationsService';
 import { Request, Response } from 'express';
 import SendSmsNotificationForIosService from '@modules/notifications/services/SendSmsNotificationForIosService';
+import { classToClass } from 'class-transformer';
 import MongoNotificationsRepository from '../../typeorm/repositories/MongoNotificationsRepository';
 import PostgresUsersRepository from '../../../../users/infra/typeorm/repositories/PostgresUsersRepository';
 
@@ -9,17 +10,17 @@ export default class NotificationsController {
     const user_id = request.user.id;
 
     const mongoNotificationsRepository = new MongoNotificationsRepository();
+    const postgresUsersRepository = new PostgresUsersRepository();
 
-    const listGroupedSponsorshipNotifications =
-      new ListGroupedSponsorshipNotificationsService(
+    const listSponsorshipNotifications =
+      new ListSponsorshipNotificationsService(
         mongoNotificationsRepository,
+        postgresUsersRepository,
       );
 
-    const notifications = await listGroupedSponsorshipNotifications.execute(
-      user_id,
-    );
+    const notifications = await listSponsorshipNotifications.execute(user_id);
 
-    return response.status(200).json(notifications);
+    return response.status(200).json(classToClass(notifications));
   }
 
   async sendNotificationForIos(
