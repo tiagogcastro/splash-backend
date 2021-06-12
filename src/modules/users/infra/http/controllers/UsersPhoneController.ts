@@ -24,16 +24,9 @@ class UsersPhoneController {
       const sendCode = await clientSendMessage.verify
         .services(servicesSid)
         .verifications.create({
-          // rateLimits: {
-          //   end_user_ip_address: '127.0.0.1',
-          // },
-          to: `${String(phone_number)}`,
+          to: `+${String(phone_number)}`,
           channel: 'sms',
         });
-
-      if (!sendCode) {
-        throw new AppError('Sms rate limit');
-      }
 
       request.user = {
         id: '',
@@ -47,12 +40,16 @@ class UsersPhoneController {
   }
 
   async create(request: Request, response: Response): Promise<Response> {
-    const { code, roles, balance_amount, terms, sponsorship_code } =
-      request.body;
+    const {
+      verification_code,
+      password,
+      roles,
+      balance_amount,
+      terms,
+      sponsorship_code,
+    } = request.body;
 
     const { phone_number } = request.user;
-
-    console.log(code);
 
     const postgresUsersRepository = new PostgresUsersRepository();
     const postgresUserBalanceRepository = new PostgresUserBalanceRepository();
@@ -76,7 +73,7 @@ class UsersPhoneController {
       .services(servicesSid)
       .verificationChecks.create({
         to: phone_number,
-        code: String(code),
+        code: String(verification_code),
       })
       .catch(error => {
         throw new AppError(error);
@@ -84,6 +81,7 @@ class UsersPhoneController {
 
     const { user, token } = await createUser.execute({
       phone_number,
+      password,
       roles,
       terms,
       balance_amount,
