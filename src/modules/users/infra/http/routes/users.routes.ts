@@ -41,6 +41,15 @@ usersRoutes.get('/balance-amount', ensureAuthenticated, usersController.show);
 
 usersRoutes.post(
   '/sms/send-code',
+  celebrate({
+    [Segments.BODY]: {
+      phone_number: Joi.string()
+        .regex(/^[0-9]+$/)
+        .min(6)
+        .max(6)
+        .required(),
+    },
+  }),
   ensureLimitedCodeRequests,
   userPhoneController.sendCode,
 );
@@ -49,6 +58,17 @@ usersRoutes.post('/qrcode', qrcodeController.create);
 
 usersRoutes.post(
   '/sms',
+  celebrate({
+    [Segments.QUERY]: {
+      userPhone: Joi.string().regex(/^[0-9]+$/),
+    },
+    [Segments.BODY]: {
+      password: Joi.string().min(8).max(100).required(),
+      terms: Joi.boolean().required(),
+      verification_code: Joi.string().min(6).max(6).required(),
+      sponsorship_code: Joi.string().min(6).max(6).required(),
+    },
+  }),
   createUserByPhoneNumberMiddleware,
   userPhoneController.create,
 );
