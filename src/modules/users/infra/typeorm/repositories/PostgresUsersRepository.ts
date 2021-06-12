@@ -60,6 +60,7 @@ export default class PostgresUsersRepository implements IUsersRepository {
       where: {
         username,
       },
+      relations: ['user_balance', 'sponsoring_sponsored_count'],
     });
     return user;
   }
