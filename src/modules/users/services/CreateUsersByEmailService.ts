@@ -60,7 +60,7 @@ export default class CreateUsersService {
     );
 
     if (checkEmailAlreadyExist) {
-      throw new AppError('This e-mail address already exists.');
+      throw new AppError('This email address already exists.');
     }
 
     if (checkUserUsernameExist) {
