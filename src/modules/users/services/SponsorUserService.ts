@@ -15,7 +15,9 @@ class SponsorUserService {
   ): Promise<Sponsoring_Sponsored | null> {
     const userLogged = await this.usersRepository.findById(sponsor_user_id);
 
-    const userToSponsor = await this.usersRepository.findById(sponsored_user_id);
+    const userToSponsor = await this.usersRepository.findById(
+      sponsored_user_id,
+    );
 
     if (!userLogged) {
       throw new AppError('User not logged', 401);

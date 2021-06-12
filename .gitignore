@@ -15,3 +15,10 @@ tmp/**
 !tmp/.gitkeep
 !tmp/uploads/
 !tmp/uploads/.gitkeep
+package.json
+src/modules/notifications/infra/typeorm/schemas/NotificationPushForAndroid.ts
+src/modules/notifications/infra/typeorm/repositories/MongoNotificationsRepository.ts
+src/modules/notifications/infra/http/routes/notifications.routes.ts
+src/modules/notifications/infra/http/controllers/NotificationsController.ts
+src/modules/notifications/services/SendSmsNotificationForAndroidService.ts
+src/shared/infra/firebase/connection.ts

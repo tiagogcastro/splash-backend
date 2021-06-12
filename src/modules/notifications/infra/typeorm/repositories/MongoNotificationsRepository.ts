@@ -59,4 +59,6 @@ export default class MongoNotificationsRepository
 
     return notification;
   }
+
+  async sendNotificationPushForAndroid(): Promise<void> {}
 }
