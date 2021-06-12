@@ -20,6 +20,11 @@ class UserTokens {
   @Column()
   user_id: string;
 
+  @Column({
+    default: true,
+  })
+  active: boolean;
+
   @UpdateDateColumn()
   updated_at: Date;
 
