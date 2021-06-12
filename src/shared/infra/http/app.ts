@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable global-require */
 import 'reflect-metadata';
 import 'dotenv/config';
 import 'express-async-errors';
 import '../typeorm/connection';
+import '../mongoose/connection';
 import uploadConfig from '@config/upload';
 import cors from 'cors';
 import express, { NextFunction, Request, Response } from 'express';
