@@ -17,6 +17,7 @@ import ISponsoringSponsoredCountRepository from '../repositories/ISponsoringSpon
 
 interface Request {
   roles?: string;
+  password: string;
   phone_number?: string;
   balance_amount?: number;
   sponsorship_code?: string;
@@ -52,6 +53,7 @@ export default class CreateUsersByPhoneNumberService {
   public async execute({
     roles,
     phone_number,
+    password,
     balance_amount = 0,
     sponsorship_code,
     terms,
@@ -79,6 +81,8 @@ export default class CreateUsersByPhoneNumberService {
       );
     }
 
+    const hashedPassword = await hash(password, 8);
+
     let user: User;
 
     if (!roles) {
@@ -98,6 +102,7 @@ export default class CreateUsersByPhoneNumberService {
       user = await this.usersRepository.createByPhoneNumber({
         phone_number,
         username: createUsername(),
+        password: hashedPassword,
       });
 
       // Deixa o patrocinio resgatado e indisponivel
@@ -153,6 +158,7 @@ export default class CreateUsersByPhoneNumberService {
     } else {
       user = await this.usersRepository.createByPhoneNumber({
         phone_number,
+        password: hashedPassword,
         username: createUsername(),
       });
 
