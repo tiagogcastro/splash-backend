@@ -5,9 +5,7 @@ import ISponsorshipsRepository from '@modules/sponsorships/repositories/ISponsor
 import AppError from '@shared/errors/AppError';
 import { sign } from 'jsonwebtoken';
 import { hash } from 'bcryptjs';
-import client from 'twilio';
 
-import twilioConfig from '@config/twilio';
 import User from '../infra/typeorm/entities/User';
 import IUserBalanceRepository from '../repositories/IUserBalanceRepository';
 import IUsersRepository from '../repositories/IUsersRepository';
@@ -35,10 +33,6 @@ function createUsername() {
     .replace('.', '')}${new Date().getTime()}`;
   return username;
 }
-
-const { accountSid, authToken, servicesSid } = twilioConfig.twilio;
-
-const clientSendMessage = client(accountSid, authToken);
 
 export default class CreateUsersByPhoneNumberService {
   constructor(

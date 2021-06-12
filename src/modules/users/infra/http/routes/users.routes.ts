@@ -6,7 +6,6 @@ import UsersEmailController from '../controllers/UsersEmailController';
 import UsersPhoneController from '../controllers/UsersPhoneController';
 import createUserByPhoneNumberMiddleware from '../middleware/createUserByPhoneNumberMiddleware';
 import ensureAuthenticated from '../middleware/ensureAuthenticated';
-import smsRateLimit from '../middleware/smsRateLimiter';
 
 const usersRoutes = Router();
 

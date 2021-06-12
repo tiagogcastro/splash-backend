@@ -1,11 +1,5 @@
 import AuthenticateUserByPhoneNumberSession from '@modules/users/services/AuthenticateUserByPhoneNumberSession';
 import { Request, Response } from 'express';
-import client from 'twilio';
-import twilioConfig from '@config/twilio';
-
-const { accountSid, authToken, servicesSid } = twilioConfig.twilio;
-
-const clientSendMessage = client(accountSid, authToken);
 
 export default class AuthenticationByPhoneNumberController {
   public async create(request: Request, response: Response): Promise<Response> {

@@ -1,16 +1,14 @@
-import CreateUsersByPhoneNumberService from '@modules/users/services/CreateUsersByPhoneNumberServices';
-import { Request, Response } from 'express';
-
-import client from 'twilio';
 import twilioConfig from '@config/twilio';
-import AppError from '@shared/errors/AppError';
 import PostgresSponsorshipsRepository from '@modules/sponsorships/infra/typeorm/repositories/PostgresSponsorshipsRepository';
-import AddEmailAndPasswordUserService from '@modules/users/services/AddEmailAndPasswordUserService';
-import PostgresUsersRepository from '../../typeorm/repositories/PostgresUsersRepository';
-import PostgresUserBalanceRepository from '../../typeorm/repositories/PostgresUserBalanceRepository';
+import CreateUsersByPhoneNumberService from '@modules/users/services/CreateUsersByPhoneNumberServices';
+import AppError from '@shared/errors/AppError';
+import { Request, Response } from 'express';
+import client from 'twilio';
+import PostgresSponsorBalanceRepository from '../../typeorm/repositories/PostgresSponsorBalanceRepository';
 import PostgresSponsoringRepository from '../../typeorm/repositories/PostgresSponsoringRepository';
 import PostgresSponsoringSponsoredCountRepository from '../../typeorm/repositories/PostgresSponsoringSponsoredCountRepository';
-import PostgresSponsorBalanceRepository from '../../typeorm/repositories/PostgresSponsorBalanceRepository';
+import PostgresUserBalanceRepository from '../../typeorm/repositories/PostgresUserBalanceRepository';
+import PostgresUsersRepository from '../../typeorm/repositories/PostgresUsersRepository';
 
 const { accountSid, authToken, servicesSid } = twilioConfig.twilio;
 
@@ -21,7 +19,7 @@ class UsersPhoneController {
     try {
       const { phone_number } = request.body;
 
-      const sendCode = await clientSendMessage.verify
+      await clientSendMessage.verify
         .services(servicesSid)
         .verifications.create({
           to: `+${String(phone_number)}`,
