@@ -4,10 +4,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { v4 as uuid } from 'uuid';
+import SponsoringSponsoredCount from './SponsoringSponsoredCount';
+import UserBalance from './UserBalance';
 
 @Entity('users')
 class User {
@@ -47,6 +50,15 @@ class User {
     nullable: true,
   })
   phone_number?: string;
+
+  @OneToOne(() => UserBalance, userBalance => userBalance.user)
+  user_balance: UserBalance;
+
+  @OneToOne(
+    () => SponsoringSponsoredCount,
+    sponsoringSponsoredCount => sponsoringSponsoredCount.user,
+  )
+  sponsoring_sponsored_count: SponsoringSponsoredCount;
 
   @Column({
     nullable: true,
