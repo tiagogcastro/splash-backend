@@ -1,6 +1,7 @@
 import ListGroupedSponsorshipNotificationsService from '@modules/notifications/services/ListGroupedSponsorshipNotificationsService';
 import { Request, Response } from 'express';
 import SendSmsNotificationForIosService from '@modules/notifications/services/SendSmsNotificationForIosService';
+import SendSmsNotificationForAndroidService from '@modules/notifications/services/SendSmsNotificationForAndroidService';
 import MongoNotificationsRepository from '../../typeorm/repositories/MongoNotificationsRepository';
 import PostgresUsersRepository from '../../../../users/infra/typeorm/repositories/PostgresUsersRepository';
 
@@ -38,6 +39,25 @@ export default class NotificationsController {
       user_id,
       message,
     });
+
+    return response.status(200).json(notifications);
+  }
+
+  async createNotificationForAndroid(
+    request: Request,
+    response: Response,
+  ): Promise<Response> {
+    const user_id = request.user.id;
+    const { message } = await request.body;
+
+    const sendSmsNotificationForAndroid =
+      new SendSmsNotificationForAndroidService();
+
+    const notifications =
+      await sendSmsNotificationForAndroid.createNotification({
+        user_id,
+        message,
+      });
 
     return response.status(200).json(notifications);
   }
