@@ -6,6 +6,7 @@ import UsersEmailController from '../controllers/UsersEmailController';
 import UsersPhoneController from '../controllers/UsersPhoneController';
 import createUserByPhoneNumberMiddleware from '../middleware/createUserByPhoneNumberMiddleware';
 import ensureAuthenticated from '../middleware/ensureAuthenticated';
+import ensureLimitedCodeRequests from '../middleware/ensureLimitedCodeRequests';
 import smsRateLimit from '../middleware/smsRateLimiter';
 
 const usersRoutes = Router();
@@ -38,7 +39,11 @@ usersRoutes.post(
 
 usersRoutes.get('/balance-amount', ensureAuthenticated, usersController.show);
 
-usersRoutes.post('/sms/send-code', userPhoneController.sendCode);
+usersRoutes.post(
+  '/sms/send-code',
+  ensureLimitedCodeRequests,
+  userPhoneController.sendCode,
+);
 
 usersRoutes.post('/qrcode', qrcodeController.create);
 

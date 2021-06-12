@@ -15,7 +15,6 @@ class ListUsersWhoSponsorTheUser {
     if (!user) {
       throw new AppError('User not logged', 401);
     }
-
     const usersSponsoring =
       await this.sponsoringRepository.findAllBySponsoredUserId(user_id);
 

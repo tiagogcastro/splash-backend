@@ -22,4 +22,9 @@ notificationsRouter.post(
   notificationsController.sendNotificationForIos,
 );
 
+notificationsRouter.post(
+  '/create-android-notification',
+  notificationsController.createNotificationForAndroid,
+);
+
 export default notificationsRouter;

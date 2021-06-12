@@ -1,6 +1,7 @@
 import AppError from '@shared/errors/AppError';
+import { hash } from 'bcryptjs';
 import IUpdateUserByAdminServiceDTO from '../dtos/IUpdateUserByAdminServiceDTO';
-import User from '../infra/typeorm/entities/User';
+import UserBalance from '../infra/typeorm/entities/UserBalance';
 import IUserBalanceRepository from '../repositories/IUserBalanceRepository';
 import IUsersRepository from '../repositories/IUsersRepository';
 
@@ -13,9 +14,10 @@ class UpdateUserByAdminService {
   public async execute({
     user_id,
     balance_amount_add,
+    reset_password,
     withdraw_amount,
     roles,
-  }: IUpdateUserByAdminServiceDTO): Promise<User> {
+  }: IUpdateUserByAdminServiceDTO): Promise<UserBalance> {
     const user = await this.usersRepository.findById(user_id);
 
     const userBalance = await this.userBalanceRepository.findByUserId(user_id);
@@ -47,12 +49,17 @@ class UpdateUserByAdminService {
 
     await this.userBalanceRepository.save(userBalance);
 
-    await this.usersRepository.update(user_id, {
-      roles,
-    });
-    const updatedUser = (await this.usersRepository.findById(user_id)) as User;
+    if (reset_password) {
+      user.password = await hash(reset_password, 8);
+    }
 
-    return updatedUser;
+    if (roles) {
+      user.roles = roles;
+    }
+
+    await this.usersRepository.save(user);
+
+    return userBalance;
   }
 }
 export default UpdateUserByAdminService;

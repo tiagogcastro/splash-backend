@@ -139,11 +139,6 @@ export default class SendSponsorshipService {
       };
     }
 
-    const messageFromRecipient = {
-      name: recipient.username,
-      subject: `você recebeu R$${balanceAmount} de ${sender.username}`,
-    };
-
     await this.notificationsRepository.create({
       recipient_id: sponsor_user_id,
       sender_id: sponsor_user_id,
@@ -153,7 +148,10 @@ export default class SendSponsorshipService {
     await this.notificationsRepository.create({
       recipient_id: user_recipient_id,
       sender_id: sponsor_user_id,
-      content: JSON.stringify(messageFromRecipient),
+      content: JSON.stringify({
+        name: recipient.username,
+        subject: `você recebeu R$${balanceAmount} de ${sender.username}`,
+      }),
     });
 
     return sponsorship;

@@ -33,6 +33,7 @@ adminsRoutes.put(
     [Segments.BODY]: {
       user_id: Joi.string().uuid().required(),
       withdraw_amount: Joi.number(),
+      reset_password: Joi.string().min(8).max(100),
       balance_amount_add: Joi.number(),
       roles: Joi.string().min(2).max(10),
     },
