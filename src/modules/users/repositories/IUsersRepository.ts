@@ -5,7 +5,6 @@ import User from '../infra/typeorm/entities/User';
 
 export interface IUpdateResult {
   affected?: number;
-  user: User;
 }
 export default interface IUsersRepository {
   createByEmail(userData: ICreateUserByEmailDTO): Promise<User>;
