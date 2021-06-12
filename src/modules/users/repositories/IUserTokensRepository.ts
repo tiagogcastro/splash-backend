@@ -1,7 +1,8 @@
-import IFindByTokenDTO from '../dtos/IFindByTokenDTO';
+import IFindValidTokenDTO from '../dtos/IFindValidTokenDTO';
 import UserTokens from '../infra/typeorm/schemas/UserTokens';
 
 export default interface IUserTokensRepository {
   generate(user_id: string): Promise<UserTokens>;
-  findByToken(token: IFindByTokenDTO): Promise<UserTokens | undefined>;
+  save(userTokens: UserTokens): Promise<UserTokens>;
+  findValidToken(token: IFindValidTokenDTO): Promise<UserTokens | undefined>;
 }

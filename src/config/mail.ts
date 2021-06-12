@@ -5,7 +5,7 @@ interface IMailDefault {
   };
 }
 interface IMailConfig {
-  driver: 'ethereal' | 'ses';
+  driver: 'ethereal' | 'ses' | 'mailgun';
   config: {
     ethereal: {
       defaults: IMailDefault;
@@ -14,6 +14,10 @@ interface IMailConfig {
       defaults: IMailDefault;
       api_version: string;
       region: string;
+    };
+    mailgun: {
+      defaults: IMailDefault;
+      domain: string;
     };
   };
 }
@@ -37,6 +41,15 @@ export default {
       },
       api_version: '2010-12-01',
       region: 'sa-east-1',
+    },
+    mailgun: {
+      defaults: {
+        from: {
+          name: 'Lavimco',
+          address: 'lavimco@lavimco.com',
+        },
+      },
+      domain: 'lavimco.com',
     },
   },
 } as IMailConfig;

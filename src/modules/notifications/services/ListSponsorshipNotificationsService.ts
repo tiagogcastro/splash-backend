@@ -1,8 +1,13 @@
+import IUsersRepository from '@modules/users/repositories/IUsersRepository';
+import AppError from '@shared/errors/AppError';
 import Notification from '../infra/typeorm/schemas/Notification';
 import INotificationsRepository from '../repositories/INotificationsRepository';
 
 export default class ListGroupedSponsorshipNotificationsService {
-  constructor(private notificationsRepository: INotificationsRepository) {}
+  constructor(
+    private notificationsRepository: INotificationsRepository,
+    private usersRepository: IUsersRepository,
+  ) {}
 
   async execute(user_id: string): Promise<Notification[]> {
     const notifications =
@@ -19,6 +24,18 @@ export default class ListGroupedSponsorshipNotificationsService {
       return true;
     });
 
-    return groupedNotifications;
+    const promises = groupedNotifications.map(async notification => {
+      const user = await this.usersRepository.findById(notification.sender_id);
+
+      if (!user) throw new AppError('User does not exist');
+
+      return {
+        ...notification,
+        sender: user,
+      };
+    });
+    const notificationsWithSender = await Promise.all(promises);
+
+    return notificationsWithSender;
   }
 }

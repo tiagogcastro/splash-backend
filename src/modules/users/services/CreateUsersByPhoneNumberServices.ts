@@ -4,7 +4,6 @@ import jwtConfig from '@config/auth';
 import ISponsorshipsRepository from '@modules/sponsorships/repositories/ISponsorshipsRepository';
 import AppError from '@shared/errors/AppError';
 import { sign } from 'jsonwebtoken';
-import { hash } from 'bcryptjs';
 import client from 'twilio';
 
 import twilioConfig from '@config/twilio';
