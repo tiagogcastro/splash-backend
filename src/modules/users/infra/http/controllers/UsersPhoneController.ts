@@ -5,7 +5,6 @@ import client from 'twilio';
 import twilioConfig from '@config/twilio';
 import AppError from '@shared/errors/AppError';
 import PostgresSponsorshipsRepository from '@modules/sponsorships/infra/typeorm/repositories/PostgresSponsorshipsRepository';
-import AddEmailAndPasswordUserService from '@modules/users/services/AddEmailAndPasswordUserService';
 import PostgresUsersRepository from '../../typeorm/repositories/PostgresUsersRepository';
 import PostgresUserBalanceRepository from '../../typeorm/repositories/PostgresUserBalanceRepository';
 import PostgresSponsoringRepository from '../../typeorm/repositories/PostgresSponsoringRepository';
@@ -51,8 +50,6 @@ class UsersPhoneController {
       request.body;
 
     const { phone_number } = request.user;
-
-    console.log(code);
 
     const postgresUsersRepository = new PostgresUsersRepository();
     const postgresUserBalanceRepository = new PostgresUserBalanceRepository();
