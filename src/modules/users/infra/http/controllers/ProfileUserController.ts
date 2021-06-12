@@ -7,6 +7,7 @@ import { classToClass } from 'class-transformer';
 import SESMailProvider from '@shared/providers/MailProvider/SESMailProvider';
 import HandlebarsMailTemplateProvider from '@shared/providers/MailTemplateProvider/HandlebarsMailTemplateProvider';
 import EtherealMailProvider from '@shared/providers/MailProvider/EtherealMailProvider';
+import MailgunMailProvider from '@shared/providers/MailProvider/MailgunMailProvider';
 import PostgresUsersRepository from '../../typeorm/repositories/PostgresUsersRepository';
 import MongoUserTokensRepository from '../../typeorm/repositories/MongoUserTokensRepository';
 
@@ -23,23 +24,18 @@ class ProfileUserController {
   }
 
   async update(request: Request, response: Response): Promise<Response> {
-    const {
-      user_id,
-      username,
-      password,
-      old_password,
-      bio,
-      password_confirmation,
-      email,
-      token,
-      name,
-    } = request.body;
+    const { username, password, old_password, bio, email, token, name } =
+      request.body;
+    const user_id = request.user.id;
+
     const postgresUsersRepository = new PostgresUsersRepository();
     const mongoUserTokensRepository = new MongoUserTokensRepository();
     const handlebarsMailTemplateProvider = new HandlebarsMailTemplateProvider();
+
     const providers = {
       ses: new SESMailProvider(handlebarsMailTemplateProvider),
       ethereal: new EtherealMailProvider(handlebarsMailTemplateProvider),
+      mailgun: new MailgunMailProvider(handlebarsMailTemplateProvider),
     };
 
     const updateProfile = new UpdateProfileUserService(
@@ -54,7 +50,6 @@ class ProfileUserController {
       password,
       old_password,
       token,
-      password_confirmation,
       email,
       bio,
       name,
