@@ -4,6 +4,7 @@ import ISponsorshipsRepository from '@modules/sponsorships/repositories/ISponsor
 import AppError from '@shared/errors/AppError';
 import { hash } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
+import { inject, injectable } from 'tsyringe';
 import User from '../infra/typeorm/entities/User';
 import ISponsorBalanceRepository from '../repositories/ISponsorBalanceRepository';
 import ISponsoringSponsoredRepository from '../repositories/ISponsoringSponsoredRepository';
@@ -27,14 +28,25 @@ interface Response {
   user: User;
   token: string;
 }
-
+@injectable()
 export default class CreateUserService {
   constructor(
+    @inject('UsersRepository')
     private usersRepository: IUsersRepository,
+
+    @inject('UserBalanceRepository')
     private userBalanceRepository: IUserBalanceRepository,
+
+    @inject('SponsorBalanceRepository')
     private sponsorBalanceRepository: ISponsorBalanceRepository,
+
+    @inject('SponsorshipsRepository')
     private sponsorshipsRepository: ISponsorshipsRepository,
+
+    @inject('SponsoringSponsoredRepository')
     private sponsoringSponsoredRepository: ISponsoringSponsoredRepository,
+
+    @inject('UserSponsoringSponsoredCountRepository')
     private userSponsoringSponsoredCountRepository: IUserSponsoringSponsoredCountRepository,
   ) {}
 

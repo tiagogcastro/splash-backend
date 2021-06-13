@@ -1,5 +1,5 @@
 import { container } from 'tsyringe';
-import HandlebarsMailTemplateProvider from './HandlebarsMailTemplateProvider';
+import HandlebarsMailTemplateProvider from './implementations/HandlebarsMailTemplateProvider';
 import IMailTemplateProvider from './models/IMailTemplateProvider';
 
 container.registerSingleton<IMailTemplateProvider>(

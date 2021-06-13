@@ -5,14 +5,19 @@ import {
   Transporter,
   createTransport,
 } from 'nodemailer';
-import IMailTemplateProvider from '../MailTemplateProvider/models/IMailTemplateProvider';
-import ISendMailDTO from './dtos/ISendMailDTO';
-import IMailProvider from './models/IMailProvider';
+import { inject, injectable } from 'tsyringe';
+import IMailTemplateProvider from '../../MailTemplateProvider/models/IMailTemplateProvider';
+import ISendMailDTO from '../dtos/ISendMailDTO';
+import IMailProvider from '../models/IMailProvider';
 
+@injectable()
 export default class EtherealMailProvider implements IMailProvider {
-  private transporter: Transporter;
+  private client: Transporter;
 
-  constructor(private mailTemplateProvider: IMailTemplateProvider) {
+  constructor(
+    @inject('MailTemplateProvider')
+    private mailTemplateProvider: IMailTemplateProvider,
+  ) {
     createTestAccount().then(account => {
       const transporter = createTransport({
         host: account.smtp.host,
@@ -23,7 +28,7 @@ export default class EtherealMailProvider implements IMailProvider {
           pass: account.pass,
         },
       });
-      this.transporter = transporter;
+      this.client = transporter;
     });
   }
 
@@ -34,7 +39,7 @@ export default class EtherealMailProvider implements IMailProvider {
     template_data,
   }: ISendMailDTO): Promise<void> {
     const { name, address } = mailConfig.config.ethereal.defaults.from;
-    const message = await this.transporter.sendMail({
+    const message = await this.client.sendMail({
       to: {
         name: to.name,
         address: to.address,
