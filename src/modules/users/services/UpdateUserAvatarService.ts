@@ -1,5 +1,6 @@
 import AppError from '@shared/errors/AppError';
-import IStorageProvider from '@shared/providers/StorageProvider/models/IStorageProvider';
+import IStorageProvider from '@shared/container/providers/StorageProvider/models/IStorageProvider';
+import { inject, injectable } from 'tsyringe';
 import User from '../infra/typeorm/entities/User';
 import IUsersRepository from '../repositories/IUsersRepository';
 
@@ -7,10 +8,13 @@ interface RequestDTO {
   user_id: string;
   avatarFileName: string;
 }
+@injectable()
 class UpdateUserAvatarService {
   constructor(
+    @inject('UsersRepository')
     private usersRepository: IUsersRepository,
 
+    @inject('StorageProvider')
     private storageProvider: IStorageProvider,
   ) {}
 

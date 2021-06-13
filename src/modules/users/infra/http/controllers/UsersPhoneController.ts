@@ -1,15 +1,14 @@
-import CreateUsersByPhoneNumberService from '@modules/users/services/CreateUsersByPhoneNumberServices';
-import { Request, Response } from 'express';
-
-import client from 'twilio';
 import twilioConfig from '@config/twilio';
-import AppError from '@shared/errors/AppError';
 import PostgresSponsorshipsRepository from '@modules/sponsorships/infra/typeorm/repositories/PostgresSponsorshipsRepository';
-import PostgresUsersRepository from '../../typeorm/repositories/PostgresUsersRepository';
-import PostgresUserBalanceRepository from '../../typeorm/repositories/PostgresUserBalanceRepository';
-import PostgresSponsoringRepository from '../../typeorm/repositories/PostgresSponsoringRepository';
-import PostgresSponsoringSponsoredCountRepository from '../../typeorm/repositories/PostgresSponsoringSponsoredCountRepository';
+import CreateUserService from '@modules/users/services/CreateUserService';
+import AppError from '@shared/errors/AppError';
+import { Request, Response } from 'express';
+import client from 'twilio';
 import PostgresSponsorBalanceRepository from '../../typeorm/repositories/PostgresSponsorBalanceRepository';
+import PostgresSponsoringSponsoredRepository from '../../typeorm/repositories/PostgresSponsoringSponsoredRepository';
+import PostgresUserBalanceRepository from '../../typeorm/repositories/PostgresUserBalanceRepository';
+import PostgresUserSponsoringSponsoredCountRepository from '../../typeorm/repositories/PostgresUserSponsoringSponsoredCountRepository';
+import PostgresUsersRepository from '../../typeorm/repositories/PostgresUsersRepository';
 
 const { accountSid, authToken, servicesSid } = twilioConfig.twilio;
 
@@ -20,7 +19,7 @@ class UsersPhoneController {
     try {
       const { phone_number } = request.body;
 
-      const sendCode = await clientSendMessage.verify
+      await clientSendMessage.verify
         .services(servicesSid)
         .verifications.create({
           to: `+${String(phone_number)}`,
@@ -55,23 +54,24 @@ class UsersPhoneController {
     const postgresSponsorBalanceRepository =
       new PostgresSponsorBalanceRepository();
     const postgresSponsorshipsRepository = new PostgresSponsorshipsRepository();
-    const postgresSponsoringRepository = new PostgresSponsoringRepository();
-    const postgresSponsoringSponsoredCountRepository =
-      new PostgresSponsoringSponsoredCountRepository();
+    const postgresSponsoringSponsoredRepository =
+      new PostgresSponsoringSponsoredRepository();
+    const postgresUserSponsoringSponsoredCountRepository =
+      new PostgresUserSponsoringSponsoredCountRepository();
 
-    const createUser = new CreateUsersByPhoneNumberService(
+    const createUser = new CreateUserService(
       postgresUsersRepository,
       postgresUserBalanceRepository,
       postgresSponsorBalanceRepository,
       postgresSponsorshipsRepository,
-      postgresSponsoringRepository,
-      postgresSponsoringSponsoredCountRepository,
+      postgresSponsoringSponsoredRepository,
+      postgresUserSponsoringSponsoredCountRepository,
     );
 
     await clientSendMessage.verify
       .services(servicesSid)
       .verificationChecks.create({
-        to: phone_number,
+        to: `+${phone_number}`,
         code: String(verification_code),
       })
       .catch(error => {

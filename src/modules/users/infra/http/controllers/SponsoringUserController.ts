@@ -2,18 +2,19 @@ import { Request, Response } from 'express';
 
 import ListUsersWhoSponsorTheUser from '@modules/users/services/ListUsersWhoSponsorTheUser';
 import PostgresUsersRepository from '../../typeorm/repositories/PostgresUsersRepository';
-import PostgresSponsoringRepository from '../../typeorm/repositories/PostgresSponsoringRepository';
+import PostgresSponsoringSponsoredRepository from '../../typeorm/repositories/PostgresSponsoringSponsoredRepository';
 
 class SponsoringController {
   async index(request: Request, response: Response): Promise<Response> {
     const { user_id } = request.params;
 
-    const usersRepository = new PostgresUsersRepository();
-    const sponsoringRepository = new PostgresSponsoringRepository();
+    const postgresUsersRepository = new PostgresUsersRepository();
+    const postgresSponsoringSponsoredRepository =
+      new PostgresSponsoringSponsoredRepository();
 
     const listUsersWhoSponsorTheUser = new ListUsersWhoSponsorTheUser(
-      usersRepository,
-      sponsoringRepository,
+      postgresUsersRepository,
+      postgresSponsoringSponsoredRepository,
     );
 
     const sponsoring = await listUsersWhoSponsorTheUser.execute(user_id);

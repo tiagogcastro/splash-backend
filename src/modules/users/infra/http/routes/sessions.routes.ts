@@ -29,7 +29,7 @@ sessionsRoutes.post(
   '/sms',
   celebrate({
     [Segments.BODY]: {
-      phone_number: Joi.string().regex(/^\+[0-9]+$/i),
+      phone_number: Joi.string().regex(/^[0-9]+$/i),
       password: Joi.when('phone_number', {
         is: Joi.exist(),
         then: Joi.string().required().min(8).max(100),

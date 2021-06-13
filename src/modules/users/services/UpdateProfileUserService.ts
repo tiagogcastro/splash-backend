@@ -1,5 +1,5 @@
 import AppError from '@shared/errors/AppError';
-import IMailProvider from '@shared/providers/MailProvider/models/IMailProvider';
+import IMailProvider from '@shared/container/providers/MailProvider/models/IMailProvider';
 import { compare, hash } from 'bcryptjs';
 import { addHours, isAfter } from 'date-fns';
 import path from 'path';
@@ -134,11 +134,11 @@ class UpdateProfileUserService {
       user.bio = bio;
     }
 
-    if (user.email !== email) {
+    if (email && user.email !== email) {
       user.email = email;
     }
 
-    if (user.username !== username) {
+    if (username && user.username !== username) {
       user.username = username;
     }
 

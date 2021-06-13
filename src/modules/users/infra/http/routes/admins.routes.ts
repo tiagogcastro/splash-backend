@@ -2,11 +2,11 @@ import ensureAdministrator from '@shared/infra/http/middlewares/ensureAdministra
 import { celebrate, Joi, Segments } from 'celebrate';
 import { Router } from 'express';
 import AdminsController from '../controllers/AdminsController';
-import UsersEmailController from '../controllers/UsersEmailController';
+import UsersController from '../controllers/UsersController';
 import ensureAuthenticated from '../middleware/ensureAuthenticated';
 
 const adminsRoutes = Router();
-const usersEmailController = new UsersEmailController();
+const usersController = new UsersController();
 const adminsController = new AdminsController();
 
 adminsRoutes.use(ensureAuthenticated, ensureAdministrator);
@@ -14,17 +14,29 @@ adminsRoutes.post(
   '/dashboard',
   celebrate({
     [Segments.BODY]: {
-      name: Joi.string().min(2).max(30).required(),
-      email: Joi.string().email().min(4).max(100).required(),
+      name: Joi.string().min(2).max(30),
+      email: Joi.string().email().min(4).max(100),
+      username: Joi.string()
+        .regex(/^[A-Z0-9_.]+$/i)
+        .min(1)
+        .max(30),
       password: Joi.when('email', {
         is: Joi.exist(),
         then: Joi.string().min(8).max(100).required(),
       }),
+      phone_number: Joi.string()
+        .regex(/^[0-9]+$/)
+        .min(8)
+        .max(15)
+        .when('email', {
+          not: Joi.exist(),
+          then: Joi.string().required(),
+        }),
       balance_amount: Joi.number(),
-      roles: Joi.string().min(2).max(10).required(),
+      roles: Joi.string().min(2).max(10),
     },
   }),
-  usersEmailController.create,
+  usersController.create,
 );
 
 adminsRoutes.put(

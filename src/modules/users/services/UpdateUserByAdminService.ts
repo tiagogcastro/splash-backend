@@ -1,13 +1,18 @@
 import AppError from '@shared/errors/AppError';
 import { hash } from 'bcryptjs';
+import { inject, injectable } from 'tsyringe';
 import IUpdateUserByAdminServiceDTO from '../dtos/IUpdateUserByAdminServiceDTO';
 import UserBalance from '../infra/typeorm/entities/UserBalance';
 import IUserBalanceRepository from '../repositories/IUserBalanceRepository';
 import IUsersRepository from '../repositories/IUsersRepository';
 
+@injectable()
 class UpdateUserByAdminService {
   constructor(
+    @inject('UsersRepository')
     private usersRepository: IUsersRepository,
+
+    @inject('UserBalanceRepository')
     private userBalanceRepository: IUserBalanceRepository,
   ) {}
 

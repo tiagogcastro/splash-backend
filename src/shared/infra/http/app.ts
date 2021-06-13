@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable global-require */
 import 'reflect-metadata';
 import 'dotenv/config';
-import 'express-async-errors';
 import '../typeorm/connection';
 import '../mongoose/connection';
+import 'express-async-errors';
+import '@shared/container';
 import uploadConfig from '@config/upload';
 import cors from 'cors';
 import express, { NextFunction, Request, Response } from 'express';
@@ -35,7 +34,6 @@ app.use(
         .status(error.statusCode)
         .json({ status: 'error', message: error.message });
     }
-    console.error(error);
 
     return response
       .status(500)

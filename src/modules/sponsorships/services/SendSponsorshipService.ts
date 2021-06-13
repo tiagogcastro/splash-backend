@@ -128,30 +128,22 @@ export default class SendSponsorshipService {
     let balanceAmount = `${first}.00`;
     if (second) balanceAmount = `${first}.${second.padEnd(2, '0')}`;
 
-    let messageFromSender = {
-      name: sender.username,
-      subject: `você enviou R$${balanceAmount} para ${recipient.username}`,
-    };
+    let subject = `você enviou R$${balanceAmount} para ${recipient.username}`;
+
     if (recipient.roles === 'shop') {
-      messageFromSender = {
-        name: sender.username,
-        subject: `você pagou R$${balanceAmount} para ${recipient.username}`,
-      };
+      subject = `você pagou R$${balanceAmount} para ${recipient.username}`;
     }
 
     await this.notificationsRepository.create({
       recipient_id: sponsor_user_id,
       sender_id: sponsor_user_id,
-      content: JSON.stringify(messageFromSender),
+      content: subject,
     });
 
     await this.notificationsRepository.create({
       recipient_id: user_recipient_id,
       sender_id: sponsor_user_id,
-      content: JSON.stringify({
-        name: recipient.username,
-        subject: `você recebeu R$${balanceAmount} de ${sender.username}`,
-      }),
+      content: `você recebeu R$${balanceAmount} de ${sender.username}`,
     });
 
     return sponsorship;
