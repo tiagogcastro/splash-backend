@@ -1,7 +1,7 @@
 import memory from '@modules/sponsorships/in-memory';
 import PostgresSponsorshipsRepository from '@modules/sponsorships/infra/typeorm/repositories/PostgresSponsorshipsRepository';
 import CreateQRCodeService from '@modules/users/services/CreateQRCodeService';
-import QRImageProvider from '@shared/providers/QRCodeProvider/QRImageProvider';
+import QRImageProvider from '@shared/container/providers/QRCodeProvider/QRImageProvider';
 import { Request, Response } from 'express';
 
 class QRCodeController {

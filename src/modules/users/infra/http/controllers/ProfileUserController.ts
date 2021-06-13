@@ -4,10 +4,10 @@ import UpdateProfileUserService from '@modules/users/services/UpdateProfileUserS
 import ShowProfileUserService from '@modules/users/services/ShowProfileUserService';
 import DeleteProfileUserService from '@modules/users/services/DeleteProfileUserService';
 import { classToClass } from 'class-transformer';
-import SESMailProvider from '@shared/providers/MailProvider/SESMailProvider';
-import HandlebarsMailTemplateProvider from '@shared/providers/MailTemplateProvider/HandlebarsMailTemplateProvider';
-import EtherealMailProvider from '@shared/providers/MailProvider/EtherealMailProvider';
-import MailgunMailProvider from '@shared/providers/MailProvider/MailgunMailProvider';
+import SESMailProvider from '@shared/container/providers/MailProvider/SESMailProvider';
+import HandlebarsMailTemplateProvider from '@shared/container/providers/MailTemplateProvider/HandlebarsMailTemplateProvider';
+import EtherealMailProvider from '@shared/container/providers/MailProvider/EtherealMailProvider';
+import MailgunMailProvider from '@shared/container/providers/MailProvider/MailgunMailProvider';
 import PostgresUsersRepository from '../../typeorm/repositories/PostgresUsersRepository';
 import MongoUserTokensRepository from '../../typeorm/repositories/MongoUserTokensRepository';
 

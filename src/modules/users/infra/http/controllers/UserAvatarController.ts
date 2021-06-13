@@ -1,7 +1,7 @@
 import uploadConfig from '@config/upload';
 import UpdateUserAvatarService from '@modules/users/services/UpdateUserAvatarService';
-import DiskStorageProvider from '@shared/providers/StorageProvider/DiskStorageProvider';
-import S3StorageProvider from '@shared/providers/StorageProvider/S3StorageProvider';
+import DiskStorageProvider from '@shared/container/providers/StorageProvider/DiskStorageProvider';
+import S3StorageProvider from '@shared/container/providers/StorageProvider/S3StorageProvider';
 import { classToClass } from 'class-transformer';
 import { Request, Response } from 'express';
 import PostgresUsersRepository from '../../typeorm/repositories/PostgresUsersRepository';
