@@ -3,18 +3,19 @@ import { Request, Response } from 'express';
 import SponsorUserService from '@modules/users/services/SponsorUserService';
 import UnSponsoringUserService from '@modules/users/services/UnSponsoringUserService';
 import PostgresUsersRepository from '../../typeorm/repositories/PostgresUsersRepository';
-import PostgresSponsoringRepository from '../../typeorm/repositories/PostgresSponsoringRepository';
+import PostgresSponsoringSponsoredRepository from '../../typeorm/repositories/PostgresSponsoringSponsoredRepository';
 
 class SponsoringController {
   async update(request: Request, response: Response): Promise<Response> {
     const { sponsoring_userId, sponsored_userId } = request.body;
 
-    const usersRepository = new PostgresUsersRepository();
-    const sponsoringRepository = new PostgresSponsoringRepository();
+    const postgresUsersRepository = new PostgresUsersRepository();
+    const postgresSponsoringSponsoredRepository =
+      new PostgresSponsoringSponsoredRepository();
 
     const sponsoringUser = new SponsorUserService(
-      usersRepository,
-      sponsoringRepository,
+      postgresUsersRepository,
+      postgresSponsoringSponsoredRepository,
     );
 
     const sponsor = await sponsoringUser.execute(
@@ -29,12 +30,13 @@ class SponsoringController {
     const { user_id_to_remove_sponsor, user_id_to_remove_sponsored } =
       request.body;
 
-    const usersRepository = new PostgresUsersRepository();
-    const sponsoringRepository = new PostgresSponsoringRepository();
+    const postgresUsersRepository = new PostgresUsersRepository();
+    const postgresSponsoringSponsoredRepository =
+      new PostgresSponsoringSponsoredRepository();
 
     const UnsponsoringUser = new UnSponsoringUserService(
-      usersRepository,
-      sponsoringRepository,
+      postgresUsersRepository,
+      postgresSponsoringSponsoredRepository,
     );
 
     await UnsponsoringUser.execute(

@@ -32,8 +32,11 @@ class AddEmailAndPasswordUserService {
       throw new AppError('Este email já existe', 401);
     }
 
-    if(userLogged.email && userLogged.password) {
-      throw new AppError('Você já tem um e-mail e senha registrado em sua conta', 401);
+    if (userLogged.email && userLogged.password) {
+      throw new AppError(
+        'Você já tem um e-mail e senha registrado em sua conta',
+        401,
+      );
     }
     if (
       (password && !password_confirmation) ||

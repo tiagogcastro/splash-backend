@@ -11,7 +11,7 @@ import { v4 as uuid } from 'uuid';
 import User from './User';
 
 @Entity('user_sponsorsing_sponsored_count')
-class SponsoringSponsoredCount {
+class UserSponsoringSponsoredCount {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -40,4 +40,4 @@ class SponsoringSponsoredCount {
   }
 }
 
-export default SponsoringSponsoredCount;
+export default UserSponsoringSponsoredCount;

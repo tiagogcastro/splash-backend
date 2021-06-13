@@ -12,8 +12,8 @@ import User from '../infra/typeorm/entities/User';
 import IUserBalanceRepository from '../repositories/IUserBalanceRepository';
 import IUsersRepository from '../repositories/IUsersRepository';
 import ISponsorBalanceRepository from '../repositories/ISponsorBalanceRepository';
-import ISponsoringRepository from '../repositories/ISponsoringRepository';
-import ISponsoringSponsoredCountRepository from '../repositories/ISponsoringSponsoredCountRepository';
+import ISponsoringSponsoredRepository from '../repositories/ISponsoringSponsoredRepository';
+import IUserSponsoringSponsoredCountRepository from '../repositories/IUserSponsoringSponsoredCountRepository';
 
 interface Request {
   roles?: string;
@@ -46,8 +46,8 @@ export default class CreateUsersByPhoneNumberService {
     private userBalanceRepository: IUserBalanceRepository,
     private sponsorBalanceRepository: ISponsorBalanceRepository,
     private sponsorshipsRepository: ISponsorshipsRepository,
-    private sponsoring: ISponsoringRepository,
-    private sponsoringSponsoredCount: ISponsoringSponsoredCountRepository,
+    private sponsoringSponsoredRepository: ISponsoringSponsoredRepository,
+    private userSponsoringSponsoredCountRepository: IUserSponsoringSponsoredCountRepository,
   ) {}
 
   public async execute({
@@ -130,20 +130,20 @@ export default class CreateUsersByPhoneNumberService {
       }
 
       // A loja passa a patrocinar o usuário
-      // await this.sponsoring.create({
+      // await this.sponsoringSponsoredRepository.create({
       //   sponsor_user_id: sponsorship.sponsor_user_id,
       //   sponsored_user_id: user.id,
       // });
 
       // Loja fica com +1 patrocinado e o usuário fica com +1 patrocinando ele
-      await this.sponsoringSponsoredCount.updateCount(
+      await this.userSponsoringSponsoredCountRepository.updateCount(
         sponsorship.sponsor_user_id,
         {
           sponsoring_count: +1,
         },
       );
 
-      await this.sponsoringSponsoredCount.updateCount(user.id, {
+      await this.userSponsoringSponsoredCountRepository.updateCount(user.id, {
         sponsored_count: +1,
       });
       // Deixa o patrocinio resgatado e indisponivel

@@ -1,12 +1,12 @@
 import AppError from '@shared/errors/AppError';
-import Sponsoring_Sponsored from '../infra/typeorm/entities/Sponsoring_Sponsored';
-import ISponsoringRepository from '../repositories/ISponsoringRepository';
+import Sponsoring_Sponsored from '../infra/typeorm/entities/SponsoringSponsored';
+import ISponsoringSponsoredRepository from '../repositories/ISponsoringSponsoredRepository';
 import IUsersRepository from '../repositories/IUsersRepository';
 
 class ListUsersSponsoredByUser {
   constructor(
     private usersRepository: IUsersRepository,
-    private sponsoringRepository: ISponsoringRepository,
+    private sponsoringSponsoredRepository: ISponsoringSponsoredRepository,
   ) {}
 
   async execute(user_id: string): Promise<Sponsoring_Sponsored[] | undefined> {
@@ -17,7 +17,9 @@ class ListUsersSponsoredByUser {
     }
 
     const usersSponsored =
-      await this.sponsoringRepository.findAllBySponsoringUserId(user_id);
+      await this.sponsoringSponsoredRepository.findAllBySponsoringUserId(
+        user_id,
+      );
 
     return usersSponsored;
   }

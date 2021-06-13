@@ -1,14 +1,14 @@
-import CreateUsersByPhoneNumberService from '@modules/users/services/CreateUsersByPhoneNumberServices';
 import { Request, Response } from 'express';
 
 import client from 'twilio';
 import twilioConfig from '@config/twilio';
 import AppError from '@shared/errors/AppError';
 import PostgresSponsorshipsRepository from '@modules/sponsorships/infra/typeorm/repositories/PostgresSponsorshipsRepository';
+import CreateUserService from '@modules/users/services/CreateUserService';
 import PostgresUsersRepository from '../../typeorm/repositories/PostgresUsersRepository';
 import PostgresUserBalanceRepository from '../../typeorm/repositories/PostgresUserBalanceRepository';
-import PostgresSponsoringRepository from '../../typeorm/repositories/PostgresSponsoringRepository';
-import PostgresSponsoringSponsoredCountRepository from '../../typeorm/repositories/PostgresSponsoringSponsoredCountRepository';
+import PostgresSponsoringSponsoredRepository from '../../typeorm/repositories/PostgresSponsoringSponsoredRepository';
+import PostgresUserSponsoringSponsoredCountRepository from '../../typeorm/repositories/PostgresUserSponsoringSponsoredCountRepository';
 import PostgresSponsorBalanceRepository from '../../typeorm/repositories/PostgresSponsorBalanceRepository';
 
 const { accountSid, authToken, servicesSid } = twilioConfig.twilio;
@@ -55,17 +55,18 @@ class UsersPhoneController {
     const postgresSponsorBalanceRepository =
       new PostgresSponsorBalanceRepository();
     const postgresSponsorshipsRepository = new PostgresSponsorshipsRepository();
-    const postgresSponsoringRepository = new PostgresSponsoringRepository();
-    const postgresSponsoringSponsoredCountRepository =
-      new PostgresSponsoringSponsoredCountRepository();
+    const postgresSponsoringSponsoredRepository =
+      new PostgresSponsoringSponsoredRepository();
+    const postgresUserSponsoringSponsoredCountRepository =
+      new PostgresUserSponsoringSponsoredCountRepository();
 
-    const createUser = new CreateUsersByPhoneNumberService(
+    const createUser = new CreateUserService(
       postgresUsersRepository,
       postgresUserBalanceRepository,
       postgresSponsorBalanceRepository,
       postgresSponsorshipsRepository,
-      postgresSponsoringRepository,
-      postgresSponsoringSponsoredCountRepository,
+      postgresSponsoringSponsoredRepository,
+      postgresUserSponsoringSponsoredCountRepository,
     );
 
     await clientSendMessage.verify

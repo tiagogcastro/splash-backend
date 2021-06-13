@@ -9,7 +9,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-import SponsoringSponsoredCount from './SponsoringSponsoredCount';
+import UserSponsoringSponsoredCount from './UserSponsoringSponsoredCount';
 import UserBalance from './UserBalance';
 
 @Entity('users')
@@ -55,10 +55,10 @@ class User {
   user_balance: UserBalance;
 
   @OneToOne(
-    () => SponsoringSponsoredCount,
-    sponsoringSponsoredCount => sponsoringSponsoredCount.user,
+    () => UserSponsoringSponsoredCount,
+    userSponsoringSponsoredCount => userSponsoringSponsoredCount.user,
   )
-  sponsoring_sponsored_count: SponsoringSponsoredCount;
+  sponsoring_sponsored_count: UserSponsoringSponsoredCount;
 
   @Column({
     nullable: true,

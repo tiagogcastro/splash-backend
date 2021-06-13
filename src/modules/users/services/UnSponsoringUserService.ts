@@ -1,11 +1,11 @@
 import AppError from '@shared/errors/AppError';
-import ISponsoringRepository from '../repositories/ISponsoringRepository';
+import ISponsoringSponsoredRepository from '../repositories/ISponsoringSponsoredRepository';
 import IUsersRepository from '../repositories/IUsersRepository';
 
 class UnSponsoringUserService {
   constructor(
     private usersRepository: IUsersRepository,
-    private sponsoringRepository: ISponsoringRepository,
+    private sponsoringSponsoredRepository: ISponsoringSponsoredRepository,
   ) {}
 
   async execute(
@@ -29,13 +29,13 @@ class UnSponsoringUserService {
     }
 
     const sponsoringExist =
-      await this.sponsoringRepository.findBySponsoringAndSponsored(
+      await this.sponsoringSponsoredRepository.findBySponsoringAndSponsored(
         user_id_to_remove_sponsor,
         user_id_to_remove_sponsored,
       );
 
     if (sponsoringExist) {
-      await this.sponsoringRepository.deleteById(sponsoringExist.id);
+      await this.sponsoringSponsoredRepository.deleteById(sponsoringExist.id);
     }
   }
 }
