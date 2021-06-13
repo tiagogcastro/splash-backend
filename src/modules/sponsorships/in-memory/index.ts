@@ -1,6 +1,6 @@
 const memory = {
   sponsorship: {
-    code: 'in-memory',
+    code: '*',
   },
 };
 

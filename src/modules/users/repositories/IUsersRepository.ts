@@ -7,7 +7,7 @@ export interface IUpdateResult {
   affected?: number;
 }
 export default interface IUsersRepository {
-  createByEmail(userData: ICreateUserByEmailDTO): Promise<User>;
+  create(userData: ICreateUserByEmailDTO): Promise<User>;
   createByPhoneNumber(userData: ICreateUserPhoneNumberDTO): Promise<User>;
   findByEmail(email: string | undefined): Promise<User | undefined>;
   findById(id: string | number): Promise<User | undefined>;

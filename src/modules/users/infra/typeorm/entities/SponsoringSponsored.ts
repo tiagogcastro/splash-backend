@@ -1,12 +1,11 @@
 import {
-  ObjectID,
-  Entity,
-  CreateDateColumn,
-  UpdateDateColumn,
   Column,
-  ManyToOne,
+  CreateDateColumn,
+  Entity,
   JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import User from './User';
@@ -16,13 +15,12 @@ class Sponsoring {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  // No banco de dados
   @Column('uuid')
   sponsor_user_id: string;
-  
+
   @Column('uuid')
   sponsored_user_id: string;
-  
+
   @ManyToOne(() => User)
   @JoinColumn({ name: 'sponsor_user_id' })
   sponsor_userId: User;

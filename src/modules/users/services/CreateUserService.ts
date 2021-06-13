@@ -6,20 +6,21 @@ import { hash } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import User from '../infra/typeorm/entities/User';
 import ISponsorBalanceRepository from '../repositories/ISponsorBalanceRepository';
-import ISponsoringRepository from '../repositories/ISponsoringRepository';
-import ISponsoringSponsoredCountRepository from '../repositories/ISponsoringSponsoredCountRepository';
+import ISponsoringSponsoredRepository from '../repositories/ISponsoringSponsoredRepository';
+import IUserSponsoringSponsoredCountRepository from '../repositories/IUserSponsoringSponsoredCountRepository';
 import IUserBalanceRepository from '../repositories/IUserBalanceRepository';
 import IUsersRepository from '../repositories/IUsersRepository';
 
 interface Request {
   roles?: string;
   name?: string;
-  email: string;
+  phone_number?: string;
+  email?: string;
   balance_amount?: number;
   username?: string;
   password: string;
   sponsorship_code?: string;
-  terms: boolean;
+  terms?: boolean;
 }
 
 interface Response {
@@ -27,19 +28,20 @@ interface Response {
   token: string;
 }
 
-export default class CreateUsersService {
+export default class CreateUserService {
   constructor(
     private usersRepository: IUsersRepository,
     private userBalanceRepository: IUserBalanceRepository,
     private sponsorBalanceRepository: ISponsorBalanceRepository,
     private sponsorshipsRepository: ISponsorshipsRepository,
-    private sponsoring: ISponsoringRepository,
-    private sponsoringSponsoredCount: ISponsoringSponsoredCountRepository,
+    private sponsoringSponsoredRepository: ISponsoringSponsoredRepository,
+    private userSponsoringSponsoredCountRepository: IUserSponsoringSponsoredCountRepository,
   ) {}
 
   public async execute({
     roles,
     name,
+    phone_number,
     username,
     email,
     balance_amount = 0,
@@ -47,29 +49,39 @@ export default class CreateUsersService {
     sponsorship_code,
     terms,
   }: Request): Promise<Response> {
-    const checkEmailAlreadyExist = await this.usersRepository.findByEmail(
-      email,
-    );
     const sponsorship =
       await this.sponsorshipsRepository.findByUnreadSponsorshipCode(
         sponsorship_code,
       );
 
-    const checkUserUsernameExist = await this.usersRepository.findByUsername(
-      username,
-    );
+    if (phone_number) {
+      const checkUserPhoneNumberExists =
+        await this.usersRepository.findByPhoneNumber(phone_number);
 
-    if (checkEmailAlreadyExist) {
-      throw new AppError('This email address already exists.');
+      if (checkUserPhoneNumberExists) {
+        throw new AppError('This phone number already exists');
+      }
     }
-
-    if (checkUserUsernameExist) {
-      throw new AppError('This username already exists.', 400);
+    if (username) {
+      const checkUserUsernameExist = await this.usersRepository.findByUsername(
+        username,
+      );
+      if (checkUserUsernameExist) {
+        throw new AppError('This username already exists.', 400);
+      }
+    }
+    if (email) {
+      const checkEmailAlreadyExist = await this.usersRepository.findByEmail(
+        email,
+      );
+      if (checkEmailAlreadyExist) {
+        throw new AppError('This email address already exists.');
+      }
     }
 
     if (!terms && !roles) {
       throw new AppError(
-        'You cannot to create a account without accepting the terms',
+        'You cannot to create an account without accepting the terms',
         400,
       );
     }
@@ -83,9 +95,6 @@ export default class CreateUsersService {
 
     username = username.replace(/\s/g, '');
 
-    if (!name) {
-      name = `name.${Math.random().toFixed(4).replace('.', '')}`;
-    }
     const hashedPassword = await hash(password, 8);
 
     let user: User;
@@ -104,14 +113,15 @@ export default class CreateUsersService {
         );
       }
 
-      user = await this.usersRepository.createByEmail({
+      user = await this.usersRepository.create({
         name,
         username,
+        roles: roles || 'default',
+        phone_number,
         email,
         password: hashedPassword,
       });
 
-      // Deixa o patrocinio resgatado e indisponivel
       sponsorship.sponsored_user_id = user.id;
       sponsorship.status = 'redeemed';
 
@@ -137,35 +147,28 @@ export default class CreateUsersService {
       }
 
       // A loja passa a patrocinar o usuário
-      await this.sponsoring.create({
+      await this.sponsoringSponsoredRepository.create({
         sponsor_user_id: sponsorship.sponsor_user_id,
         sponsored_user_id: user.id,
       });
 
       // Loja fica com +1 patrocinado e o usuário fica com +1 patrocinando ele
-      await this.sponsoringSponsoredCount.updateCount(
+      await this.userSponsoringSponsoredCountRepository.updateCount(
         sponsorship.sponsor_user_id,
         {
           sponsoring_count: +1,
         },
       );
 
-      await this.sponsoringSponsoredCount.updateCount(user.id, {
+      await this.userSponsoringSponsoredCountRepository.updateCount(user.id, {
         sponsored_count: +1,
       });
-      // Deixa o patrocinio resgatado e indisponivel
-
-      await this.sponsorshipsRepository.updateSponsorship(
-        sponsorship.sponsor_user_id,
-        {
-          sponsored_user_id: user.id,
-          status: 'redeemed',
-        },
-      );
     } else {
-      user = await this.usersRepository.createByEmail({
+      user = await this.usersRepository.create({
         name,
         username,
+        phone_number,
+        roles: roles || 'default',
         email,
         password: hashedPassword,
       });
@@ -174,10 +177,6 @@ export default class CreateUsersService {
         user_id: user.id,
         available_for_withdraw: balance_amount,
         total_balance: balance_amount,
-      });
-
-      await this.usersRepository.update(user.id, {
-        roles,
       });
     }
 

@@ -6,8 +6,13 @@ import PostgresUsersRepository from '../../typeorm/repositories/PostgresUsersRep
 
 class AdminsController {
   async update(request: Request, response: Response): Promise<Response> {
-    const { user_id, balance_amount_add, roles, withdraw_amount } =
-      request.body;
+    const {
+      user_id,
+      balance_amount_add,
+      reset_password,
+      roles,
+      withdraw_amount,
+    } = request.body;
     const postgresUsersRepository = new PostgresUsersRepository();
     const postgresUserBalanceRepository = new PostgresUserBalanceRepository();
 
@@ -18,6 +23,7 @@ class AdminsController {
     const userBalance = await updateUserByAdmin.execute({
       user_id,
       balance_amount_add,
+      reset_password,
       roles,
       withdraw_amount,
     });

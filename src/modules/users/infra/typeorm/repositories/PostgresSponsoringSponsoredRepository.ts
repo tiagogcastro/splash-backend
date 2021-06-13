@@ -1,22 +1,24 @@
 import ICreateSponsoringDTO from '@modules/users/dtos/ICreateSponsoringDTO';
-import ISponsoringRepository from '@modules/users/repositories/ISponsoringRepository';
+import ISponsoringSponsoredRepository from '@modules/users/repositories/ISponsoringSponsoredRepository';
 import { getRepository, Repository } from 'typeorm';
-import Sponsoring_Sponsored from '../entities/Sponsoring_Sponsored';
+import SponsoringSponsored from '../entities/SponsoringSponsored';
 
-export default class PostgresSponsoringRepository
-  implements ISponsoringRepository
+export default class PostgresSponsoringSponsoredRepository
+  implements ISponsoringSponsoredRepository
 {
-  private ormRepository: Repository<Sponsoring_Sponsored>;
+  private ormRepository: Repository<SponsoringSponsored>;
 
   constructor() {
-    this.ormRepository = getRepository(Sponsoring_Sponsored);
+    this.ormRepository = getRepository(SponsoringSponsored);
   }
 
   async deleteById(id: string): Promise<void> {
     await this.ormRepository.delete(id);
   }
 
-  async create(sponsoringData: ICreateSponsoringDTO): Promise<Sponsoring_Sponsored> {
+  async create(
+    sponsoringData: ICreateSponsoringDTO,
+  ): Promise<SponsoringSponsored> {
     const userSponsoring = this.ormRepository.create(sponsoringData);
 
     await this.ormRepository.save(userSponsoring);
@@ -27,7 +29,7 @@ export default class PostgresSponsoringRepository
   async findBySponsoringAndSponsored(
     sponsor_user_id: string,
     sponsored_user_id: string,
-  ): Promise<Sponsoring_Sponsored | undefined> {
+  ): Promise<SponsoringSponsored | undefined> {
     const userSponsoring = await this.ormRepository.findOne({
       where: {
         sponsor_user_id,
@@ -39,7 +41,7 @@ export default class PostgresSponsoringRepository
 
   async findAllBySponsoringUserId(
     user_id: string,
-  ): Promise<Sponsoring_Sponsored[]> {
+  ): Promise<SponsoringSponsored[]> {
     const usersSponsoring = await this.ormRepository.find({
       where: {
         sponsor_user_id: user_id,
@@ -51,7 +53,7 @@ export default class PostgresSponsoringRepository
 
   async findAllBySponsoredUserId(
     user_id: string,
-  ): Promise<Sponsoring_Sponsored[]> {
+  ): Promise<SponsoringSponsored[]> {
     const usersSponsored = await this.ormRepository.find({
       where: {
         sponsored_user_id: user_id,

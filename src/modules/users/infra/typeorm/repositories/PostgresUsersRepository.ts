@@ -15,7 +15,7 @@ export default class PostgresUsersRepository implements IUsersRepository {
     this.ormRepository = getRepository(User);
   }
 
-  async createByEmail(userData: ICreateUserByEmailDTO): Promise<User> {
+  async create(userData: ICreateUserByEmailDTO): Promise<User> {
     const user = this.ormRepository.create(userData);
 
     await this.ormRepository.save(user);
@@ -60,6 +60,7 @@ export default class PostgresUsersRepository implements IUsersRepository {
       where: {
         username,
       },
+      relations: ['user_balance', 'sponsoring_sponsored_count'],
     });
     return user;
   }
