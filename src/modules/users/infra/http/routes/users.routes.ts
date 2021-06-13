@@ -2,12 +2,10 @@ import { celebrate, Joi, Segments } from 'celebrate';
 import { Router } from 'express';
 import QRCodeController from '../controllers/QRCodeController';
 import UsersController from '../controllers/UsersController';
-import UsersEmailController from '../controllers/UsersEmailController';
 import UsersPhoneController from '../controllers/UsersPhoneController';
 import createUserByPhoneNumberMiddleware from '../middleware/createUserByPhoneNumberMiddleware';
 import ensureAuthenticated from '../middleware/ensureAuthenticated';
 import ensureLimitedCodeRequests from '../middleware/ensureLimitedCodeRequests';
-import smsRateLimit from '../middleware/smsRateLimiter';
 
 const usersRoutes = Router();
 
