@@ -28,25 +28,13 @@ interface Response {
   user: User;
   token: string;
 }
-@injectable()
 export default class CreateUserService {
   constructor(
-    @inject('UsersRepository')
     private usersRepository: IUsersRepository,
-
-    @inject('UserBalanceRepository')
     private userBalanceRepository: IUserBalanceRepository,
-
-    @inject('SponsorBalanceRepository')
     private sponsorBalanceRepository: ISponsorBalanceRepository,
-
-    @inject('SponsorshipsRepository')
     private sponsorshipsRepository: ISponsorshipsRepository,
-
-    @inject('SponsoringSponsoredRepository')
     private sponsoringSponsoredRepository: ISponsoringSponsoredRepository,
-
-    @inject('UserSponsoringSponsoredCountRepository')
     private userSponsoringSponsoredCountRepository: IUserSponsoringSponsoredCountRepository,
   ) {}
 

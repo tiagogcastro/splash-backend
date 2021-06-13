@@ -1,9 +1,14 @@
 import twilioConfig from '@config/twilio';
+import PostgresSponsorshipsRepository from '@modules/sponsorships/infra/typeorm/repositories/PostgresSponsorshipsRepository';
 import CreateUserService from '@modules/users/services/CreateUserService';
 import AppError from '@shared/errors/AppError';
 import { Request, Response } from 'express';
-import { container } from 'tsyringe';
 import client from 'twilio';
+import PostgresSponsorBalanceRepository from '../../typeorm/repositories/PostgresSponsorBalanceRepository';
+import PostgresSponsoringSponsoredRepository from '../../typeorm/repositories/PostgresSponsoringSponsoredRepository';
+import PostgresUserBalanceRepository from '../../typeorm/repositories/PostgresUserBalanceRepository';
+import PostgresUserSponsoringSponsoredCountRepository from '../../typeorm/repositories/PostgresUserSponsoringSponsoredCountRepository';
+import PostgresUsersRepository from '../../typeorm/repositories/PostgresUsersRepository';
 
 const { accountSid, authToken, servicesSid } = twilioConfig.twilio;
 
@@ -44,7 +49,23 @@ class UsersPhoneController {
 
     const { phone_number } = request.user;
 
-    const createUser = container.resolve(CreateUserService);
+    const postgresUsersRepository = new PostgresUsersRepository();
+    const postgresUserBalanceRepository = new PostgresUserBalanceRepository();
+    const postgresSponsorBalanceRepository =
+      new PostgresSponsorBalanceRepository();
+    const postgresSponsorshipsRepository = new PostgresSponsorshipsRepository();
+    const postgresSponsoringSponsoredRepository =
+      new PostgresSponsoringSponsoredRepository();
+    const postgresUserSponsoringSponsoredCountRepository =
+      new PostgresUserSponsoringSponsoredCountRepository();
+    const createUser = new CreateUserService(
+      postgresUsersRepository,
+      postgresUserBalanceRepository,
+      postgresSponsorBalanceRepository,
+      postgresSponsorshipsRepository,
+      postgresSponsoringSponsoredRepository,
+      postgresUserSponsoringSponsoredCountRepository,
+    );
 
     await clientSendMessage.verify
       .services(servicesSid)
