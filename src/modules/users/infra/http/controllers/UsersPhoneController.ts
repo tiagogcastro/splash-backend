@@ -70,7 +70,7 @@ class UsersPhoneController {
     await clientSendMessage.verify
       .services(servicesSid)
       .verificationChecks.create({
-        to: phone_number,
+        to: `+${phone_number}`,
         code: String(verification_code),
       })
       .catch(error => {
