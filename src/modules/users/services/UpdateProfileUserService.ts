@@ -134,11 +134,11 @@ class UpdateProfileUserService {
       user.bio = bio;
     }
 
-    if (user.email !== email) {
+    if (email && user.email !== email) {
       user.email = email;
     }
 
-    if (user.username !== username) {
+    if (username && user.username !== username) {
       user.username = username;
     }
 
