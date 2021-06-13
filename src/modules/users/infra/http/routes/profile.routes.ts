@@ -51,10 +51,6 @@ profileRoutes.patch(
 
 profileRoutes.delete('/', profileUserController.delete);
 
-profileRoutes.put(
-  '/add-email',
-  ensureAuthenticated,
-  usersEmailController.update,
-);
+profileRoutes.put('/add-email', usersEmailController.update);
 
 export default profileRoutes;
