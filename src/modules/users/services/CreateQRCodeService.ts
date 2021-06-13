@@ -1,6 +1,6 @@
 import ISponsorshipsRepository from '@modules/sponsorships/repositories/ISponsorshipsRepository';
 import AppError from '@shared/errors/AppError';
-import IQRCodeProvider from '@shared/providers/QRCodeProvider/models/IQRCodeProvider';
+import IQRCodeProvider from '@shared/container/providers/QRCodeProvider/models/IQRCodeProvider';
 import ICreateQRCodeServiceDTO from '../dtos/ICreateQRCodeServiceDTO';
 
 export default class CreateQRCodeService {

@@ -6,8 +6,8 @@
 // import MailgunMailProvider from './MailgunMailProvider';
 
 // const providers = {
-//   ses: container.resolve(SESMailProvider),
 //   ethereal: container.resolve(EtherealMailProvider),
+//   ses: container.resolve(SESMailProvider),
 //   mailgun: container.resolve(MailgunMailProvider),
 // };
 // container.registerInstance<IMailProvider>(
