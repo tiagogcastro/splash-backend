@@ -35,7 +35,7 @@ container.registerSingleton<ISponsorBalanceRepository>(
   PostgresSponsorBalanceRepository,
 );
 container.registerSingleton<ISponsoringSponsoredRepository>(
-  'SponsorBalanceRepository',
+  'sponsoringSponsoredRepository',
   PostgresSponsoringSponsoredRepository,
 );
 container.registerSingleton<IUserBalanceRepository>(
