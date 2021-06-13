@@ -1,12 +1,12 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export default class CreateUserSponsorsingSponsored1622735342066
+export default class CreateUserSponsoringSponsored1622735342066
   implements MigrationInterface
 {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'user_sponsorsing_sponsored_count',
+        name: 'user_sponsoring_sponsored_count',
         columns: [
           {
             name: 'id',
