@@ -1,29 +1,14 @@
-<<<<<<< HEAD
 import twilioConfig from '@config/twilio';
-import PostgresSponsorshipsRepository from '@modules/sponsorships/infra/typeorm/repositories/PostgresSponsorshipsRepository';
-import CreateUsersByPhoneNumberService from '@modules/users/services/CreateUsersByPhoneNumberServices';
-import AppError from '@shared/errors/AppError';
-=======
->>>>>>> f29517f15a56a8a9ba4b6686def4c9455814842b
-import { Request, Response } from 'express';
-import client from 'twilio';
-<<<<<<< HEAD
-import PostgresSponsorBalanceRepository from '../../typeorm/repositories/PostgresSponsorBalanceRepository';
-import PostgresSponsoringRepository from '../../typeorm/repositories/PostgresSponsoringRepository';
-import PostgresSponsoringSponsoredCountRepository from '../../typeorm/repositories/PostgresSponsoringSponsoredCountRepository';
-import PostgresUserBalanceRepository from '../../typeorm/repositories/PostgresUserBalanceRepository';
-import PostgresUsersRepository from '../../typeorm/repositories/PostgresUsersRepository';
-=======
-import twilioConfig from '@config/twilio';
-import AppError from '@shared/errors/AppError';
 import PostgresSponsorshipsRepository from '@modules/sponsorships/infra/typeorm/repositories/PostgresSponsorshipsRepository';
 import CreateUserService from '@modules/users/services/CreateUserService';
-import PostgresUsersRepository from '../../typeorm/repositories/PostgresUsersRepository';
-import PostgresUserBalanceRepository from '../../typeorm/repositories/PostgresUserBalanceRepository';
-import PostgresSponsoringSponsoredRepository from '../../typeorm/repositories/PostgresSponsoringSponsoredRepository';
-import PostgresUserSponsoringSponsoredCountRepository from '../../typeorm/repositories/PostgresUserSponsoringSponsoredCountRepository';
+import AppError from '@shared/errors/AppError';
+import { Request, Response } from 'express';
+import client from 'twilio';
 import PostgresSponsorBalanceRepository from '../../typeorm/repositories/PostgresSponsorBalanceRepository';
->>>>>>> f29517f15a56a8a9ba4b6686def4c9455814842b
+import PostgresSponsoringSponsoredRepository from '../../typeorm/repositories/PostgresSponsoringSponsoredRepository';
+import PostgresUserBalanceRepository from '../../typeorm/repositories/PostgresUserBalanceRepository';
+import PostgresUserSponsoringSponsoredCountRepository from '../../typeorm/repositories/PostgresUserSponsoringSponsoredCountRepository';
+import PostgresUsersRepository from '../../typeorm/repositories/PostgresUsersRepository';
 
 const { accountSid, authToken, servicesSid } = twilioConfig.twilio;
 
