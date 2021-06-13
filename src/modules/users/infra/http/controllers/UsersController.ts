@@ -1,14 +1,8 @@
-import PostgresSponsorshipsRepository from '@modules/sponsorships/infra/typeorm/repositories/PostgresSponsorshipsRepository';
 import CreateUserService from '@modules/users/services/CreateUserService';
 import ShowUserBalanceService from '@modules/users/services/ShowUserBalanceService';
 import { classToClass } from 'class-transformer';
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
-import PostgresSponsorBalanceRepository from '../../typeorm/repositories/PostgresSponsorBalanceRepository';
-import PostgresSponsoringSponsoredRepository from '../../typeorm/repositories/PostgresSponsoringSponsoredRepository';
-import PostgresUserBalanceRepository from '../../typeorm/repositories/PostgresUserBalanceRepository';
-import PostgresUserSponsoringSponsoredCountRepository from '../../typeorm/repositories/PostgresUserSponsoringSponsoredCountRepository';
-import PostgresUsersRepository from '../../typeorm/repositories/PostgresUsersRepository';
 
 class UsersController {
   async create(request: Request, response: Response): Promise<Response> {
@@ -24,23 +18,7 @@ class UsersController {
       terms,
     } = await request.body;
 
-    const postgresUsersRepository = new PostgresUsersRepository();
-    const postgresUserBalanceRepository = new PostgresUserBalanceRepository();
-    const postgresSponsorBalanceRepository =
-      new PostgresSponsorBalanceRepository();
-    const postgresSponsorshipsRepository = new PostgresSponsorshipsRepository();
-    const postgresSponsoringSponsoredRepository =
-      new PostgresSponsoringSponsoredRepository();
-    const postgresUserSponsoringSponsoredCountRepository =
-      new PostgresUserSponsoringSponsoredCountRepository();
-    const createUser = new CreateUserService(
-      postgresUsersRepository,
-      postgresUserBalanceRepository,
-      postgresSponsorBalanceRepository,
-      postgresSponsorshipsRepository,
-      postgresSponsoringSponsoredRepository,
-      postgresUserSponsoringSponsoredCountRepository,
-    );
+    const createUser = container.resolve(CreateUserService);
 
     const { user, token } = await createUser.execute({
       name,

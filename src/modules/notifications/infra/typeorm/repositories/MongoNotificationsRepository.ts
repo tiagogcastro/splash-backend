@@ -13,6 +13,16 @@ export default class MongoNotificationsRepository
     this.ormRepository = getMongoRepository(Notification, 'mongo');
   }
 
+  async findAllNotifications(): Promise<Notification[]> {
+    const notifications = await this.ormRepository.find({
+      order: {
+        created_at: 'DESC',
+      },
+    });
+
+    return notifications;
+  }
+
   async findAllSponsorshipHistoryNotifications({
     recipient_id,
     sender_id,

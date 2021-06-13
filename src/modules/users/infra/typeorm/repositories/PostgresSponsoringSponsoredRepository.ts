@@ -46,7 +46,7 @@ export default class PostgresSponsoringSponsoredRepository
       where: {
         sponsor_user_id: user_id,
       },
-      relations: ['sponsored_userId'],
+      relations: ['sponsored'],
     });
     return usersSponsoring;
   }
@@ -58,7 +58,7 @@ export default class PostgresSponsoringSponsoredRepository
       where: {
         sponsored_user_id: user_id,
       },
-      relations: ['sponsor_userId'],
+      relations: ['sponsor'],
     });
     return usersSponsored;
   }

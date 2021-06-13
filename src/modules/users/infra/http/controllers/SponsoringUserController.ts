@@ -1,20 +1,13 @@
-import { Request, Response } from 'express';
-
 import ListUsersWhoSponsorTheUser from '@modules/users/services/ListUsersWhoSponsorTheUser';
-import PostgresUsersRepository from '../../typeorm/repositories/PostgresUsersRepository';
-import PostgresSponsoringSponsoredRepository from '../../typeorm/repositories/PostgresSponsoringSponsoredRepository';
+import { Request, Response } from 'express';
+import { container } from 'tsyringe';
 
 class SponsoringController {
   async index(request: Request, response: Response): Promise<Response> {
     const { user_id } = request.params;
 
-    const postgresUsersRepository = new PostgresUsersRepository();
-    const postgresSponsoringSponsoredRepository =
-      new PostgresSponsoringSponsoredRepository();
-
-    const listUsersWhoSponsorTheUser = new ListUsersWhoSponsorTheUser(
-      postgresUsersRepository,
-      postgresSponsoringSponsoredRepository,
+    const listUsersWhoSponsorTheUser = container.resolve(
+      ListUsersWhoSponsorTheUser,
     );
 
     const sponsoring = await listUsersWhoSponsorTheUser.execute(user_id);

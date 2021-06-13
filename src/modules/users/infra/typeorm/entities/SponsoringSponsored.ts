@@ -11,7 +11,7 @@ import { v4 as uuid } from 'uuid';
 import User from './User';
 
 @Entity('sponsoring_sponsored')
-class Sponsoring {
+class SponsoringSponsored {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -23,11 +23,11 @@ class Sponsoring {
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'sponsor_user_id' })
-  sponsor_userId: User;
+  sponsor: User;
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'sponsored_user_id' })
-  sponsored_userId: User;
+  sponsored: User;
 
   @CreateDateColumn()
   created_at: Date;
@@ -42,4 +42,4 @@ class Sponsoring {
   }
 }
 
-export default Sponsoring;
+export default SponsoringSponsored;

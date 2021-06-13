@@ -1,11 +1,16 @@
 import AppError from '@shared/errors/AppError';
+import { inject, injectable } from 'tsyringe';
 import SponsoringSponsored from '../infra/typeorm/entities/SponsoringSponsored';
 import ISponsoringSponsoredRepository from '../repositories/ISponsoringSponsoredRepository';
 import IUsersRepository from '../repositories/IUsersRepository';
 
+@injectable()
 class ListUsersWhoSponsorTheUser {
   constructor(
+    @inject('UsersRepository')
     private usersRepository: IUsersRepository,
+
+    @inject('SponsoringSponsoredRepository')
     private sponsoringSponsoredRepository: ISponsoringSponsoredRepository,
   ) {}
 
