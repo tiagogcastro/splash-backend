@@ -1,19 +1,18 @@
 import mailConfig from '@config/mail';
-import {
-  createTestAccount,
-  getTestMessageUrl,
-  Transporter,
-  createTransport,
-} from 'nodemailer';
 import { NodeMailgun } from 'ts-mailgun';
-import IMailTemplateProvider from '../MailTemplateProvider/models/IMailTemplateProvider';
-import ISendMailDTO from './dtos/ISendMailDTO';
-import IMailProvider from './models/IMailProvider';
+import { inject, injectable } from 'tsyringe';
+import IMailTemplateProvider from '../../MailTemplateProvider/models/IMailTemplateProvider';
+import ISendMailDTO from '../dtos/ISendMailDTO';
+import IMailProvider from '../models/IMailProvider';
 
+@injectable()
 export default class MailgunMailProvider implements IMailProvider {
   private client: NodeMailgun;
 
-  constructor(private mailTemplateProvider: IMailTemplateProvider) {
+  constructor(
+    @inject('MailTemplateProvider')
+    private mailTemplateProvider: IMailTemplateProvider,
+  ) {
     const { domain } = mailConfig.config.mailgun;
     const apiKey = process.env.MAILGUN_API_KEY || '*';
 

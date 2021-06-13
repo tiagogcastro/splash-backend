@@ -3,6 +3,7 @@ import IMailProvider from '@shared/container/providers/MailProvider/models/IMail
 import { compare, hash } from 'bcryptjs';
 import { addHours, isAfter } from 'date-fns';
 import path from 'path';
+import { inject, injectable } from 'tsyringe';
 import User from '../infra/typeorm/entities/User';
 import IUsersRepository from '../repositories/IUsersRepository';
 import IUserTokensRepository from '../repositories/IUserTokensRepository';
@@ -17,10 +18,16 @@ interface Request {
   password?: string;
   username: string;
 }
+@injectable()
 class UpdateProfileUserService {
   constructor(
+    @inject('UsersRepository')
     private usersRepository: IUsersRepository,
+
+    @inject('UserTokensRepository')
     private userTokensRepository: IUserTokensRepository,
+
+    @inject('MailProvider')
     private mailProvider: IMailProvider,
   ) {}
 
@@ -128,7 +135,9 @@ class UpdateProfileUserService {
       user.password = hashedPassword;
     }
 
-    user.name = name;
+    if (name) {
+      user.name = name;
+    }
 
     if (bio) {
       user.bio = bio;

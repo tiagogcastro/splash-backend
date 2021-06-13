@@ -9,7 +9,6 @@ interface Request {
   password: string;
   password_confirmation: string;
 }
-
 class AddEmailAndPasswordUserService {
   constructor(private usersRepository: IUsersRepository) {}
 

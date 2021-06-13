@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { compile } from 'handlebars';
-import IMailTemplateProvider from './models/IMailTemplateProvider';
-import IParseMailTemplateDTO from './dtos/IParseMailTemplateDTO';
+import IMailTemplateProvider from '../models/IMailTemplateProvider';
+import IParseMailTemplateDTO from '../dtos/IParseMailTemplateDTO';
 
 export default class HandlebarsMailTemplateProvider
   implements IMailTemplateProvider
