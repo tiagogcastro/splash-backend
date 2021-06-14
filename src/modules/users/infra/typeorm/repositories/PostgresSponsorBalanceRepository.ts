@@ -28,11 +28,11 @@ export default class PostgresSponsorBalanceRepository
   }
 
   async findSponsorBalance({
-    sponsor_shop_id,
+    sponsor_user_id,
     sponsored_user_id,
   }: IFindSponsorBalanceDTO): Promise<UserBalance | undefined> {
     const sponsorBalance = await this.ormRepository.findOne({
-      sponsor_shop_id,
+      sponsor_user_id,
       sponsored_user_id,
     });
 
@@ -41,12 +41,12 @@ export default class PostgresSponsorBalanceRepository
 
   async create({
     balance_amount,
-    sponsor_shop_id,
+    sponsor_user_id,
     sponsored_user_id,
   }: ICreateSponsorBalanceDTO): Promise<UserBalance> {
     const sponsorBalance = this.ormRepository.create({
       balance_amount,
-      sponsor_shop_id,
+      sponsor_user_id,
       sponsored_user_id,
     });
 

@@ -4,13 +4,13 @@ import { inject, injectable } from 'tsyringe';
 import IUpdateUserByAdminServiceDTO from '../dtos/IUpdateUserByAdminServiceDTO';
 import UserBalance from '../infra/typeorm/entities/UserBalance';
 import IUserBalanceRepository from '../repositories/IUserBalanceRepository';
-import IUsersRepository from '../repositories/IUsersRepository';
+import IUserRepository from '../repositories/IUsersRepository';
 
 @injectable()
 class UpdateUserByAdminService {
   constructor(
-    @inject('UsersRepository')
-    private usersRepository: IUsersRepository,
+    @inject('UserRepository')
+    private userRepository: IUserRepository,
 
     @inject('UserBalanceRepository')
     private userBalanceRepository: IUserBalanceRepository,
@@ -21,9 +21,9 @@ class UpdateUserByAdminService {
     balance_amount_add,
     reset_password,
     withdraw_amount,
-    roles,
+    role,
   }: IUpdateUserByAdminServiceDTO): Promise<UserBalance> {
-    const user = await this.usersRepository.findById(user_id);
+    const user = await this.userRepository.findById(user_id);
 
     const userBalance = await this.userBalanceRepository.findByUserId(user_id);
 
@@ -58,11 +58,11 @@ class UpdateUserByAdminService {
       user.password = await hash(reset_password, 8);
     }
 
-    if (roles) {
-      user.roles = roles;
+    if (role) {
+      user.role = role;
     }
 
-    await this.usersRepository.save(user);
+    await this.userRepository.save(user);
 
     return userBalance;
   }

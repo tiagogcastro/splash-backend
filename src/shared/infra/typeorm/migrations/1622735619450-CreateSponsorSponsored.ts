@@ -1,12 +1,12 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export default class CreateUserSponsoringSponsored1622735342066
+export default class CreateSponsorsingSponsored1622735619450
   implements MigrationInterface
 {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'user_sponsoring_sponsored_count',
+        name: 'sponsor_sponsored',
         columns: [
           {
             name: 'id',
@@ -14,20 +14,14 @@ export default class CreateUserSponsoringSponsored1622735342066
             isPrimary: true,
           },
           {
-            name: 'user_id',
+            name: 'sponsor_user_id',
             type: 'uuid',
-            isUnique: true,
             isNullable: true,
           },
           {
-            name: 'sponsoring_count',
-            type: 'int',
-            default: 0,
-          },
-          {
-            name: 'sponsored_count',
-            type: 'int',
-            default: 0,
+            name: 'sponsored_user_id',
+            type: 'uuid',
+            isNullable: true,
           },
           {
             name: 'created_at',
@@ -42,9 +36,17 @@ export default class CreateUserSponsoringSponsored1622735342066
         ],
         foreignKeys: [
           {
-            name: 'FKUserSponsoringSponsoredUserID',
-            columnNames: ['user_id'],
-            referencedTableName: 'users',
+            name: 'FKSponsorUserID',
+            columnNames: ['sponsor_user_id'],
+            referencedTableName: 'user',
+            referencedColumnNames: ['id'],
+            onDelete: 'SET NULL',
+            onUpdate: 'SET NULL',
+          },
+          {
+            name: 'FKSponsoredUserID',
+            columnNames: ['sponsored_user_id'],
+            referencedTableName: 'user',
             referencedColumnNames: ['id'],
             onDelete: 'SET NULL',
             onUpdate: 'SET NULL',
@@ -55,6 +57,6 @@ export default class CreateUserSponsoringSponsored1622735342066
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('user_sponsorsing_sponsored');
+    await queryRunner.dropTable('sponsor_sponsored');
   }
 }

@@ -1,5 +1,5 @@
 import AppError from '@shared/errors/AppError';
-import SponsoringSponsored from '../infra/typeorm/entities/SponsoringSponsored';
+import SponsoringSponsored from '../infra/typeorm/entities/SponsorSponsored';
 import ISponsoringSponsoredRepository from '../repositories/ISponsoringSponsoredRepository';
 import IUsersRepository from '../repositories/IUsersRepository';
 

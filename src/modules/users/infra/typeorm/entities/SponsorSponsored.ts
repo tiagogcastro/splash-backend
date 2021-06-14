@@ -10,8 +10,8 @@ import {
 import { v4 as uuid } from 'uuid';
 import User from './User';
 
-@Entity('sponsoring_sponsored')
-class SponsoringSponsored {
+@Entity('sponsor_sponsored')
+class SponsorSponsored {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -42,4 +42,4 @@ class SponsoringSponsored {
   }
 }
 
-export default SponsoringSponsored;
+export default SponsorSponsored;

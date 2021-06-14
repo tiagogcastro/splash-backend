@@ -44,7 +44,7 @@ export default class CreateUserBalance1622734880809
           {
             name: 'FKUserBalanceUserID',
             columnNames: ['user_id'],
-            referencedTableName: 'users',
+            referencedTableName: 'user',
             referencedColumnNames: ['id'],
             onDelete: 'SET NULL',
             onUpdate: 'SET NULL',

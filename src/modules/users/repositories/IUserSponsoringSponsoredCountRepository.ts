@@ -1,9 +1,9 @@
 import IUpdateSponsoringSponsoredCountDTO from '../dtos/IUpdateSponsoringSponsoredCountDTO';
-import UserSponsoringSponsoredCount from '../infra/typeorm/entities/UserSponsoringSponsoredCount';
+import UserSponsorSponsoredCount from '../infra/typeorm/entities/UserSponsorSponsoredCount';
 
-export default interface IUserSponsoringSponsoredCountRepository {
+export default interface IUserSponsorSponsoredCountRepository {
   updateCount(
     user_id: string,
     data: IUpdateSponsoringSponsoredCountDTO,
-  ): Promise<UserSponsoringSponsoredCount | undefined>;
+  ): Promise<UserSponsorSponsoredCount | undefined>;
 }

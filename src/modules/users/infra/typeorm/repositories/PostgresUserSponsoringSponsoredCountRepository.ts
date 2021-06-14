@@ -1,21 +1,21 @@
 import IUpdateSponsoringSponsoredCountDTO from '@modules/users/dtos/IUpdateSponsoringSponsoredCountDTO';
-import IUserSponsoringSponsoredCountRepository from '@modules/users/repositories/IUserSponsoringSponsoredCountRepository';
+import IUserSponsorSponsoredCountRepository from '@modules/users/repositories/IUserSponsoringSponsoredCountRepository';
 import { getRepository, Repository } from 'typeorm';
-import UserSponsoringSponsoredCount from '../entities/UserSponsoringSponsoredCount';
+import UserSponsorSponsoredCount from '../entities/UserSponsorSponsoredCount';
 
-export default class PostgresUserSponsoringSponsoredCountRepository
-  implements IUserSponsoringSponsoredCountRepository
+export default class PostgresUserSponsorSponsoredCountRepository
+  implements IUserSponsorSponsoredCountRepository
 {
-  private ormRepository: Repository<UserSponsoringSponsoredCount>;
+  private ormRepository: Repository<UserSponsorSponsoredCount>;
 
   constructor() {
-    this.ormRepository = getRepository(UserSponsoringSponsoredCount);
+    this.ormRepository = getRepository(UserSponsorSponsoredCount);
   }
 
   async updateCount(
     user_id: string,
     data: IUpdateSponsoringSponsoredCountDTO,
-  ): Promise<UserSponsoringSponsoredCount | undefined> {
+  ): Promise<UserSponsorSponsoredCount | undefined> {
     const count = await this.ormRepository.update(user_id, data);
 
     if (count.affected === 1) {

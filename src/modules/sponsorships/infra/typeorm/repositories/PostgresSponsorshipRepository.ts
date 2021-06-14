@@ -1,12 +1,12 @@
 import ICreateSponsorshipDTO from '@modules/sponsorships/dtos/ICreateSponsorshipDTO';
 import IFindSponsorshipDTO from '@modules/sponsorships/dtos/IFindSponsorshipDTO';
 import IUpdateSponsorshipDTO from '@modules/sponsorships/dtos/IUpdateSponsorshipDTO';
-import ISponsorshipsRepository from '@modules/sponsorships/repositories/ISponsorshipsRepository';
+import ISponsorshipRepository from '@modules/sponsorships/repositories/ISponsorshipRepository';
 import { getRepository, Repository } from 'typeorm';
 import Sponsorship from '../entities/Sponsorship';
 
-export default class PostgresSponsorshipsRepository
-  implements ISponsorshipsRepository
+export default class PostgresSponsorshipRepository
+  implements ISponsorshipRepository
 {
   private ormRepository: Repository<Sponsorship>;
 

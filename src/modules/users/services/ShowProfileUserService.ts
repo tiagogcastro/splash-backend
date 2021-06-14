@@ -1,17 +1,17 @@
 import AppError from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
 import User from '../infra/typeorm/entities/User';
-import IUsersRepository from '../repositories/IUsersRepository';
+import IUserRepository from '../repositories/IUsersRepository';
 
 @injectable()
 class ShowProfileUserService {
   constructor(
-    @inject('UsersRepository')
-    private usersRepository: IUsersRepository,
+    @inject('UserRepository')
+    private userRepository: IUserRepository,
   ) {}
 
   async execute(username: string): Promise<User | undefined> {
-    const user = await this.usersRepository.findByUsername(username);
+    const user = await this.userRepository.findByUsername(username);
 
     if (!user) {
       throw new AppError('User does not exist', 400);

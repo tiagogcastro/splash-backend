@@ -1,5 +1,5 @@
 import ICreateSponsoringDTO from '../dtos/ICreateSponsoringDTO';
-import SponsoringSponsored from '../infra/typeorm/entities/SponsoringSponsored';
+import SponsoringSponsored from '../infra/typeorm/entities/SponsorSponsored';
 
 export default interface ISponsoringSponsoredRepository {
   findAllBySponsoringUserId(user_id: string): Promise<SponsoringSponsored[]>;

@@ -1,12 +1,12 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export default class CreateSponsorships1622409081262
+export default class CreateSponsorship1622409081262
   implements MigrationInterface
 {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'sponsorships',
+        name: 'sponsorship',
         columns: [
           {
             name: 'id',
@@ -57,7 +57,7 @@ export default class CreateSponsorships1622409081262
           {
             name: 'FKSponsorUserID',
             columnNames: ['sponsor_user_id'],
-            referencedTableName: 'users',
+            referencedTableName: 'user',
             referencedColumnNames: ['id'],
             onDelete: 'SET NULL',
             onUpdate: 'SET NULL',
@@ -65,7 +65,7 @@ export default class CreateSponsorships1622409081262
           {
             name: 'FKSponsoredUserID',
             columnNames: ['sponsored_user_id'],
-            referencedTableName: 'users',
+            referencedTableName: 'user',
             referencedColumnNames: ['id'],
             onDelete: 'SET NULL',
             onUpdate: 'SET NULL',
@@ -76,6 +76,6 @@ export default class CreateSponsorships1622409081262
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('sponsorships');
+    await queryRunner.dropTable('sponsorship');
   }
 }

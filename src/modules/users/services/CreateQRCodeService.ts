@@ -1,4 +1,4 @@
-import ISponsorshipsRepository from '@modules/sponsorships/repositories/ISponsorshipsRepository';
+import ISponsorshipRepository from '@modules/sponsorships/repositories/ISponsorshipRepository';
 import AppError from '@shared/errors/AppError';
 import IQRCodeProvider from '@shared/container/providers/QRCodeProvider/models/IQRCodeProvider';
 import { inject, injectable } from 'tsyringe';
@@ -10,8 +10,8 @@ export default class CreateQRCodeService {
     @inject('QRCodeProvider')
     private qrcodeProvider: IQRCodeProvider,
 
-    @inject('SponsorshipsRepository')
-    private sponsorshipsRepository: ISponsorshipsRepository,
+    @inject('SponsorshipRepository')
+    private sponsorshipRepository: ISponsorshipRepository,
   ) {}
 
   public async execute({
@@ -23,7 +23,7 @@ export default class CreateQRCodeService {
       throw new AppError('This sponsorship code does not exist');
 
     const isSponsorshipCode =
-      await this.sponsorshipsRepository.findBySponsorshipCode(sponsorship_code);
+      await this.sponsorshipRepository.findBySponsorshipCode(sponsorship_code);
 
     if (!isSponsorshipCode)
       throw new AppError('This is an invalid or non-existent sponsorship code');

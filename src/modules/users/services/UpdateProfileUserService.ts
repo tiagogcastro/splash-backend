@@ -5,7 +5,7 @@ import { addHours, isAfter } from 'date-fns';
 import path from 'path';
 import { inject, injectable } from 'tsyringe';
 import User from '../infra/typeorm/entities/User';
-import IUsersRepository from '../repositories/IUsersRepository';
+import IUserRepository from '../repositories/IUsersRepository';
 import IUserTokensRepository from '../repositories/IUserTokensRepository';
 
 interface Request {
@@ -21,8 +21,8 @@ interface Request {
 @injectable()
 class UpdateProfileUserService {
   constructor(
-    @inject('UsersRepository')
-    private usersRepository: IUsersRepository,
+    @inject('UserRepository')
+    private userRepository: IUserRepository,
 
     @inject('UserTokensRepository')
     private userTokensRepository: IUserTokensRepository,
@@ -41,13 +41,13 @@ class UpdateProfileUserService {
     token,
     username,
   }: Request): Promise<User> {
-    const user = await this.usersRepository.findById(user_id);
+    const user = await this.userRepository.findById(user_id);
 
     if (!user) {
       throw new AppError('User does not exist', 401);
     }
 
-    const checkEmailAlreadyExists = await this.usersRepository.findByEmail(
+    const checkEmailAlreadyExists = await this.userRepository.findByEmail(
       email,
     );
 
@@ -112,7 +112,7 @@ class UpdateProfileUserService {
       }
     }
 
-    const usernameExist = await this.usersRepository.findByUsername(username);
+    const usernameExist = await this.userRepository.findByUsername(username);
 
     if (usernameExist && usernameExist.username !== username) {
       throw new AppError('This username already exists', 401);
@@ -151,7 +151,7 @@ class UpdateProfileUserService {
       user.username = username;
     }
 
-    await this.usersRepository.save(user);
+    await this.userRepository.save(user);
     return user;
   }
 }

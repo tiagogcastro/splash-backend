@@ -9,10 +9,10 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-import UserSponsoringSponsoredCount from './UserSponsoringSponsoredCount';
+import UserSponsorSponsoredCount from './UserSponsorSponsoredCount';
 import UserBalance from './UserBalance';
 
-@Entity('users')
+@Entity('user')
 class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -55,20 +55,20 @@ class User {
   user_balance: UserBalance;
 
   @OneToOne(
-    () => UserSponsoringSponsoredCount,
-    userSponsoringSponsoredCount => userSponsoringSponsoredCount.user,
+    () => UserSponsorSponsoredCount,
+    userSponsorSponsoredCount => userSponsorSponsoredCount.user,
   )
-  sponsoring_sponsored_count: UserSponsoringSponsoredCount;
+  user_sponsor_sponsored_count: UserSponsorSponsoredCount;
 
   @Column({
     nullable: true,
   })
-  roles: string;
+  role: string;
 
   @Column({
     default: true,
   })
-  activated_account: boolean;
+  active_account: boolean;
 
   @CreateDateColumn()
   created_at: Date;

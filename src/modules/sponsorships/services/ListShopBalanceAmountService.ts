@@ -2,10 +2,15 @@ import SponsorBalance from '@modules/users/infra/typeorm/entities/SponsorBalance
 import ISponsorBalanceRepository from '@modules/users/repositories/ISponsorBalanceRepository';
 import IUserBalanceRepository from '@modules/users/repositories/IUserBalanceRepository';
 import AppError from '@shared/errors/AppError';
+import { inject, injectable } from 'tsyringe';
 
+@injectable()
 export default class ListShopBalanceAmountService {
   constructor(
+    @inject('SponsorBalanceRepository')
     private sponsorBalanceRepository: ISponsorBalanceRepository,
+
+    @inject('UserBalanceRepository')
     private userBalanceRepository: IUserBalanceRepository,
   ) {}
 

@@ -22,14 +22,14 @@ class SponsorBalance {
   sponsored_user_id: string;
 
   @Column()
-  sponsor_shop_id: string;
+  sponsor_user_id: string;
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'sponsored_user_id' })
   sponsored: User;
 
   @ManyToOne(() => User)
-  @JoinColumn({ name: 'sponsor_shop_id' })
+  @JoinColumn({ name: 'sponsor_user_id' })
   sponsor: User;
 
   @CreateDateColumn()

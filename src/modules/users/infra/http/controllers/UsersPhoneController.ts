@@ -36,7 +36,7 @@ class UsersPhoneController {
     const {
       verification_code,
       password,
-      roles,
+      role,
       balance_amount,
       terms,
       sponsorship_code,
@@ -49,7 +49,7 @@ class UsersPhoneController {
     const { user, token } = await createUser.execute({
       phone_number,
       password,
-      roles,
+      role,
       terms,
       balance_amount,
       sponsorship_code,

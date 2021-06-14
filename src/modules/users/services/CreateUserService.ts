@@ -1,19 +1,19 @@
 /* eslint-disable no-param-reassign */
 import jwtConfig from '@config/auth';
-import ISponsorshipsRepository from '@modules/sponsorships/repositories/ISponsorshipsRepository';
+import ISponsorshipRepository from '@modules/sponsorships/repositories/ISponsorshipRepository';
 import AppError from '@shared/errors/AppError';
 import { hash } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import { inject, injectable } from 'tsyringe';
 import User from '../infra/typeorm/entities/User';
 import ISponsorBalanceRepository from '../repositories/ISponsorBalanceRepository';
-import ISponsoringSponsoredRepository from '../repositories/ISponsoringSponsoredRepository';
-import IUserSponsoringSponsoredCountRepository from '../repositories/IUserSponsoringSponsoredCountRepository';
+import ISponsorSponsoredRepository from '../repositories/ISponsoringSponsoredRepository';
+import IUserSponsorSponsoredCountRepository from '../repositories/IUserSponsoringSponsoredCountRepository';
 import IUserBalanceRepository from '../repositories/IUserBalanceRepository';
-import IUsersRepository from '../repositories/IUsersRepository';
+import IUserRepository from '../repositories/IUsersRepository';
 
 interface Request {
-  roles?: string;
+  role?: string;
   name?: string;
   phone_number?: string;
   email?: string;
@@ -31,8 +31,8 @@ interface Response {
 @injectable()
 export default class CreateUserService {
   constructor(
-    @inject('UsersRepository')
-    private usersRepository: IUsersRepository,
+    @inject('UserRepository')
+    private userRepository: IUserRepository,
 
     @inject('UserBalanceRepository')
     private userBalanceRepository: IUserBalanceRepository,
@@ -40,18 +40,18 @@ export default class CreateUserService {
     @inject('SponsorBalanceRepository')
     private sponsorBalanceRepository: ISponsorBalanceRepository,
 
-    @inject('SponsorshipsRepository')
-    private sponsorshipsRepository: ISponsorshipsRepository,
+    @inject('SponsorshipRepository')
+    private sponsorshipRepository: ISponsorshipRepository,
 
-    @inject('SponsoringSponsoredRepository')
-    private sponsoringSponsoredRepository: ISponsoringSponsoredRepository,
+    @inject('SponsorSponsoredRepository')
+    private sponsorSponsoredRepository: ISponsorSponsoredRepository,
 
-    @inject('UserSponsoringSponsoredCountRepository')
-    private userSponsoringSponsoredCountRepository: IUserSponsoringSponsoredCountRepository,
+    @inject('UserSponsorSponsoredCountRepository')
+    private userSponsorSponsoredCountRepository: IUserSponsorSponsoredCountRepository,
   ) {}
 
   public async execute({
-    roles,
+    role,
     name,
     phone_number,
     username,
@@ -62,20 +62,20 @@ export default class CreateUserService {
     terms,
   }: Request): Promise<Response> {
     const sponsorship =
-      await this.sponsorshipsRepository.findByUnreadSponsorshipCode(
+      await this.sponsorshipRepository.findByUnreadSponsorshipCode(
         sponsorship_code,
       );
 
     if (phone_number) {
       const checkUserPhoneNumberExists =
-        await this.usersRepository.findByPhoneNumber(phone_number);
+        await this.userRepository.findByPhoneNumber(phone_number);
 
       if (checkUserPhoneNumberExists) {
         throw new AppError('This phone number already exists');
       }
     }
     if (username) {
-      const checkUserUsernameExist = await this.usersRepository.findByUsername(
+      const checkUserUsernameExist = await this.userRepository.findByUsername(
         username,
       );
       if (checkUserUsernameExist) {
@@ -83,7 +83,7 @@ export default class CreateUserService {
       }
     }
     if (email) {
-      const checkEmailAlreadyExist = await this.usersRepository.findByEmail(
+      const checkEmailAlreadyExist = await this.userRepository.findByEmail(
         email,
       );
       if (checkEmailAlreadyExist) {
@@ -91,7 +91,7 @@ export default class CreateUserService {
       }
     }
 
-    if (!terms && !roles) {
+    if (!terms && !role) {
       throw new AppError(
         'You cannot to create an account without accepting the terms',
         400,
@@ -111,7 +111,7 @@ export default class CreateUserService {
 
     let user: User;
 
-    if (!roles) {
+    if (!role) {
       if (!sponsorship)
         throw new AppError('This sponsorship code does not exist', 400);
 
@@ -125,10 +125,10 @@ export default class CreateUserService {
         );
       }
 
-      user = await this.usersRepository.create({
+      user = await this.userRepository.create({
         name,
         username,
-        roles: roles || 'default',
+        role: role || 'default',
         phone_number,
         email,
         password: hashedPassword,
@@ -137,7 +137,7 @@ export default class CreateUserService {
       sponsorship.sponsored_user_id = user.id;
       sponsorship.status = 'redeemed';
 
-      await this.sponsorshipsRepository.save(sponsorship);
+      await this.sponsorshipRepository.save(sponsorship);
 
       // Cria o saldo e adiciona la
       if (sponsorship.allow_withdrawal) {
@@ -152,35 +152,35 @@ export default class CreateUserService {
           total_balance: sponsorship.amount,
         });
         await this.sponsorBalanceRepository.create({
-          sponsor_shop_id: sponsorship.sponsor_user_id,
+          sponsor_user_id: sponsorship.sponsor_user_id,
           sponsored_user_id: user.id,
           balance_amount: sponsorship.amount,
         });
       }
 
       // A loja passa a patrocinar o usuário
-      await this.sponsoringSponsoredRepository.create({
+      await this.sponsorSponsoredRepository.create({
         sponsor_user_id: sponsorship.sponsor_user_id,
         sponsored_user_id: user.id,
       });
 
       // Loja fica com +1 patrocinado e o usuário fica com +1 patrocinando ele
-      await this.userSponsoringSponsoredCountRepository.updateCount(
+      await this.userSponsorSponsoredCountRepository.updateCount(
         sponsorship.sponsor_user_id,
         {
-          sponsoring_count: +1,
+          sponsor_count: +1,
         },
       );
 
-      await this.userSponsoringSponsoredCountRepository.updateCount(user.id, {
+      await this.userSponsorSponsoredCountRepository.updateCount(user.id, {
         sponsored_count: +1,
       });
     } else {
-      user = await this.usersRepository.create({
+      user = await this.userRepository.create({
         name,
         username,
         phone_number,
-        roles: roles || 'default',
+        role: role || 'default',
         email,
         password: hashedPassword,
       });

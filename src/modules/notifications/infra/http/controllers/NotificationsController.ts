@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
 import SendSmsNotificationForIosService from '@modules/notifications/services/SendSmsNotificationForIosService';
-import PostgresUsersRepository from '../../../../users/infra/typeorm/repositories/PostgresUsersRepository';
-import MongoNotificationsRepository from '../../typeorm/repositories/MongoNotificationsRepository';
+import PostgresUserRepository from '../../../../users/infra/typeorm/repositories/PostgresUserRepository';
+import MongoNotificationRepository from '../../typeorm/repositories/MongoNotificationRepository';
 
 export default class NotificationsController {
   async index(request: Request, response: Response): Promise<Response> {
-    const mongoNotificationsRepository = new MongoNotificationsRepository();
+    const mongoNotificationRepository = new MongoNotificationRepository();
     const notifications =
-      await mongoNotificationsRepository.findAllNotifications();
+      await mongoNotificationRepository.findAllNotifications();
 
     return response.status(200).json(notifications);
   }
@@ -19,9 +19,9 @@ export default class NotificationsController {
     const user_id = request.user.id;
     const { message } = await request.body;
 
-    const usersRepository = new PostgresUsersRepository();
+    const postgresUserRepository = new PostgresUserRepository();
     const sendSmsNotificationForIos = new SendSmsNotificationForIosService(
-      usersRepository,
+      postgresUserRepository,
     );
 
     const notifications = await sendSmsNotificationForIos.sendNotification({

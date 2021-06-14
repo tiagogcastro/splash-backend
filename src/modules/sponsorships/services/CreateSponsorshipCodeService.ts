@@ -1,18 +1,27 @@
-import INotificationsRepository from '@modules/notifications/repositories/INotificationsRepository';
+import INotificationRepository from '@modules/notifications/repositories/INotificationRepository';
 import IUserBalanceRepository from '@modules/users/repositories/IUserBalanceRepository';
-import IUsersRepository from '@modules/users/repositories/IUsersRepository';
+import IUserRepository from '@modules/users/repositories/IUsersRepository';
 import AppError from '@shared/errors/AppError';
 import crypto from 'crypto';
+import { inject, injectable } from 'tsyringe';
 import ICreateSponsorshipCodeServiceDTO from '../dtos/ICreateSponsorshipCodeServiceDTO';
 import Sponsorship from '../infra/typeorm/entities/Sponsorship';
-import ISponsorshipsRepository from '../repositories/ISponsorshipsRepository';
+import ISponsorshipRepository from '../repositories/ISponsorshipRepository';
 
+@injectable()
 export default class CreateSponsorshipCodeService {
   constructor(
-    private usersRepository: IUsersRepository,
+    @inject('UserRepository')
+    private userRepository: IUserRepository,
+
+    @inject('UserBalanceRepository')
     private userBalanceRepository: IUserBalanceRepository,
-    private sponsorshipsRepository: ISponsorshipsRepository,
-    private notificationsRepository: INotificationsRepository,
+
+    @inject('SponsorshipRepository')
+    private sponsorshipRepository: ISponsorshipRepository,
+
+    @inject('NotificationRepository')
+    private notificationRepository: INotificationRepository,
   ) {}
 
   async execute({
@@ -20,7 +29,7 @@ export default class CreateSponsorshipCodeService {
     amount,
     allow_withdrawal_balance = false,
   }: ICreateSponsorshipCodeServiceDTO): Promise<Sponsorship> {
-    const sponsor = await this.usersRepository.findById(sponsor_user_id);
+    const sponsor = await this.userRepository.findById(sponsor_user_id);
 
     const sponsorUserBalance = await this.userBalanceRepository.findByUserId(
       sponsor_user_id,
@@ -29,7 +38,7 @@ export default class CreateSponsorshipCodeService {
     if (!sponsor) throw new AppError('The sponsor does not exist', 401);
     if (!sponsorUserBalance)
       throw new AppError('The sponsor balance does not exist', 401);
-    if (sponsor.roles !== 'shop')
+    if (sponsor.role !== 'shop')
       throw new AppError('You are not allowed to access here', 401);
     if (amount < 1 || amount > 500) {
       throw new AppError(
@@ -54,11 +63,11 @@ export default class CreateSponsorshipCodeService {
     const code = crypto.randomBytes(3).toString('hex').toUpperCase();
 
     const checkSponsorship =
-      await this.sponsorshipsRepository.findBySponsorshipCode(code);
+      await this.sponsorshipRepository.findBySponsorshipCode(code);
 
     if (checkSponsorship) throw new AppError('Try again');
 
-    const sponsorship = await this.sponsorshipsRepository.create({
+    const sponsorship = await this.sponsorshipRepository.create({
       allow_withdrawal: allow_withdrawal_balance,
       amount,
       sponsor_user_id,
@@ -71,7 +80,7 @@ export default class CreateSponsorshipCodeService {
 
     const subject = `você criou um patrocínio de R$${balanceAmount} Código: ${code}`;
 
-    await this.notificationsRepository.create({
+    await this.notificationRepository.create({
       recipient_id: sponsor_user_id,
       sender_id: sponsor_user_id,
       content: subject,
