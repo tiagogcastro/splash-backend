@@ -1,19 +1,24 @@
 import AppError from '@shared/errors/AppError';
-import Sponsoring_Sponsored from '../infra/typeorm/entities/SponsoringSponsored';
+import { inject, injectable } from 'tsyringe';
+import SponsoringSponsored from '../infra/typeorm/entities/SponsoringSponsored';
 import ISponsoringSponsoredRepository from '../repositories/ISponsoringSponsoredRepository';
 import IUsersRepository from '../repositories/IUsersRepository';
 
+@injectable()
 class ListUsersSponsoredByUser {
   constructor(
+    @inject('UsersRepository')
     private usersRepository: IUsersRepository,
+
+    @inject('SponsoringSponsoredRepository')
     private sponsoringSponsoredRepository: ISponsoringSponsoredRepository,
   ) {}
 
-  async execute(user_id: string): Promise<Sponsoring_Sponsored[] | undefined> {
+  async execute(user_id: string): Promise<SponsoringSponsored[] | undefined> {
     const user = await this.usersRepository.findById(user_id);
 
     if (!user) {
-      throw new AppError('User not logged', 401);
+      throw new AppError('User does not exist', 401);
     }
 
     const usersSponsored =

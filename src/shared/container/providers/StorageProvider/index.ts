@@ -1,7 +1,7 @@
 import { container } from 'tsyringe';
 import uploadConfig from '@config/upload';
-import DiskStorageProvider from './DiskStorageProvider';
-import S3StorageProvider from './S3StorageProvider';
+import DiskStorageProvider from './models/DiskStorageProvider';
+import S3StorageProvider from './implementations/S3StorageProvider';
 import IStorageProvider from './models/IStorageProvider';
 
 const providers = {

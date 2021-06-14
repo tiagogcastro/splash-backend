@@ -1,6 +1,6 @@
 import IFindValidTokenDTO from '@modules/users/dtos/IFindValidTokenDTO';
 import IUserTokensRepository from '@modules/users/repositories/IUserTokensRepository';
-import { getMongoRepository, MongoRepository, Not } from 'typeorm';
+import { getMongoRepository, MongoRepository } from 'typeorm';
 import UserTokens from '../schemas/UserTokens';
 
 export default class MongoUserTokensRepository

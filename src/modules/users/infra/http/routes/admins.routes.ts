@@ -1,3 +1,4 @@
+import NotificationsController from '@modules/notifications/infra/http/controllers/NotificationsController';
 import ensureAdministrator from '@shared/infra/http/middlewares/ensureAdministrator';
 import { celebrate, Joi, Segments } from 'celebrate';
 import { Router } from 'express';
@@ -8,6 +9,7 @@ import ensureAuthenticated from '../middleware/ensureAuthenticated';
 const adminsRoutes = Router();
 const usersController = new UsersController();
 const adminsController = new AdminsController();
+const notificationsController = new NotificationsController();
 
 adminsRoutes.use(ensureAuthenticated, ensureAdministrator);
 adminsRoutes.post(
@@ -52,4 +54,5 @@ adminsRoutes.put(
   }),
   adminsController.update,
 );
+adminsRoutes.get('/notifications/dashboard', notificationsController.index);
 export default adminsRoutes;

@@ -69,14 +69,12 @@ export default class CreateSponsorshipCodeService {
     let balanceAmount = `${first}.00`;
     if (second) balanceAmount = `${first}.${second.padEnd(2, '0')}`;
 
-    const message = {
-      subject: `você criou um patrocínio de R$${balanceAmount} Código: ${code} `,
-    };
+    const subject = `você criou um patrocínio de R$${balanceAmount} Código: ${code}`;
 
     await this.notificationsRepository.create({
       recipient_id: sponsor_user_id,
       sender_id: sponsor_user_id,
-      content: JSON.stringify(message),
+      content: subject,
     });
 
     return sponsorship;

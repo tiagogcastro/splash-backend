@@ -30,12 +30,17 @@ container.registerSingleton<IUsersRepository>(
   'UsersRepository',
   PostgresUsersRepository,
 );
+container.registerSingleton<ISponsorshipsRepository>(
+  'SponsorshipsRepository',
+  PostgresSponsorshipsRepository,
+);
+
 container.registerSingleton<ISponsorBalanceRepository>(
   'SponsorBalanceRepository',
   PostgresSponsorBalanceRepository,
 );
 container.registerSingleton<ISponsoringSponsoredRepository>(
-  'SponsorBalanceRepository',
+  'SponsoringSponsoredRepository',
   PostgresSponsoringSponsoredRepository,
 );
 container.registerSingleton<IUserBalanceRepository>(
@@ -45,8 +50,4 @@ container.registerSingleton<IUserBalanceRepository>(
 container.registerSingleton<IUserSponsoringSponsoredCountRepository>(
   'UserSponsoringSponsoredCountRepository',
   PostgresUserSponsoringSponsoredCountRepository,
-);
-container.registerSingleton<ISponsorshipsRepository>(
-  'SponsorshipsRepository',
-  PostgresSponsorshipsRepository,
 );

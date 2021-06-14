@@ -46,6 +46,15 @@ class UsersPhoneController {
 
     const createUser = container.resolve(CreateUserService);
 
+    const { user, token } = await createUser.execute({
+      phone_number,
+      password,
+      roles,
+      terms,
+      balance_amount,
+      sponsorship_code,
+    });
+
     await clientSendMessage.verify
       .services(servicesSid)
       .verificationChecks.create({
@@ -55,15 +64,6 @@ class UsersPhoneController {
       .catch(error => {
         throw new AppError(error);
       });
-
-    const { user, token } = await createUser.execute({
-      phone_number,
-      password,
-      roles,
-      terms,
-      balance_amount,
-      sponsorship_code,
-    });
 
     request.user = {
       id: user.id,
