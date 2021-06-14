@@ -3,5 +3,5 @@ export default interface IUpdateUserByAdminServiceDTO {
   reset_password?: string;
   withdraw_amount?: number;
   balance_amount_add?: number;
-  roles?: string;
+  role?: string;
 }

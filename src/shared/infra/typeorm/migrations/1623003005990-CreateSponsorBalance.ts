@@ -22,7 +22,7 @@ export default class CreateSponsorBalance1623003005990
             type: 'uuid',
           },
           {
-            name: 'sponsor_shop_id',
+            name: 'sponsor_user_id',
             type: 'uuid',
           },
           {
@@ -39,8 +39,8 @@ export default class CreateSponsorBalance1623003005990
         foreignKeys: [
           {
             name: 'FKSponsorShopID',
-            columnNames: ['sponsor_shop_id'],
-            referencedTableName: 'users',
+            columnNames: ['sponsor_user_id'],
+            referencedTableName: 'user',
             referencedColumnNames: ['id'],
             onDelete: 'SET NULL',
             onUpdate: 'SET NULL',
@@ -48,7 +48,7 @@ export default class CreateSponsorBalance1623003005990
           {
             name: 'FKSponsoredUserID',
             columnNames: ['sponsored_user_id'],
-            referencedTableName: 'users',
+            referencedTableName: 'user',
             referencedColumnNames: ['id'],
             onDelete: 'SET NULL',
             onUpdate: 'SET NULL',

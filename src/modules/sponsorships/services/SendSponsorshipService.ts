@@ -1,19 +1,38 @@
-import INotificationsRepository from '@modules/notifications/repositories/INotificationsRepository';
+import INotificationRepository from '@modules/notifications/repositories/INotificationRepository';
 import ISponsorBalanceRepository from '@modules/users/repositories/ISponsorBalanceRepository';
+import ISponsorSponsoredRepository from '@modules/users/repositories/ISponsorSponsoredRepository';
 import IUserBalanceRepository from '@modules/users/repositories/IUserBalanceRepository';
-import IUsersRepository from '@modules/users/repositories/IUsersRepository';
+import IUserRepository from '@modules/users/repositories/IUserRepository';
+import IUserSponsorSponsoredCountRepository from '@modules/users/repositories/IUserSponsoringSponsoredCountRepository';
 import AppError from '@shared/errors/AppError';
+import { inject, injectable } from 'tsyringe';
 import ISendSponsorshipServiceDTO from '../dtos/ISendSponsorshipServiceDTO';
 import Sponsorship from '../infra/typeorm/entities/Sponsorship';
-import ISponsorshipsRepository from '../repositories/ISponsorshipsRepository';
+import ISponsorshipRepository from '../repositories/ISponsorshipRepository';
 
+@injectable()
 export default class SendSponsorshipService {
   constructor(
-    private usersRepository: IUsersRepository,
+    @inject('UserRepository')
+    private userRepository: IUserRepository,
+
+    @inject('UserBalanceRepository')
     private userBalanceRepository: IUserBalanceRepository,
-    private sponsorshipsRepository: ISponsorshipsRepository,
+
+    @inject('SponsorshipRepository')
+    private sponsorshipRepository: ISponsorshipRepository,
+
+    @inject('SponsorBalanceRepository')
     private sponsorBalanceRepository: ISponsorBalanceRepository,
-    private notificationsRepository: INotificationsRepository,
+
+    @inject('NotificationRepository')
+    private notificationRepository: INotificationRepository,
+
+    @inject('UserSponsorSponsoredCountRepository')
+    private userSponsorSponsoredCountRepository: IUserSponsorSponsoredCountRepository,
+
+    @inject('SponsorSponsoredRepository')
+    private sponsorSponsoredRepository: ISponsorSponsoredRepository,
   ) {}
 
   async execute({
@@ -24,8 +43,8 @@ export default class SendSponsorshipService {
   }: ISendSponsorshipServiceDTO): Promise<Sponsorship> {
     let allow_withdrawal = true;
 
-    const sender = await this.usersRepository.findById(sponsor_user_id);
-    const recipient = await this.usersRepository.findById(user_recipient_id);
+    const sender = await this.userRepository.findById(sponsor_user_id);
+    const recipient = await this.userRepository.findById(user_recipient_id);
 
     const userBalance = await this.userBalanceRepository.findByUserId(
       sponsor_user_id,
@@ -34,12 +53,12 @@ export default class SendSponsorshipService {
     const nonDrawableBalance =
       await this.sponsorBalanceRepository.findSponsorBalance({
         sponsored_user_id: sponsor_user_id,
-        sponsor_shop_id: user_recipient_id,
+        sponsor_user_id: user_recipient_id,
       });
     const sponsorBalance =
       await this.sponsorBalanceRepository.findSponsorBalance({
         sponsored_user_id: user_recipient_id,
-        sponsor_shop_id: sponsor_user_id,
+        sponsor_user_id,
       });
     const recipientUserBalance = await this.userBalanceRepository.findByUserId(
       user_recipient_id,
@@ -73,7 +92,7 @@ export default class SendSponsorshipService {
       );
     }
 
-    if (!(sender.roles === 'shop') && allow_withdrawal_balance)
+    if (!(sender.role === 'shop') && allow_withdrawal_balance)
       throw new AppError('You are not allowed to access here', 401);
 
     if (userBalance.total_balance < amount)
@@ -90,11 +109,11 @@ export default class SendSponsorshipService {
       userBalance.available_for_withdraw -= amount;
     }
 
-    if (sender.roles === 'shop') {
+    if (sender.role === 'shop') {
       if (!sponsorBalance) {
         await this.sponsorBalanceRepository.create({
           balance_amount: amount,
-          sponsor_shop_id: sponsor_user_id,
+          sponsor_user_id,
           sponsored_user_id: user_recipient_id,
         });
       } else {
@@ -110,10 +129,10 @@ export default class SendSponsorshipService {
       allow_withdrawal = allow_withdrawal_balance;
     }
 
-    if (sender.roles === null || sender.roles === 'default')
+    if (sender.role === null || sender.role === 'default')
       recipientUserBalance.available_for_withdraw += amount;
 
-    const sponsorship = await this.sponsorshipsRepository.create({
+    const sponsorship = await this.sponsorshipRepository.create({
       allow_withdrawal,
       amount,
       sponsor_user_id,
@@ -123,6 +142,42 @@ export default class SendSponsorshipService {
     await this.userBalanceRepository.save(userBalance);
     await this.userBalanceRepository.save(recipientUserBalance);
 
+    let sponsorSponsored =
+      await this.sponsorSponsoredRepository.findBySponsorAndSponsored(
+        sponsor_user_id,
+        user_recipient_id,
+      );
+
+    if (!sponsorSponsored) {
+      const sponsorUserSponsorSponsored =
+        await this.userSponsorSponsoredCountRepository.findByUserId(
+          sponsor_user_id,
+        );
+      const userRecipientSponsorSponsored =
+        await this.userSponsorSponsoredCountRepository.findByUserId(
+          user_recipient_id,
+        );
+
+      if (userRecipientSponsorSponsored) {
+        userRecipientSponsorSponsored.sponsor_count += 1;
+
+        await this.userSponsorSponsoredCountRepository.save(
+          userRecipientSponsorSponsored,
+        );
+      }
+      if (sponsorUserSponsorSponsored) {
+        sponsorUserSponsorSponsored.sponsored_count += 1;
+
+        await this.userSponsorSponsoredCountRepository.save(
+          sponsorUserSponsorSponsored,
+        );
+      }
+      sponsorSponsored = await this.sponsorSponsoredRepository.create({
+        sponsor_user_id,
+        sponsored_user_id: user_recipient_id,
+      });
+    }
+
     const [first, second] = String(amount).split('.');
 
     let balanceAmount = `${first}.00`;
@@ -130,17 +185,17 @@ export default class SendSponsorshipService {
 
     let subject = `você enviou R$${balanceAmount} para ${recipient.username}`;
 
-    if (recipient.roles === 'shop') {
+    if (recipient.role === 'shop') {
       subject = `você pagou R$${balanceAmount} para ${recipient.username}`;
     }
 
-    await this.notificationsRepository.create({
+    await this.notificationRepository.create({
       recipient_id: sponsor_user_id,
       sender_id: sponsor_user_id,
       content: subject,
     });
 
-    await this.notificationsRepository.create({
+    await this.notificationRepository.create({
       recipient_id: user_recipient_id,
       sender_id: sponsor_user_id,
       content: `você recebeu R$${balanceAmount} de ${sender.username}`,

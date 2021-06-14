@@ -1,7 +1,7 @@
 import AppError from '@shared/errors/AppError';
 import { hash } from 'bcryptjs';
 import User from '../infra/typeorm/entities/User';
-import IUsersRepository from '../repositories/IUsersRepository';
+import IUserRepository from '../repositories/IUserRepository';
 
 interface Request {
   user_id: string;
@@ -10,7 +10,7 @@ interface Request {
   password_confirmation: string;
 }
 class AddEmailAndPasswordUserService {
-  constructor(private usersRepository: IUsersRepository) {}
+  constructor(private userRepository: IUserRepository) {}
 
   // eslint-disable-next-line consistent-return
   async execute({
@@ -19,13 +19,13 @@ class AddEmailAndPasswordUserService {
     password,
     password_confirmation,
   }: Request): Promise<User | undefined> {
-    const userLogged = await this.usersRepository.findById(user_id);
+    const userLogged = await this.userRepository.findById(user_id);
 
     if (!userLogged) {
       throw new AppError('User not exist', 401);
     }
 
-    const emailExist = await this.usersRepository.findByEmail(email);
+    const emailExist = await this.userRepository.findByEmail(email);
 
     if (emailExist && emailExist.id !== user_id) {
       throw new AppError('Este email já existe', 401);
@@ -54,13 +54,13 @@ class AddEmailAndPasswordUserService {
 
     const hashedPassword = await hash(String(password), 8);
 
-    const user = await this.usersRepository.update(userLogged.id, {
+    const user = await this.userRepository.update(userLogged.id, {
       email,
       password: hashedPassword,
     });
 
     if (user.affected === 1) {
-      const userUpdated = await this.usersRepository.findById(user_id);
+      const userUpdated = await this.userRepository.findById(user_id);
 
       return userUpdated;
     }

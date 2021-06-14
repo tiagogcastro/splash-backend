@@ -10,7 +10,7 @@ import {
 import { v4 as uuid } from 'uuid';
 import User from '../../../../users/infra/typeorm/entities/User';
 
-@Entity('sponsorships')
+@Entity('sponsorship')
 export default class Sponsorship {
   @PrimaryColumn()
   readonly id: string;

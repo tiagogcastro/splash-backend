@@ -1,11 +1,11 @@
 import ICreateNotificationDTO from '@modules/notifications/dtos/ICreateNotificationDTO';
 import IFindAllSponsorshipNotificationsDTO from '@modules/notifications/dtos/IFindAllSponsorshipNotificationsDTO';
-import INotificationsRepository from '@modules/notifications/repositories/INotificationsRepository';
+import INotificationRepository from '@modules/notifications/repositories/INotificationRepository';
 import { getMongoRepository, MongoRepository } from 'typeorm';
 import Notification from '../schemas/Notification';
 
-export default class MongoNotificationsRepository
-  implements INotificationsRepository
+export default class MongoNotificationRepository
+  implements INotificationRepository
 {
   private ormRepository: MongoRepository<Notification>;
 

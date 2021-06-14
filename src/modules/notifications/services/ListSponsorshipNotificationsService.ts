@@ -1,17 +1,17 @@
-import IUsersRepository from '@modules/users/repositories/IUsersRepository';
+import IUsersRepository from '@modules/users/repositories/IUserRepository';
 import AppError from '@shared/errors/AppError';
 import Notification from '../infra/typeorm/schemas/Notification';
-import INotificationsRepository from '../repositories/INotificationsRepository';
+import INotificationRepository from '../repositories/INotificationRepository';
 
 export default class ListGroupedSponsorshipNotificationsService {
   constructor(
-    private notificationsRepository: INotificationsRepository,
+    private notificationRepository: INotificationRepository,
     private usersRepository: IUsersRepository,
   ) {}
 
   async execute(user_id: string): Promise<Notification[]> {
     const notifications =
-      await this.notificationsRepository.findAllNotificationsByUser(user_id);
+      await this.notificationRepository.findAllNotificationsByUser(user_id);
 
     const senders: string[] = [];
     const groupedNotifications = notifications.filter(notification => {

@@ -1,16 +1,16 @@
 import { classToClass } from 'class-transformer';
 import { Request, Response } from 'express';
 import AddEmailAndPasswordUserService from '@modules/users/services/AddEmailAndPasswordUserService';
-import PostgresUsersRepository from '../../typeorm/repositories/PostgresUsersRepository';
+import PostgresUserRepository from '../../typeorm/repositories/PostgresUserRepository';
 
 class UsersEmailController {
   async update(request: Request, response: Response): Promise<Response> {
     const user_id = request.user.id;
     const { email, password, password_confirmation } = await request.body;
 
-    const postgresUsersRepository = new PostgresUsersRepository();
+    const postgresUserRepository = new PostgresUserRepository();
     const addEmailAndPassword = new AddEmailAndPasswordUserService(
-      postgresUsersRepository,
+      postgresUserRepository,
     );
 
     const user = await addEmailAndPassword.execute({

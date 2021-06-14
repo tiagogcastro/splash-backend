@@ -3,7 +3,7 @@ import IFindSponsorshipDTO from '../dtos/IFindSponsorshipDTO';
 import IUpdateSponsorshipDTO from '../dtos/IUpdateSponsorshipDTO';
 import Sponsorship from '../infra/typeorm/entities/Sponsorship';
 
-export default interface ISponsorshipsRepository {
+export default interface ISponsorshipRepository {
   create(sponsorData: ICreateSponsorshipDTO): Promise<Sponsorship>;
   save(sponsorship: Sponsorship): Promise<Sponsorship>;
   findSponsorship(

@@ -2,20 +2,20 @@ import { Request, Response } from 'express';
 
 import SponsorUserService from '@modules/users/services/SponsorUserService';
 import UnSponsoringUserService from '@modules/users/services/UnSponsoringUserService';
-import PostgresUsersRepository from '../../typeorm/repositories/PostgresUsersRepository';
-import PostgresSponsoringSponsoredRepository from '../../typeorm/repositories/PostgresSponsoringSponsoredRepository';
+import PostgresUserRepository from '../../typeorm/repositories/PostgresUserRepository';
+import PostgresSponsorSponsoredRepository from '../../typeorm/repositories/PostgresSponsorSponsoredRepository';
 
 class SponsoringController {
   async update(request: Request, response: Response): Promise<Response> {
     const { sponsoring_userId, sponsored_userId } = request.body;
 
-    const postgresUsersRepository = new PostgresUsersRepository();
-    const postgresSponsoringSponsoredRepository =
-      new PostgresSponsoringSponsoredRepository();
+    const postgresUserRepository = new PostgresUserRepository();
+    const postgresSponsorSponsoredRepository =
+      new PostgresSponsorSponsoredRepository();
 
     const sponsoringUser = new SponsorUserService(
-      postgresUsersRepository,
-      postgresSponsoringSponsoredRepository,
+      postgresUserRepository,
+      postgresSponsorSponsoredRepository,
     );
 
     const sponsor = await sponsoringUser.execute(
@@ -30,13 +30,13 @@ class SponsoringController {
     const { user_id_to_remove_sponsor, user_id_to_remove_sponsored } =
       request.body;
 
-    const postgresUsersRepository = new PostgresUsersRepository();
-    const postgresSponsoringSponsoredRepository =
-      new PostgresSponsoringSponsoredRepository();
+    const postgresUserRepository = new PostgresUserRepository();
+    const postgresSponsorSponsoredRepository =
+      new PostgresSponsorSponsoredRepository();
 
     const UnsponsoringUser = new UnSponsoringUserService(
-      postgresUsersRepository,
-      postgresSponsoringSponsoredRepository,
+      postgresUserRepository,
+      postgresSponsorSponsoredRepository,
     );
 
     await UnsponsoringUser.execute(

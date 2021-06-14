@@ -1,29 +1,27 @@
 import AppError from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
-import SponsoringSponsored from '../infra/typeorm/entities/SponsoringSponsored';
-import ISponsoringSponsoredRepository from '../repositories/ISponsoringSponsoredRepository';
-import IUsersRepository from '../repositories/IUsersRepository';
+import SponsorSponsored from '../infra/typeorm/entities/SponsorSponsored';
+import ISponsorSponsoredRepository from '../repositories/ISponsorSponsoredRepository';
+import IUserRepository from '../repositories/IUserRepository';
 
 @injectable()
 class ListUsersWhoSponsorTheUser {
   constructor(
-    @inject('UsersRepository')
-    private usersRepository: IUsersRepository,
+    @inject('UserRepository')
+    private userRepository: IUserRepository,
 
-    @inject('SponsoringSponsoredRepository')
-    private sponsoringSponsoredRepository: ISponsoringSponsoredRepository,
+    @inject('SponsorSponsoredRepository')
+    private sponsorSponsoredRepository: ISponsorSponsoredRepository,
   ) {}
 
-  async execute(user_id: string): Promise<SponsoringSponsored[] | undefined> {
-    const user = await this.usersRepository.findById(user_id);
+  async execute(user_id: string): Promise<SponsorSponsored[] | undefined> {
+    const user = await this.userRepository.findById(user_id);
 
     if (!user) {
       throw new AppError('User not logged', 401);
     }
     const usersSponsoring =
-      await this.sponsoringSponsoredRepository.findAllBySponsoredUserId(
-        user_id,
-      );
+      await this.sponsorSponsoredRepository.findAllBySponsoredUserId(user_id);
 
     return usersSponsoring;
   }

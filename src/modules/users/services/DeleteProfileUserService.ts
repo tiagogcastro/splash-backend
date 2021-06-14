@@ -1,22 +1,22 @@
 import AppError from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
-import IUsersRepository from '../repositories/IUsersRepository';
+import IUserRepository from '../repositories/IUserRepository';
 
 @injectable()
 class DeleteProfileUser {
   constructor(
-    @inject('UsersRepository')
-    private usersRepository: IUsersRepository,
+    @inject('UserRepository')
+    private userRepository: IUserRepository,
   ) {}
 
   async execute(user_id: string): Promise<void> {
-    const user = await this.usersRepository.findById(user_id);
+    const user = await this.userRepository.findById(user_id);
 
     if (!user) {
       throw new AppError('User does not exist', 400);
     }
 
-    await this.usersRepository.deleteById(user_id);
+    await this.userRepository.deleteById(user_id);
   }
 }
 

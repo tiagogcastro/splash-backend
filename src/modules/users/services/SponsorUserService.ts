@@ -1,18 +1,18 @@
 import AppError from '@shared/errors/AppError';
-import SponsoringSponsored from '../infra/typeorm/entities/SponsoringSponsored';
-import ISponsoringSponsoredRepository from '../repositories/ISponsoringSponsoredRepository';
-import IUsersRepository from '../repositories/IUsersRepository';
+import SponsorSponsored from '../infra/typeorm/entities/SponsorSponsored';
+import ISponsorSponsoredRepository from '../repositories/ISponsorSponsoredRepository';
+import IUsersRepository from '../repositories/IUserRepository';
 
 class SponsorUserService {
   constructor(
     private usersRepository: IUsersRepository,
-    private sponsoringSponsoredRepository: ISponsoringSponsoredRepository,
+    private sponsorSponsoredRepository: ISponsorSponsoredRepository,
   ) {}
 
   async execute(
     sponsor_user_id: string,
     sponsored_user_id: string,
-  ): Promise<SponsoringSponsored | null> {
+  ): Promise<SponsorSponsored | null> {
     const userLogged = await this.usersRepository.findById(sponsor_user_id);
 
     const userToSponsor = await this.usersRepository.findById(
@@ -28,7 +28,7 @@ class SponsorUserService {
     }
 
     const sponsoringExist =
-      await this.sponsoringSponsoredRepository.findBySponsoringAndSponsored(
+      await this.sponsorSponsoredRepository.findBySponsorAndSponsored(
         sponsor_user_id,
         sponsored_user_id,
       );
@@ -37,7 +37,7 @@ class SponsorUserService {
       return sponsoringExist;
     }
 
-    const sponsorUser = await this.sponsoringSponsoredRepository.create({
+    const sponsorUser = await this.sponsorSponsoredRepository.create({
       sponsor_user_id,
       sponsored_user_id,
     });

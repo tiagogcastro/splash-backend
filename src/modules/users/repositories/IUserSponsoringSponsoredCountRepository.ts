@@ -1,9 +1,17 @@
 import IUpdateSponsoringSponsoredCountDTO from '../dtos/IUpdateSponsoringSponsoredCountDTO';
-import UserSponsoringSponsoredCount from '../infra/typeorm/entities/UserSponsoringSponsoredCount';
+import ICreateUserSponsorSponsoredCountDTO from '../dtos/ICreateUserSponsorSponsoredCountDTO';
+import UserSponsorSponsoredCount from '../infra/typeorm/entities/UserSponsorSponsoredCount';
 
-export default interface IUserSponsoringSponsoredCountRepository {
+export default interface IUserSponsorSponsoredCountRepository {
   updateCount(
     user_id: string,
     data: IUpdateSponsoringSponsoredCountDTO,
-  ): Promise<UserSponsoringSponsoredCount | undefined>;
+  ): Promise<UserSponsorSponsoredCount | undefined>;
+  findByUserId(user_id: string): Promise<UserSponsorSponsoredCount | undefined>;
+  create(
+    userSponsorSponsoredCountData: ICreateUserSponsorSponsoredCountDTO,
+  ): Promise<UserSponsorSponsoredCount>;
+  save(
+    userSponsorSponsoredCount: UserSponsorSponsoredCount,
+  ): Promise<UserSponsorSponsoredCount>;
 }

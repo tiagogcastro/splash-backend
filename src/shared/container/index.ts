@@ -1,19 +1,19 @@
-import MongoNotificationsRepository from '@modules/notifications/infra/typeorm/repositories/MongoNotificationsRepository';
-import INotificationsRepository from '@modules/notifications/repositories/INotificationsRepository';
+import MongoNotificationRepository from '@modules/notifications/infra/typeorm/repositories/MongoNotificationRepository';
+import INotificationRepository from '@modules/notifications/repositories/INotificationRepository';
 import MongoUserTokensRepository from '@modules/users/infra/typeorm/repositories/MongoUserTokensRepository';
 import PostgresSponsorBalanceRepository from '@modules/users/infra/typeorm/repositories/PostgresSponsorBalanceRepository';
-import PostgresSponsoringSponsoredRepository from '@modules/users/infra/typeorm/repositories/PostgresSponsoringSponsoredRepository';
+import PostgresSponsorSponsoredRepository from '@modules/users/infra/typeorm/repositories/PostgresSponsorSponsoredRepository';
 
 import PostgresUserBalanceRepository from '@modules/users/infra/typeorm/repositories/PostgresUserBalanceRepository';
-import PostgresUserSponsoringSponsoredCountRepository from '@modules/users/infra/typeorm/repositories/PostgresUserSponsoringSponsoredCountRepository';
-import PostgresSponsorshipsRepository from '@modules/sponsorships/infra/typeorm/repositories/PostgresSponsorshipsRepository';
-import PostgresUsersRepository from '@modules/users/infra/typeorm/repositories/PostgresUsersRepository';
+import PostgresUserSponsorSponsoredCountRepository from '@modules/users/infra/typeorm/repositories/PostgresUserSponsorSponsoredCountRepository';
+import PostgresSponsorshipRepository from '@modules/sponsorships/infra/typeorm/repositories/PostgresSponsorshipRepository';
+import PostgresUserRepository from '@modules/users/infra/typeorm/repositories/PostgresUserRepository';
 import ISponsorBalanceRepository from '@modules/users/repositories/ISponsorBalanceRepository';
-import ISponsorshipsRepository from '@modules/sponsorships/repositories/ISponsorshipsRepository';
-import ISponsoringSponsoredRepository from '@modules/users/repositories/ISponsoringSponsoredRepository';
+import ISponsorshipRepository from '@modules/sponsorships/repositories/ISponsorshipRepository';
+import ISponsorSponsoredRepository from '@modules/users/repositories/ISponsorSponsoredRepository';
 import IUserBalanceRepository from '@modules/users/repositories/IUserBalanceRepository';
-import IUserSponsoringSponsoredCountRepository from '@modules/users/repositories/IUserSponsoringSponsoredCountRepository';
-import IUsersRepository from '@modules/users/repositories/IUsersRepository';
+import IUserSponsorSponsoredCountRepository from '@modules/users/repositories/IUserSponsoringSponsoredCountRepository';
+import IUserRepository from '@modules/users/repositories/IUserRepository';
 import IUserTokensRepository from '@modules/users/repositories/IUserTokensRepository';
 import { container } from 'tsyringe';
 import './providers';
@@ -22,32 +22,32 @@ container.registerSingleton<IUserTokensRepository>(
   'UserTokensRepository',
   MongoUserTokensRepository,
 );
-container.registerSingleton<INotificationsRepository>(
-  'NotificationsRepository',
-  MongoNotificationsRepository,
+container.registerSingleton<INotificationRepository>(
+  'NotificationRepository',
+  MongoNotificationRepository,
 );
-container.registerSingleton<IUsersRepository>(
-  'UsersRepository',
-  PostgresUsersRepository,
+container.registerSingleton<IUserRepository>(
+  'UserRepository',
+  PostgresUserRepository,
 );
-container.registerSingleton<ISponsorshipsRepository>(
-  'SponsorshipsRepository',
-  PostgresSponsorshipsRepository,
+container.registerSingleton<ISponsorshipRepository>(
+  'SponsorshipRepository',
+  PostgresSponsorshipRepository,
 );
 
 container.registerSingleton<ISponsorBalanceRepository>(
   'SponsorBalanceRepository',
   PostgresSponsorBalanceRepository,
 );
-container.registerSingleton<ISponsoringSponsoredRepository>(
-  'SponsoringSponsoredRepository',
-  PostgresSponsoringSponsoredRepository,
+container.registerSingleton<ISponsorSponsoredRepository>(
+  'SponsorSponsoredRepository',
+  PostgresSponsorSponsoredRepository,
 );
 container.registerSingleton<IUserBalanceRepository>(
   'UserBalanceRepository',
   PostgresUserBalanceRepository,
 );
-container.registerSingleton<IUserSponsoringSponsoredCountRepository>(
-  'UserSponsoringSponsoredCountRepository',
-  PostgresUserSponsoringSponsoredCountRepository,
+container.registerSingleton<IUserSponsorSponsoredCountRepository>(
+  'UserSponsorSponsoredCountRepository',
+  PostgresUserSponsorSponsoredCountRepository,
 );

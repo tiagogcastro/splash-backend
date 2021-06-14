@@ -2,11 +2,11 @@ import { v4 as uuid } from 'uuid';
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 import { hashSync } from 'bcryptjs';
 
-export default class CreateUsers1622143314249 implements MigrationInterface {
+export default class CreateUser1622143314249 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'users',
+        name: 'user',
         columns: [
           {
             name: 'id',
@@ -51,12 +51,12 @@ export default class CreateUsers1622143314249 implements MigrationInterface {
             isNullable: true,
           },
           {
-            name: 'roles',
+            name: 'role',
             type: 'varchar',
             isNullable: true,
           },
           {
-            name: 'activated_account',
+            name: 'active_account',
             type: 'boolean',
             default: true,
           },
@@ -76,7 +76,7 @@ export default class CreateUsers1622143314249 implements MigrationInterface {
     await queryRunner.manager
       .createQueryBuilder()
       .insert()
-      .into('users')
+      .into('user')
       .values([
         {
           id: uuid(),
@@ -84,13 +84,13 @@ export default class CreateUsers1622143314249 implements MigrationInterface {
           username: 'administrator',
           email: 'd0fe9bbf6f8f275c0a83fb622f3fcde7@lavimco.com',
           password: hashSync('131a8cd69bd56ee2af94a34597ff0d57'),
-          roles: 'admin',
+          role: 'admin',
         },
       ])
       .execute();
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('users');
+    await queryRunner.dropTable('user');
   }
 }

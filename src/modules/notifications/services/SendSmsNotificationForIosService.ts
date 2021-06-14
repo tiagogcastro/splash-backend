@@ -2,7 +2,7 @@ import twilioConfig from '@config/twilio';
 import AppError from '@shared/errors/AppError';
 import client from 'twilio';
 
-import IUsersRepository from '../../users/repositories/IUsersRepository';
+import IUserRepository from '../../users/repositories/IUserRepository';
 
 const { accountSid, authToken } = twilioConfig.twilio;
 
@@ -18,13 +18,13 @@ interface Response {
 }
 
 export default class SendSmsNotificationForIosService {
-  constructor(private usersRepository: IUsersRepository) {}
+  constructor(private userRepository: IUserRepository) {}
 
   public async sendNotification({
     user_id,
     message,
   }: Request): Promise<Response> {
-    const user = await this.usersRepository.findById(user_id);
+    const user = await this.userRepository.findById(user_id);
 
     if (!user) {
       throw new AppError('User does not found');

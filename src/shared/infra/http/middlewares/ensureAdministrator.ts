@@ -11,7 +11,7 @@ export default async function ensureAdministrator(
   const user_id = request.user.id;
   const usersRepository = getRepository(User);
 
-  const admin = await usersRepository.findOne({ id: user_id, roles: 'admin' });
+  const admin = await usersRepository.findOne({ id: user_id, role: 'admin' });
 
   if (!admin)
     throw new AppError('You need to be an administrator to access here', 401);

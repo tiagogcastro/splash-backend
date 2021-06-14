@@ -2,20 +2,20 @@ import ListSponsorshipNotificationsService from '@modules/notifications/services
 import { Request, Response } from 'express';
 
 import { classToClass } from 'class-transformer';
-import MongoNotificationsRepository from '../../typeorm/repositories/MongoNotificationsRepository';
-import PostgresUsersRepository from '../../../../users/infra/typeorm/repositories/PostgresUsersRepository';
+import MongoNotificationRepository from '../../typeorm/repositories/MongoNotificationRepository';
+import PostgresUserRepository from '../../../../users/infra/typeorm/repositories/PostgresUserRepository';
 
 export default class SponsorshipNotificationsController {
   async index(request: Request, response: Response): Promise<Response> {
     const user_id = request.user.id;
 
-    const mongoNotificationsRepository = new MongoNotificationsRepository();
-    const postgresUsersRepository = new PostgresUsersRepository();
+    const mongoNotificationRepository = new MongoNotificationRepository();
+    const postgresUserRepository = new PostgresUserRepository();
 
     const listSponsorshipNotifications =
       new ListSponsorshipNotificationsService(
-        mongoNotificationsRepository,
-        postgresUsersRepository,
+        mongoNotificationRepository,
+        postgresUserRepository,
       );
 
     const notifications = await listSponsorshipNotifications.execute(user_id);

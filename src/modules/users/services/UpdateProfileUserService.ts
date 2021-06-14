@@ -5,7 +5,7 @@ import { addHours, isAfter } from 'date-fns';
 import path from 'path';
 import { inject, injectable } from 'tsyringe';
 import User from '../infra/typeorm/entities/User';
-import IUsersRepository from '../repositories/IUsersRepository';
+import IUserRepository from '../repositories/IUserRepository';
 import IUserTokensRepository from '../repositories/IUserTokensRepository';
 
 interface Request {
@@ -16,13 +16,13 @@ interface Request {
   old_password?: string;
   token?: string;
   password?: string;
-  username: string;
+  username?: string;
 }
 @injectable()
 class UpdateProfileUserService {
   constructor(
-    @inject('UsersRepository')
-    private usersRepository: IUsersRepository,
+    @inject('UserRepository')
+    private userRepository: IUserRepository,
 
     @inject('UserTokensRepository')
     private userTokensRepository: IUserTokensRepository,
@@ -41,13 +41,13 @@ class UpdateProfileUserService {
     token,
     username,
   }: Request): Promise<User> {
-    const user = await this.usersRepository.findById(user_id);
+    const user = await this.userRepository.findById(user_id);
 
     if (!user) {
       throw new AppError('User does not exist', 401);
     }
 
-    const checkEmailAlreadyExists = await this.usersRepository.findByEmail(
+    const checkEmailAlreadyExists = await this.userRepository.findByEmail(
       email,
     );
 
@@ -58,7 +58,7 @@ class UpdateProfileUserService {
     if (checkEmailAlreadyExists?.email !== email) {
       if (email && !token) {
         const { token: generatedToken } =
-          await this.userTokensRepository.generate(user.id);
+          await this.userTokensRepository.generate(email);
 
         const emailVerificationViewPath = path.resolve(
           __dirname,
@@ -68,14 +68,14 @@ class UpdateProfileUserService {
         );
         await this.mailProvider.sendMail({
           to: {
-            name: name || username,
+            name: user.name || user.username,
             address: email,
           },
           subject: 'Verificação de e-mail',
           template_data: {
             file: emailVerificationViewPath,
             variables: {
-              name: name || username,
+              name: name || user.username,
               hour: 12,
               link: `${process.env.APP_WEB_URL}/perfil/editar?token=${generatedToken}`,
             },
@@ -91,7 +91,7 @@ class UpdateProfileUserService {
 
         const userTokens = await this.userTokensRepository.findValidToken({
           token,
-          user_id: user.id,
+          email,
         });
 
         if (!userTokens)
@@ -112,7 +112,7 @@ class UpdateProfileUserService {
       }
     }
 
-    const usernameExist = await this.usersRepository.findByUsername(username);
+    const usernameExist = await this.userRepository.findByUsername(username);
 
     if (usernameExist && usernameExist.username !== username) {
       throw new AppError('This username already exists', 401);
@@ -151,7 +151,7 @@ class UpdateProfileUserService {
       user.username = username;
     }
 
-    await this.usersRepository.save(user);
+    await this.userRepository.save(user);
     return user;
   }
 }

@@ -9,7 +9,7 @@ class AdminsController {
       user_id,
       balance_amount_add,
       reset_password,
-      roles,
+      role,
       withdraw_amount,
     } = request.body;
 
@@ -19,7 +19,7 @@ class AdminsController {
       user_id,
       balance_amount_add,
       reset_password,
-      roles,
+      role,
       withdraw_amount,
     });
 
