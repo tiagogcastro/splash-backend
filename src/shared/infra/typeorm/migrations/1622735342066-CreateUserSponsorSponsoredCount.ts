@@ -17,7 +17,6 @@ export default class CreateUserSponsoringSponsored1622735342066
             name: 'user_id',
             type: 'uuid',
             isUnique: true,
-            isNullable: true,
           },
           {
             name: 'sponsor_count',
@@ -42,12 +41,12 @@ export default class CreateUserSponsoringSponsored1622735342066
         ],
         foreignKeys: [
           {
-            name: 'FKUserSponsoringSponsoredUserID',
+            name: 'FKUserSponsorSponsoredUserID',
             columnNames: ['user_id'],
             referencedTableName: 'user',
             referencedColumnNames: ['id'],
-            onDelete: 'SET NULL',
-            onUpdate: 'SET NULL',
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE',
           },
         ],
       }),

@@ -1,3 +1,4 @@
+import ICreateUserSponsorSponsoredCountDTO from '@modules/users/dtos/ICreateUserSponsorSponsoredCountDTO';
 import IUpdateSponsoringSponsoredCountDTO from '@modules/users/dtos/IUpdateSponsoringSponsoredCountDTO';
 import IUserSponsorSponsoredCountRepository from '@modules/users/repositories/IUserSponsoringSponsoredCountRepository';
 import { getRepository, Repository } from 'typeorm';
@@ -10,6 +11,35 @@ export default class PostgresUserSponsorSponsoredCountRepository
 
   constructor() {
     this.ormRepository = getRepository(UserSponsorSponsoredCount);
+  }
+
+  async findByUserId(
+    user_id: string,
+  ): Promise<UserSponsorSponsoredCount | undefined> {
+    const userSponsorSponsoredCount = await this.ormRepository.findOne({
+      where: {
+        user_id,
+      },
+    });
+    return userSponsorSponsoredCount;
+  }
+
+  async save(
+    userSponsorSponsoredCount: UserSponsorSponsoredCount,
+  ): Promise<UserSponsorSponsoredCount> {
+    return this.ormRepository.save(userSponsorSponsoredCount);
+  }
+
+  async create(
+    userSponsorSponsoredCountData: ICreateUserSponsorSponsoredCountDTO,
+  ): Promise<UserSponsorSponsoredCount> {
+    const userSponsorSponsoredCount = this.ormRepository.create(
+      userSponsorSponsoredCountData,
+    );
+
+    await this.ormRepository.save(userSponsorSponsoredCount);
+
+    return userSponsorSponsoredCount;
   }
 
   async updateCount(

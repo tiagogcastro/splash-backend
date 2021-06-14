@@ -164,17 +164,22 @@ export default class CreateUserService {
         sponsored_user_id: user.id,
       });
 
-      // Loja fica com +1 patrocinado e o usuário fica com +1 patrocinando ele
-      await this.userSponsorSponsoredCountRepository.updateCount(
-        sponsorship.sponsor_user_id,
-        {
-          sponsor_count: +1,
-        },
-      );
-
-      await this.userSponsorSponsoredCountRepository.updateCount(user.id, {
-        sponsored_count: +1,
+      await this.userSponsorSponsoredCountRepository.create({
+        user_id: user.id,
+        sponsor_count: 1,
       });
+      const userSponsorSponsoredCount =
+        await this.userSponsorSponsoredCountRepository.findByUserId(
+          sponsorship.sponsor_user_id,
+        );
+
+      if (userSponsorSponsoredCount) {
+        userSponsorSponsoredCount.sponsored_count += 1;
+
+        await this.userSponsorSponsoredCountRepository.save(
+          userSponsorSponsoredCount,
+        );
+      }
     } else {
       user = await this.userRepository.create({
         name,
@@ -183,6 +188,10 @@ export default class CreateUserService {
         role: role || 'default',
         email,
         password: hashedPassword,
+      });
+
+      await this.userSponsorSponsoredCountRepository.create({
+        user_id: user.id,
       });
 
       await this.userBalanceRepository.create({
