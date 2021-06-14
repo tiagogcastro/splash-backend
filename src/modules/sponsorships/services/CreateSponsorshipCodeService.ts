@@ -1,6 +1,6 @@
 import INotificationRepository from '@modules/notifications/repositories/INotificationRepository';
 import IUserBalanceRepository from '@modules/users/repositories/IUserBalanceRepository';
-import IUserRepository from '@modules/users/repositories/IUsersRepository';
+import IUserRepository from '@modules/users/repositories/IUserRepository';
 import AppError from '@shared/errors/AppError';
 import crypto from 'crypto';
 import { inject, injectable } from 'tsyringe';

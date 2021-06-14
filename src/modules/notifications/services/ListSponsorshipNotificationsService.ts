@@ -1,4 +1,4 @@
-import IUsersRepository from '@modules/users/repositories/IUsersRepository';
+import IUsersRepository from '@modules/users/repositories/IUserRepository';
 import AppError from '@shared/errors/AppError';
 import Notification from '../infra/typeorm/schemas/Notification';
 import INotificationRepository from '../repositories/INotificationRepository';

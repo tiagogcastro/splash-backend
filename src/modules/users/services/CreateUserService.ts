@@ -7,10 +7,10 @@ import { sign } from 'jsonwebtoken';
 import { inject, injectable } from 'tsyringe';
 import User from '../infra/typeorm/entities/User';
 import ISponsorBalanceRepository from '../repositories/ISponsorBalanceRepository';
-import ISponsorSponsoredRepository from '../repositories/ISponsoringSponsoredRepository';
+import ISponsorSponsoredRepository from '../repositories/ISponsorSponsoredRepository';
 import IUserSponsorSponsoredCountRepository from '../repositories/IUserSponsoringSponsoredCountRepository';
 import IUserBalanceRepository from '../repositories/IUserBalanceRepository';
-import IUserRepository from '../repositories/IUsersRepository';
+import IUserRepository from '../repositories/IUserRepository';
 
 interface Request {
   role?: string;

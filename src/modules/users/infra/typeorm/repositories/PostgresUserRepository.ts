@@ -3,7 +3,7 @@ import ICreateUserByPhoneNumberDTO from '@modules/users/dtos/ICreateUserByPhoneN
 import IUpdateUserDTO from '@modules/users/dtos/IUpdateUserDTO';
 import IUsersRepository, {
   IUpdateResult,
-} from '@modules/users/repositories/IUsersRepository';
+} from '@modules/users/repositories/IUserRepository';
 import { getRepository, Repository } from 'typeorm';
 
 import User from '../entities/User';
@@ -49,7 +49,12 @@ export default class PostgresUsersRepository implements IUsersRepository {
   }
 
   async findById(id: string): Promise<User | undefined> {
-    const user = await this.ormRepository.findOne(id);
+    const user = await this.ormRepository.findOne({
+      where: {
+        id,
+      },
+      relations: ['user_balance', 'user_sponsor_sponsored_count'],
+    });
     return user;
   }
 

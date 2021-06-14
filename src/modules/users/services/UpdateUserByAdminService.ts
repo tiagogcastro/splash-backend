@@ -4,7 +4,7 @@ import { inject, injectable } from 'tsyringe';
 import IUpdateUserByAdminServiceDTO from '../dtos/IUpdateUserByAdminServiceDTO';
 import UserBalance from '../infra/typeorm/entities/UserBalance';
 import IUserBalanceRepository from '../repositories/IUserBalanceRepository';
-import IUserRepository from '../repositories/IUsersRepository';
+import IUserRepository from '../repositories/IUserRepository';
 
 @injectable()
 class UpdateUserByAdminService {

@@ -1,6 +1,6 @@
 import AppError from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
-import IUserRepository from '../repositories/IUsersRepository';
+import IUserRepository from '../repositories/IUserRepository';
 
 @injectable()
 class DeleteProfileUser {

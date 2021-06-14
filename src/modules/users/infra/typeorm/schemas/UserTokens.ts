@@ -18,7 +18,7 @@ class UserTokens {
   token: string;
 
   @Column()
-  user_id: string;
+  email: string;
 
   @Column({
     default: true,

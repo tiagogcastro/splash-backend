@@ -1,22 +1,22 @@
 import AppError from '@shared/errors/AppError';
-import ISponsoringSponsoredRepository from '../repositories/ISponsoringSponsoredRepository';
-import IUsersRepository from '../repositories/IUsersRepository';
+import ISponsorSponsoredRepository from '../repositories/ISponsorSponsoredRepository';
+import IUserRepository from '../repositories/IUserRepository';
 
 class UnSponsoringUserService {
   constructor(
-    private usersRepository: IUsersRepository,
-    private sponsoringSponsoredRepository: ISponsoringSponsoredRepository,
+    private userRepository: IUserRepository,
+    private sponsorSponsoredRepository: ISponsorSponsoredRepository,
   ) {}
 
   async execute(
     user_id_to_remove_sponsor: string,
     user_id_to_remove_sponsored: string,
   ): Promise<void> {
-    const userLogged = await this.usersRepository.findById(
+    const userLogged = await this.userRepository.findById(
       user_id_to_remove_sponsor,
     );
 
-    const userToUnSponsoring = await this.usersRepository.findById(
+    const userToUnSponsoring = await this.userRepository.findById(
       user_id_to_remove_sponsored,
     );
 
@@ -29,13 +29,13 @@ class UnSponsoringUserService {
     }
 
     const sponsoringExist =
-      await this.sponsoringSponsoredRepository.findBySponsoringAndSponsored(
+      await this.sponsorSponsoredRepository.findBySponsorAndSponsored(
         user_id_to_remove_sponsor,
         user_id_to_remove_sponsored,
       );
 
     if (sponsoringExist) {
-      await this.sponsoringSponsoredRepository.deleteById(sponsoringExist.id);
+      await this.sponsorSponsoredRepository.deleteById(sponsoringExist.id);
     }
   }
 }

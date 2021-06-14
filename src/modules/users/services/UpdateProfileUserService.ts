@@ -5,7 +5,7 @@ import { addHours, isAfter } from 'date-fns';
 import path from 'path';
 import { inject, injectable } from 'tsyringe';
 import User from '../infra/typeorm/entities/User';
-import IUserRepository from '../repositories/IUsersRepository';
+import IUserRepository from '../repositories/IUserRepository';
 import IUserTokensRepository from '../repositories/IUserTokensRepository';
 
 interface Request {
@@ -16,7 +16,7 @@ interface Request {
   old_password?: string;
   token?: string;
   password?: string;
-  username: string;
+  username?: string;
 }
 @injectable()
 class UpdateProfileUserService {
@@ -58,7 +58,7 @@ class UpdateProfileUserService {
     if (checkEmailAlreadyExists?.email !== email) {
       if (email && !token) {
         const { token: generatedToken } =
-          await this.userTokensRepository.generate(user.id);
+          await this.userTokensRepository.generate(email);
 
         const emailVerificationViewPath = path.resolve(
           __dirname,
@@ -68,14 +68,14 @@ class UpdateProfileUserService {
         );
         await this.mailProvider.sendMail({
           to: {
-            name: name || username,
+            name: user.name || user.username,
             address: email,
           },
           subject: 'Verificação de e-mail',
           template_data: {
             file: emailVerificationViewPath,
             variables: {
-              name: name || username,
+              name: name || user.username,
               hour: 12,
               link: `${process.env.APP_WEB_URL}/perfil/editar?token=${generatedToken}`,
             },
@@ -91,7 +91,7 @@ class UpdateProfileUserService {
 
         const userTokens = await this.userTokensRepository.findValidToken({
           token,
-          user_id: user.id,
+          email,
         });
 
         if (!userTokens)

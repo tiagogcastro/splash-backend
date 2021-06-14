@@ -1,7 +1,9 @@
 import INotificationRepository from '@modules/notifications/repositories/INotificationRepository';
 import ISponsorBalanceRepository from '@modules/users/repositories/ISponsorBalanceRepository';
+import ISponsorSponsoredRepository from '@modules/users/repositories/ISponsorSponsoredRepository';
 import IUserBalanceRepository from '@modules/users/repositories/IUserBalanceRepository';
-import IUserRepository from '@modules/users/repositories/IUsersRepository';
+import IUserRepository from '@modules/users/repositories/IUserRepository';
+import IUserSponsorSponsoredCountRepository from '@modules/users/repositories/IUserSponsoringSponsoredCountRepository';
 import AppError from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
 import ISendSponsorshipServiceDTO from '../dtos/ISendSponsorshipServiceDTO';
@@ -25,6 +27,12 @@ export default class SendSponsorshipService {
 
     @inject('NotificationRepository')
     private notificationRepository: INotificationRepository,
+
+    @inject('UserSponsorSponsoredCountRepository')
+    private userSponsorSponsoredCountRepository: IUserSponsorSponsoredCountRepository,
+
+    @inject('SponsorSponsoredRepository')
+    private sponsorSponsoredRepository: ISponsorSponsoredRepository,
   ) {}
 
   async execute({
@@ -133,6 +141,42 @@ export default class SendSponsorshipService {
 
     await this.userBalanceRepository.save(userBalance);
     await this.userBalanceRepository.save(recipientUserBalance);
+
+    let sponsorSponsored =
+      await this.sponsorSponsoredRepository.findBySponsorAndSponsored(
+        sponsor_user_id,
+        user_recipient_id,
+      );
+
+    if (!sponsorSponsored) {
+      const sponsorUserSponsorSponsored =
+        await this.userSponsorSponsoredCountRepository.findByUserId(
+          sponsor_user_id,
+        );
+      const userRecipientSponsorSponsored =
+        await this.userSponsorSponsoredCountRepository.findByUserId(
+          user_recipient_id,
+        );
+
+      if (userRecipientSponsorSponsored) {
+        userRecipientSponsorSponsored.sponsor_count += 1;
+
+        await this.userSponsorSponsoredCountRepository.save(
+          userRecipientSponsorSponsored,
+        );
+      }
+      if (sponsorUserSponsorSponsored) {
+        sponsorUserSponsorSponsored.sponsored_count += 1;
+
+        await this.userSponsorSponsoredCountRepository.save(
+          sponsorUserSponsorSponsored,
+        );
+      }
+      sponsorSponsored = await this.sponsorSponsoredRepository.create({
+        sponsor_user_id,
+        sponsored_user_id: user_recipient_id,
+      });
+    }
 
     const [first, second] = String(amount).split('.');
 

@@ -1,8 +1,8 @@
 import AppError from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
 import SponsorSponsored from '../infra/typeorm/entities/SponsorSponsored';
-import ISponsorSponsoredRepository from '../repositories/ISponsoringSponsoredRepository';
-import IUserRepository from '../repositories/IUsersRepository';
+import ISponsorSponsoredRepository from '../repositories/ISponsorSponsoredRepository';
+import IUserRepository from '../repositories/IUserRepository';
 
 @injectable()
 class ListUsersWhoSponsorTheUser {

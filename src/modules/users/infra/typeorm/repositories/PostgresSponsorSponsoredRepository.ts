@@ -1,5 +1,5 @@
 import ICreateSponsoringDTO from '@modules/users/dtos/ICreateSponsoringDTO';
-import ISponsorSponsoredRepository from '@modules/users/repositories/ISponsoringSponsoredRepository';
+import ISponsorSponsoredRepository from '@modules/users/repositories/ISponsorSponsoredRepository';
 import { getRepository, Repository } from 'typeorm';
 import SponsorSponsored from '../entities/SponsorSponsored';
 
@@ -19,24 +19,24 @@ export default class PostgresSponsorSponsoredRepository
   async create(
     sponsoringData: ICreateSponsoringDTO,
   ): Promise<SponsorSponsored> {
-    const userSponsoring = this.ormRepository.create(sponsoringData);
+    const sponsorSponsored = this.ormRepository.create(sponsoringData);
 
-    await this.ormRepository.save(userSponsoring);
+    await this.ormRepository.save(sponsorSponsored);
 
-    return userSponsoring;
+    return sponsorSponsored;
   }
 
-  async findBySponsoringAndSponsored(
+  async findBySponsorAndSponsored(
     sponsor_user_id: string,
     sponsored_user_id: string,
   ): Promise<SponsorSponsored | undefined> {
-    const userSponsoring = await this.ormRepository.findOne({
+    const sponsorSponsored = await this.ormRepository.findOne({
       where: {
         sponsor_user_id,
         sponsored_user_id,
       },
     });
-    return userSponsoring;
+    return sponsorSponsored;
   }
 
   async findAllBySponsoringUserId(
