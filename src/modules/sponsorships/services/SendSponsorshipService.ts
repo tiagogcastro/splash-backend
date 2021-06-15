@@ -193,15 +193,13 @@ export default class SendSponsorshipService {
     await this.notificationRepository.create({
       recipient_id: sponsor_user_id,
       sender_id: sponsor_user_id,
-      sender: JSON.stringify(classToClass(sender)),
-      subject,
+      content: subject,
     });
 
     await this.notificationRepository.create({
       recipient_id: user_recipient_id,
       sender_id: sponsor_user_id,
-      sender: JSON.stringify(classToClass(sender)),
-      subject: `você recebeu R$${balanceAmount} de ${sender.username}`,
+      content: `você recebeu R$${balanceAmount} de ${sender.username}`,
     });
 
     return sponsorship;

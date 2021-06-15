@@ -1,5 +1,6 @@
 import IUsersRepository from '@modules/users/repositories/IUserRepository';
 import AppError from '@shared/errors/AppError';
+import { classToClass } from 'class-transformer';
 import Notification from '../infra/typeorm/schemas/Notification';
 import INotificationRepository from '../repositories/INotificationRepository';
 
@@ -22,14 +23,17 @@ export default class ListSponsorshipHistoryNotificationsService {
         recipient_id: user_recipient_id,
         sender_id,
       });
+    const user = await this.usersRepository.findById(sender_id);
 
-    const notificationsWithSenderParsed = notifications.map(notification => {
+    if (!user) throw new AppError('User does not exist');
+
+    const notificationsWithSender = notifications.map(notification => {
       return {
         ...notification,
-        sender: JSON.parse(notification.sender),
+        sender: classToClass(user),
       };
     });
 
-    return notificationsWithSenderParsed;
+    return notificationsWithSender;
   }
 }

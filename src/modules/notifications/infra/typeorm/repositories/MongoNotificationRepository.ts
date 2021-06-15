@@ -55,16 +55,14 @@ export default class MongoNotificationRepository
   }
 
   async create({
-    subject,
+    content,
     recipient_id,
     sender_id,
-    sender,
   }: ICreateNotificationDTO): Promise<Notification> {
     const notification = this.ormRepository.create({
-      subject,
+      content,
       recipient_id,
       sender_id,
-      sender,
     });
 
     await this.ormRepository.save(notification);

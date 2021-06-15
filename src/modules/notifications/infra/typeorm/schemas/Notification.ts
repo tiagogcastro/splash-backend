@@ -13,19 +13,19 @@ export default class Notification {
   id: ObjectID;
 
   @Column()
-  subject: string;
+  content: string;
 
   @Column('uuid')
   recipient_id: string;
 
-  @Column('uuid')
+  @Column({
+    type: 'uuid',
+    nullable: true,
+  })
   sender_id: string;
 
   @Column({ default: false })
   read: boolean;
-
-  @Column()
-  sender: string;
 
   @CreateDateColumn()
   created_at: Date;
