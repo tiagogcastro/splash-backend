@@ -3,8 +3,17 @@ import ShowUserBalanceService from '@modules/users/services/ShowUserBalanceServi
 import { classToClass } from 'class-transformer';
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
+import PostgresUsersRepository from '../../typeorm/repositories/PostgresUserRepository';
 
 class UsersController {
+  async index(request: Request, response: Response): Promise<Response> {
+    const postgresUsersRepository = new PostgresUsersRepository();
+
+    const users = await postgresUsersRepository.findAllUsers();
+
+    return response.status(200).json(classToClass(users));
+  }
+
   async create(request: Request, response: Response): Promise<Response> {
     const {
       name,
