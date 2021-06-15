@@ -53,4 +53,14 @@ profileRoutes.delete('/', profileUserController.delete);
 
 profileRoutes.put('/add-email', usersEmailController.update);
 
+profileRoutes.post(
+  '/send-verification-code',
+  profileUserController.sendVerificationCode,
+);
+
+profileRoutes.post(
+  '/verify/update/phone-number',
+  profileUserController.validationAndUpdateUserPhoneNumber,
+);
+
 export default profileRoutes;
