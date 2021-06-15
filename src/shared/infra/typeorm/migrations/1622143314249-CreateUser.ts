@@ -17,13 +17,11 @@ export default class CreateUser1622143314249 implements MigrationInterface {
             name: 'name',
             type: 'varchar',
             isNullable: true,
-            length: '40',
           },
           {
             name: 'username',
             type: 'varchar',
             isUnique: true,
-            length: '40',
           },
           {
             name: 'avatar',
@@ -34,7 +32,6 @@ export default class CreateUser1622143314249 implements MigrationInterface {
             name: 'bio',
             type: 'varchar',
             isNullable: true,
-            length: '90',
           },
           {
             name: 'phone_number',
@@ -47,19 +44,16 @@ export default class CreateUser1622143314249 implements MigrationInterface {
             type: 'varchar',
             isUnique: true,
             isNullable: true,
-            length: '110',
           },
           {
             name: 'password',
             type: 'varchar',
             isNullable: true,
-            length: '30',
           },
           {
             name: 'role',
             type: 'varchar',
             isNullable: true,
-            length: '50',
           },
           {
             name: 'active_account',
