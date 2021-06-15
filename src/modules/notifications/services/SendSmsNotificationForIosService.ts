@@ -27,7 +27,7 @@ export default class SendSmsNotificationForIosService {
     const user = await this.userRepository.findById(user_id);
 
     if (!user) {
-      throw new AppError('User does not found');
+      throw new AppError('User does not exist');
     }
 
     const userPhoneNumber = String(user?.phone_number);

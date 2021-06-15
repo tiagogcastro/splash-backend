@@ -1,4 +1,4 @@
-import IUsersRepository from '@modules/users/repositories/IUserRepository';
+import IUserRepository from '@modules/users/repositories/IUserRepository';
 import AppError from '@shared/errors/AppError';
 import { classToClass } from 'class-transformer';
 import { inject, injectable } from 'tsyringe';
@@ -16,8 +16,8 @@ export default class ListSponsorshipHistoryNotificationsService {
     @inject('NotificationRepository')
     private notificationRepository: INotificationRepository,
 
-    @inject('UsersRepository')
-    private usersRepository: IUsersRepository,
+    @inject('UserRepository')
+    private userRepository: IUserRepository,
   ) {}
 
   async execute({
@@ -29,7 +29,7 @@ export default class ListSponsorshipHistoryNotificationsService {
         recipient_id: user_recipient_id,
         sender_id,
       });
-    const user = await this.usersRepository.findById(sender_id);
+    const user = await this.userRepository.findById(sender_id);
 
     if (!user) throw new AppError('User does not exist');
 

@@ -1,4 +1,5 @@
 import AuthenticateUserByPhoneNumberSession from '@modules/users/services/AuthenticateUserByPhoneNumberSession';
+import { classToClass } from 'class-transformer';
 import { Request, Response } from 'express';
 
 export default class AuthenticationByPhoneNumberController {
@@ -18,6 +19,6 @@ export default class AuthenticationByPhoneNumberController {
       phone_number: user.phone_number,
     };
 
-    return response.status(200).json({ user, token });
+    return response.status(200).json({ user: classToClass(user), token });
   }
 }

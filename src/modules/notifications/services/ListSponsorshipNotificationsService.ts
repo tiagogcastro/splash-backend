@@ -1,4 +1,4 @@
-import IUsersRepository from '@modules/users/repositories/IUserRepository';
+import IUserRepository from '@modules/users/repositories/IUserRepository';
 import AppError from '@shared/errors/AppError';
 import { classToClass } from 'class-transformer';
 import { inject, injectable } from 'tsyringe';
@@ -11,8 +11,8 @@ export default class ListSponsorshipNotificationsService {
     @inject('NotificationRepository')
     private notificationRepository: INotificationRepository,
 
-    @inject('UsersRepository')
-    private usersRepository: IUsersRepository,
+    @inject('UserRepository')
+    private userRepository: IUserRepository,
   ) {}
 
   async execute(user_id: string): Promise<Notification[]> {
@@ -31,7 +31,7 @@ export default class ListSponsorshipNotificationsService {
     });
 
     const promises = groupedNotifications.map(async notification => {
-      const user = await this.usersRepository.findById(notification.sender_id);
+      const user = await this.userRepository.findById(notification.sender_id);
 
       if (!user) throw new AppError('User does not exist');
 
