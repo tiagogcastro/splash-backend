@@ -1,17 +1,16 @@
 import ensureAdministrator from '@shared/infra/http/middlewares/ensureAdministrator';
 import { celebrate, Joi, Segments } from 'celebrate';
 import { Router } from 'express';
-import QRCodeController from '../controllers/QRCodeController';
+import CreateQRCodeController from '../controllers/CreateQRCodeController';
 import UsersController from '../controllers/UsersController';
-import UsersPhoneController from '../controllers/UsersPhoneController';
-import createUserByPhoneNumberMiddleware from '../middleware/createUserByPhoneNumberMiddleware';
+import SendCodeController from '../controllers/SendCodeController';
 import ensureAuthenticated from '../middleware/ensureAuthenticated';
 import ensureLimitedCodeRequests from '../middleware/ensureLimitedCodeRequests';
 
 const usersRoutes = Router();
 
-const userPhoneController = new UsersPhoneController();
-const qrcodeController = new QRCodeController();
+const sendCodeController = new SendCodeController();
+const createQRCodeController = new CreateQRCodeController();
 const usersController = new UsersController();
 
 usersRoutes.post(
@@ -48,31 +47,34 @@ usersRoutes.post(
   celebrate({
     [Segments.BODY]: {
       phone_number: Joi.string()
+        .min(8)
+        .max(15)
         .regex(/^[0-9]+$/)
         .required(),
     },
   }),
   ensureLimitedCodeRequests,
-  userPhoneController.sendCode,
+  sendCodeController.handle,
 );
 
-usersRoutes.post('/qrcode', qrcodeController.create);
+usersRoutes.post('/qrcode', createQRCodeController.handle);
 
 usersRoutes.post(
   '/sms',
   celebrate({
-    [Segments.QUERY]: {
-      userPhone: Joi.string().regex(/^[0-9]+$/),
-    },
     [Segments.BODY]: {
+      phone_number: Joi.string()
+        .min(8)
+        .max(15)
+        .regex(/^[0-9]+$/)
+        .required(),
       password: Joi.string().min(8).max(100).required(),
       terms: Joi.boolean().required(),
       verification_code: Joi.string().min(6).max(6).required(),
       sponsorship_code: Joi.string().min(6).max(6).required(),
     },
   }),
-  createUserByPhoneNumberMiddleware,
-  userPhoneController.create,
+  usersController.create,
 );
 
 export default usersRoutes;

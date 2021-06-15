@@ -1,10 +1,12 @@
 /* eslint-disable no-param-reassign */
+import twilioConfig from '@config/twilio';
 import jwtConfig from '@config/auth';
 import ISponsorshipRepository from '@modules/sponsorships/repositories/ISponsorshipRepository';
 import AppError from '@shared/errors/AppError';
 import { hash } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import { inject, injectable } from 'tsyringe';
+import client from 'twilio';
 import User from '../infra/typeorm/entities/User';
 import ISponsorBalanceRepository from '../repositories/ISponsorBalanceRepository';
 import ISponsorSponsoredRepository from '../repositories/ISponsorSponsoredRepository';
@@ -17,6 +19,7 @@ interface Request {
   name?: string;
   phone_number?: string;
   email?: string;
+  verification_code?: string;
   balance_amount?: number;
   username?: string;
   password: string;
@@ -28,6 +31,7 @@ interface Response {
   user: User;
   token: string;
 }
+
 @injectable()
 export default class CreateUserService {
   constructor(
@@ -56,6 +60,7 @@ export default class CreateUserService {
     phone_number,
     username,
     email,
+    verification_code,
     balance_amount = 0,
     password,
     sponsorship_code,
@@ -91,13 +96,6 @@ export default class CreateUserService {
       }
     }
 
-    if (!terms && !role) {
-      throw new AppError(
-        'You cannot to create an account without accepting the terms',
-        400,
-      );
-    }
-
     if (!username) {
       const randomUsername = `user${Math.random()
         .toFixed(4)
@@ -125,6 +123,33 @@ export default class CreateUserService {
         );
       }
 
+      if (phone_number) {
+        if (!verification_code)
+          throw new AppError('You need to inform a verification code');
+
+        if (!terms) {
+          throw new AppError(
+            'You cannot to create an account without accepting the terms',
+            400,
+          );
+        }
+        const { accountSid, authToken, servicesSid } = twilioConfig.twilio;
+
+        const clientSendMessage = client(accountSid, authToken);
+
+        try {
+          await clientSendMessage.verify
+            .services(servicesSid)
+            .verificationChecks.create({
+              to: `+${phone_number}`,
+              code: verification_code,
+            });
+        } catch {
+          throw new AppError(
+            'It looks like there was an error regarding the code sent',
+          );
+        }
+      }
       user = await this.userRepository.create({
         name,
         username,

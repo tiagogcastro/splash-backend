@@ -3,8 +3,8 @@ import CreateQRCodeService from '@modules/users/services/CreateQRCodeService';
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 
-class QRCodeController {
-  async create(request: Request, response: Response): Promise<Response> {
+class CreateQRCodeController {
+  async handle(request: Request, response: Response): Promise<Response> {
     const sponsorship_code = memory.sponsorship.code;
 
     const createQRCode = container.resolve(CreateQRCodeService);
@@ -19,4 +19,4 @@ class QRCodeController {
   }
 }
 
-export default QRCodeController;
+export default CreateQRCodeController;
