@@ -1,13 +1,17 @@
-import User from '@modules/users/infra/typeorm/entities/User';
 import IUsersRepository from '@modules/users/repositories/IUserRepository';
 import AppError from '@shared/errors/AppError';
 import { classToClass } from 'class-transformer';
+import { inject, injectable } from 'tsyringe';
 import Notification from '../infra/typeorm/schemas/Notification';
 import INotificationRepository from '../repositories/INotificationRepository';
 
-export default class ListGroupedSponsorshipNotificationsService {
+@injectable()
+export default class ListSponsorshipNotificationsService {
   constructor(
+    @inject('NotificationRepository')
     private notificationRepository: INotificationRepository,
+
+    @inject('UsersRepository')
     private usersRepository: IUsersRepository,
   ) {}
 

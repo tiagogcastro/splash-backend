@@ -9,7 +9,7 @@ export default class AuthenticationByPhoneNumberController {
       new AuthenticateUserByPhoneNumberSession();
 
     const { user, token } = await authenticationByPhoneNumber.create({
-      phone_number: `+${phone_number}`,
+      phone_number,
       password,
     });
 

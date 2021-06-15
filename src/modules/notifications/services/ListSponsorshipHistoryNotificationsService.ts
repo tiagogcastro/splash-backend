@@ -1,6 +1,7 @@
 import IUsersRepository from '@modules/users/repositories/IUserRepository';
 import AppError from '@shared/errors/AppError';
 import { classToClass } from 'class-transformer';
+import { inject, injectable } from 'tsyringe';
 import Notification from '../infra/typeorm/schemas/Notification';
 import INotificationRepository from '../repositories/INotificationRepository';
 
@@ -8,9 +9,14 @@ interface IListSponsorshipHistoryNotificationsDTO {
   user_recipient_id: string;
   sender_id: string;
 }
+
+@injectable()
 export default class ListSponsorshipHistoryNotificationsService {
   constructor(
+    @inject('NotificationRepository')
     private notificationRepository: INotificationRepository,
+
+    @inject('UsersRepository')
     private usersRepository: IUsersRepository,
   ) {}
 

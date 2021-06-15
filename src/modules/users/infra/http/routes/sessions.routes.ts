@@ -36,7 +36,6 @@ sessionsRoutes.post(
       }),
     },
   }),
-  createUserByPhoneNumberMiddleware,
   authenticationByPhoneNumberController.create,
 );
 export default sessionsRoutes;
