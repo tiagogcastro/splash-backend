@@ -1,12 +1,18 @@
-import IUsersRepository from '@modules/users/repositories/IUserRepository';
+import IUserRepository from '@modules/users/repositories/IUserRepository';
 import AppError from '@shared/errors/AppError';
+import { classToClass } from 'class-transformer';
+import { inject, injectable } from 'tsyringe';
 import Notification from '../infra/typeorm/schemas/Notification';
 import INotificationRepository from '../repositories/INotificationRepository';
 
-export default class ListGroupedSponsorshipNotificationsService {
+@injectable()
+export default class ListSponsorshipNotificationsService {
   constructor(
+    @inject('NotificationRepository')
     private notificationRepository: INotificationRepository,
-    private usersRepository: IUsersRepository,
+
+    @inject('UserRepository')
+    private userRepository: IUserRepository,
   ) {}
 
   async execute(user_id: string): Promise<Notification[]> {
@@ -25,13 +31,13 @@ export default class ListGroupedSponsorshipNotificationsService {
     });
 
     const promises = groupedNotifications.map(async notification => {
-      const user = await this.usersRepository.findById(notification.sender_id);
+      const user = await this.userRepository.findById(notification.sender_id);
 
       if (!user) throw new AppError('User does not exist');
 
       return {
         ...notification,
-        sender: user,
+        sender: classToClass(user),
       };
     });
     const notificationsWithSender = await Promise.all(promises);

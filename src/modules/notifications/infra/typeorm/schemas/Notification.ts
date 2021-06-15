@@ -18,7 +18,10 @@ export default class Notification {
   @Column('uuid')
   recipient_id: string;
 
-  @Column('uuid')
+  @Column({
+    type: 'uuid',
+    nullable: true,
+  })
   sender_id: string;
 
   @Column({ default: false })

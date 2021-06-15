@@ -1,3 +1,4 @@
+import ensureAdministrator from '@shared/infra/http/middlewares/ensureAdministrator';
 import { celebrate, Joi, Segments } from 'celebrate';
 import { Router } from 'express';
 import QRCodeController from '../controllers/QRCodeController';
@@ -34,6 +35,12 @@ usersRoutes.post(
   usersController.create,
 );
 
+usersRoutes.get(
+  '/',
+  ensureAuthenticated,
+  ensureAdministrator,
+  usersController.index,
+);
 usersRoutes.get('/balance-amount', ensureAuthenticated, usersController.show);
 
 usersRoutes.post(
