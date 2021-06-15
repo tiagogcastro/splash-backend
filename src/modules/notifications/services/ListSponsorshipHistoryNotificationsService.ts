@@ -22,17 +22,14 @@ export default class ListSponsorshipHistoryNotificationsService {
         recipient_id: user_recipient_id,
         sender_id,
       });
-    const user = await this.usersRepository.findById(sender_id);
 
-    if (!user) throw new AppError('User does not exist');
-
-    const notificationsWithSender = notifications.map(notification => {
+    const notificationsWithSenderParsed = notifications.map(notification => {
       return {
         ...notification,
-        sender: user,
+        sender: JSON.parse(notification.sender),
       };
     });
 
-    return notificationsWithSender;
+    return notificationsWithSenderParsed;
   }
 }

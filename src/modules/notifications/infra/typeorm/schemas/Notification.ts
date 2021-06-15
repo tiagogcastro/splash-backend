@@ -13,7 +13,7 @@ export default class Notification {
   id: ObjectID;
 
   @Column()
-  content: string;
+  subject: string;
 
   @Column('uuid')
   recipient_id: string;
@@ -23,6 +23,9 @@ export default class Notification {
 
   @Column({ default: false })
   read: boolean;
+
+  @Column()
+  sender: string;
 
   @CreateDateColumn()
   created_at: Date;

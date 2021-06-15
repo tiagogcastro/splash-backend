@@ -2,6 +2,7 @@ import INotificationRepository from '@modules/notifications/repositories/INotifi
 import IUserBalanceRepository from '@modules/users/repositories/IUserBalanceRepository';
 import IUserRepository from '@modules/users/repositories/IUserRepository';
 import AppError from '@shared/errors/AppError';
+import { classToClass } from 'class-transformer';
 import crypto from 'crypto';
 import { inject, injectable } from 'tsyringe';
 import ICreateSponsorshipCodeServiceDTO from '../dtos/ICreateSponsorshipCodeServiceDTO';
@@ -83,7 +84,8 @@ export default class CreateSponsorshipCodeService {
     await this.notificationRepository.create({
       recipient_id: sponsor_user_id,
       sender_id: sponsor_user_id,
-      content: subject,
+      sender: JSON.stringify(classToClass(sponsor)),
+      subject,
     });
 
     return sponsorship;

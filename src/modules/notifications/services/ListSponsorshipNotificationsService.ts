@@ -24,18 +24,15 @@ export default class ListGroupedSponsorshipNotificationsService {
       return true;
     });
 
-    const promises = groupedNotifications.map(async notification => {
-      const user = await this.usersRepository.findById(notification.sender_id);
+    const notificationsWithSenderParsed = groupedNotifications.map(
+      notification => {
+        return {
+          ...notification,
+          sender: JSON.parse(notification.sender),
+        };
+      },
+    );
 
-      if (!user) throw new AppError('User does not exist');
-
-      return {
-        ...notification,
-        sender: user,
-      };
-    });
-    const notificationsWithSender = await Promise.all(promises);
-
-    return notificationsWithSender;
+    return notificationsWithSenderParsed;
   }
 }

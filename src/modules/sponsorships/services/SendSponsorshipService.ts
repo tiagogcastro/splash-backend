@@ -5,6 +5,7 @@ import IUserBalanceRepository from '@modules/users/repositories/IUserBalanceRepo
 import IUserRepository from '@modules/users/repositories/IUserRepository';
 import IUserSponsorSponsoredCountRepository from '@modules/users/repositories/IUserSponsoringSponsoredCountRepository';
 import AppError from '@shared/errors/AppError';
+import { classToClass } from 'class-transformer';
 import { inject, injectable } from 'tsyringe';
 import ISendSponsorshipServiceDTO from '../dtos/ISendSponsorshipServiceDTO';
 import Sponsorship from '../infra/typeorm/entities/Sponsorship';
@@ -192,13 +193,15 @@ export default class SendSponsorshipService {
     await this.notificationRepository.create({
       recipient_id: sponsor_user_id,
       sender_id: sponsor_user_id,
-      content: subject,
+      sender: JSON.stringify(classToClass(sender)),
+      subject,
     });
 
     await this.notificationRepository.create({
       recipient_id: user_recipient_id,
       sender_id: sponsor_user_id,
-      content: `você recebeu R$${balanceAmount} de ${sender.username}`,
+      sender: JSON.stringify(classToClass(sender)),
+      subject: `você recebeu R$${balanceAmount} de ${sender.username}`,
     });
 
     return sponsorship;
