@@ -57,7 +57,19 @@ usersRoutes.post(
   sendCodeController.handle,
 );
 
-usersRoutes.post('/qrcode', createQRCodeController.handle);
+usersRoutes.get(
+  '/qrcode',
+  celebrate({
+    [Segments.QUERY]: {
+      sponsorship_code: Joi.string()
+        .min(6)
+        .max(6)
+        .regex(/^[A-Z0-9]+$/)
+        .required(),
+    },
+  }),
+  createQRCodeController.handle,
+);
 
 usersRoutes.post(
   '/sms',
