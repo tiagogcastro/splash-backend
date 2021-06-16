@@ -15,7 +15,11 @@ import router from './routes';
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.APP_WEB_URL,
+  }),
+);
 
 app.use('/static', express.static(uploadConfig.uploadsFolder));
 app.use(rateLimiter);
