@@ -1,3 +1,3 @@
 export default interface ICreateSponsoringDTO {
-  sponsorship_code?: string;
+  sponsorship_code: string;
 }

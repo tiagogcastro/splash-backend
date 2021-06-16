@@ -15,7 +15,7 @@ sessionsRoutes.post(
   '/',
   celebrate({
     [Segments.BODY]: {
-      email: Joi.string().email().min(4).max(100).required(),
+      email: Joi.string().email().max(100).required(),
       password: Joi.when('email', {
         is: Joi.exist(),
         then: Joi.string().required().min(8).max(100),
@@ -29,7 +29,10 @@ sessionsRoutes.post(
   '/sms',
   celebrate({
     [Segments.BODY]: {
-      phone_number: Joi.string().regex(/^[0-9]+$/i),
+      phone_number: Joi.string()
+        .min(8)
+        .max(15)
+        .regex(/^[0-9]+$/i),
       password: Joi.when('phone_number', {
         is: Joi.exist(),
         then: Joi.string().required().min(8).max(100),

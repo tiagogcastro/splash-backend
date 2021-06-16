@@ -192,7 +192,7 @@ export default class SendSponsorshipService {
 
     await this.notificationRepository.create({
       recipient_id: sponsor_user_id,
-      sender_id: sponsor_user_id,
+      sender_id: user_recipient_id,
       content: subject,
     });
 
