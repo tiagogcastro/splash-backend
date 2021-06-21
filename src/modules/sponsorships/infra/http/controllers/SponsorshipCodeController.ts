@@ -1,4 +1,3 @@
-import memory from '@modules/sponsorships/in-memory';
 import CreateSponsorshipCodeService from '@modules/sponsorships/services/CreateSponsorshipCodeService';
 import { classToClass } from 'class-transformer';
 import { Request, Response } from 'express';
@@ -16,10 +15,6 @@ export default class SponsorshipCodeController {
       sponsor_user_id,
       amount,
     });
-
-    memory.sponsorship = {
-      code: sponsorship.sponsorship_code,
-    };
 
     return response.status(201).json(classToClass(sponsorship));
   }

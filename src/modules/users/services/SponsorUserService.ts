@@ -12,7 +12,7 @@ class SponsorUserService {
   async execute(
     sponsor_user_id: string,
     sponsored_user_id: string,
-  ): Promise<SponsorSponsored | null> {
+  ): Promise<SponsorSponsored> {
     const userLogged = await this.usersRepository.findById(sponsor_user_id);
 
     const userToSponsor = await this.usersRepository.findById(

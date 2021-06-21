@@ -7,13 +7,13 @@ import SendCodeController from '../controllers/SendCodeController';
 import ensureAuthenticated from '../middleware/ensureAuthenticated';
 import ensureLimitedCodeRequests from '../middleware/ensureLimitedCodeRequests';
 
-const usersRoutes = Router();
+const usersRouter = Router();
 
 const sendCodeController = new SendCodeController();
 const createQRCodeController = new CreateQRCodeController();
 const usersController = new UsersController();
 
-usersRoutes.post(
+usersRouter.post(
   '/',
   celebrate({
     [Segments.BODY]: {
@@ -34,15 +34,9 @@ usersRoutes.post(
   usersController.create,
 );
 
-usersRoutes.get(
-  '/',
-  ensureAuthenticated,
-  ensureAdministrator,
-  usersController.index,
-);
-usersRoutes.get('/balance-amount', ensureAuthenticated, usersController.show);
+usersRouter.get('/balance-amount', ensureAuthenticated, usersController.show);
 
-usersRoutes.post(
+usersRouter.post(
   '/sms/send-code',
   celebrate({
     [Segments.BODY]: {
@@ -57,7 +51,7 @@ usersRoutes.post(
   sendCodeController.handle,
 );
 
-usersRoutes.get(
+usersRouter.get(
   '/qrcode',
   celebrate({
     [Segments.QUERY]: {
@@ -71,7 +65,7 @@ usersRoutes.get(
   createQRCodeController.handle,
 );
 
-usersRoutes.post(
+usersRouter.post(
   '/sms',
   celebrate({
     [Segments.BODY]: {
@@ -89,4 +83,4 @@ usersRoutes.post(
   usersController.create,
 );
 
-export default usersRoutes;
+export default usersRouter;

@@ -1,22 +1,20 @@
 import { Router } from 'express';
-import SponsorController from '../controllers/SponsorUserController';
+import SponsorController from '../controllers/SponsorController';
 import ensureAuthenticated from '../middleware/ensureAuthenticated';
 
-import SponsoringUserController from '../controllers/SponsoringUserController';
 import SponsoredController from '../controllers/SponsoredController';
 
-const sponsorsRoutes = Router();
+const sponsorsRouter = Router();
 
-sponsorsRoutes.use(ensureAuthenticated);
+sponsorsRouter.use(ensureAuthenticated);
 
-const sponsorUserController = new SponsorController();
-const sponsoringUserController = new SponsoringUserController();
+const sponsorController = new SponsorController();
 const sponsoredController = new SponsoredController();
 
-sponsorsRoutes.put('/', sponsorUserController.update);
-sponsorsRoutes.delete('/', sponsorUserController.delete);
+sponsorsRouter.put('/', sponsorController.update);
+sponsorsRouter.delete('/', sponsorController.delete);
 
-sponsorsRoutes.get('/sponsoring/:user_id', sponsoringUserController.index);
-sponsorsRoutes.get('/sponsored/:user_id', sponsoredController.index);
+sponsorsRouter.get('/:user_id', sponsorController.index);
+sponsorsRouter.get('/sponsored/:user_id', sponsoredController.index);
 
-export default sponsorsRoutes;
+export default sponsorsRouter;

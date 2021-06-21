@@ -9,15 +9,15 @@ import ensureAuthenticated from '../middleware/ensureAuthenticated';
 import UsersEmailController from '../controllers/UsersEmailController';
 
 const upload = multer(uploadConfig.multer);
-const profileRoutes = Router();
+const profileRouter = Router();
 
 const usersEmailController = new UsersEmailController();
 const profileUserController = new ProfileUserController();
 const userAvatarController = new UserAvatarController();
 
-profileRoutes.use(ensureAuthenticated);
-profileRoutes.get('/:username', profileUserController.show);
-profileRoutes.put(
+profileRouter.use(ensureAuthenticated);
+profileRouter.get('/:username', profileUserController.show);
+profileRouter.put(
   '/',
   celebrate({
     [Segments.BODY]: {
@@ -43,24 +43,24 @@ profileRoutes.put(
   profileUserController.update,
 );
 
-profileRoutes.patch(
+profileRouter.patch(
   '/avatar',
   upload.single('avatar'),
   userAvatarController.update,
 );
 
-profileRoutes.delete('/', profileUserController.delete);
+profileRouter.delete('/', profileUserController.delete);
 
-profileRoutes.put('/add-email', usersEmailController.update);
+profileRouter.put('/add-email', usersEmailController.update);
 
-profileRoutes.post(
+profileRouter.post(
   '/send-verification-code',
   profileUserController.sendVerificationCode,
 );
 
-profileRoutes.post(
+profileRouter.post(
   '/verify/update/phone-number',
   profileUserController.validationAndUpdateUserPhoneNumber,
 );
 
-export default profileRoutes;
+export default profileRouter;
