@@ -2,10 +2,25 @@ import { Request, Response } from 'express';
 
 import SponsorUserService from '@modules/users/services/SponsorUserService';
 import UnSponsoringUserService from '@modules/users/services/UnSponsoringUserService';
+import { container } from 'tsyringe';
+import ListUsersWhoSponsorTheUser from '@modules/users/services/ListUsersWhoSponsorTheUser';
+import { classToClass } from 'class-transformer';
 import PostgresUserRepository from '../../typeorm/repositories/PostgresUserRepository';
 import PostgresSponsorSponsoredRepository from '../../typeorm/repositories/PostgresSponsorSponsoredRepository';
 
-class SponsoringController {
+class SponsorController {
+  async index(request: Request, response: Response): Promise<Response> {
+    const { user_id } = request.params;
+
+    const listUsersWhoSponsorTheUser = container.resolve(
+      ListUsersWhoSponsorTheUser,
+    );
+
+    const sponsoring = await listUsersWhoSponsorTheUser.execute(user_id);
+
+    return response.json(classToClass(sponsoring));
+  }
+
   async update(request: Request, response: Response): Promise<Response> {
     const { sponsoring_userId, sponsored_userId } = request.body;
 
@@ -23,7 +38,7 @@ class SponsoringController {
       sponsored_userId,
     );
 
-    return response.json(sponsor);
+    return response.json(classToClass(sponsor));
   }
 
   async delete(request: Request, response: Response): Promise<Response> {
@@ -34,12 +49,12 @@ class SponsoringController {
     const postgresSponsorSponsoredRepository =
       new PostgresSponsorSponsoredRepository();
 
-    const UnsponsoringUser = new UnSponsoringUserService(
+    const unsponsoringUser = new UnSponsoringUserService(
       postgresUserRepository,
       postgresSponsorSponsoredRepository,
     );
 
-    await UnsponsoringUser.execute(
+    await unsponsoringUser.execute(
       user_id_to_remove_sponsor,
       user_id_to_remove_sponsored,
     );
@@ -48,4 +63,4 @@ class SponsoringController {
   }
 }
 
-export default SponsoringController;
+export default SponsorController;

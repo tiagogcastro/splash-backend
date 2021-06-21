@@ -13,7 +13,7 @@ const notificationsController = new NotificationsController();
 
 adminsRoutes.use(ensureAuthenticated, ensureAdministrator);
 adminsRoutes.post(
-  '/dashboard',
+  '/dashboard/users',
   celebrate({
     [Segments.BODY]: {
       name: Joi.string().min(2).max(30),
@@ -42,7 +42,7 @@ adminsRoutes.post(
 );
 
 adminsRoutes.put(
-  '/dashboard',
+  '/dashboard/users',
   celebrate({
     [Segments.BODY]: {
       user_id: Joi.string().uuid().required(),
@@ -54,5 +54,8 @@ adminsRoutes.put(
   }),
   adminsController.update,
 );
-adminsRoutes.get('/notifications/dashboard', notificationsController.index);
+
+adminsRoutes.get('/dashboard/users', usersController.index);
+adminsRoutes.get('/dashboard/notifications', notificationsController.index);
+
 export default adminsRoutes;

@@ -3,15 +3,14 @@ import { Router } from 'express';
 import AuthenticationByEmailController from '@modules/users/infra/http/controllers/AuthenticationByEmailController';
 import { celebrate, Joi, Segments } from 'celebrate';
 import AuthenticationByPhoneNumberController from '../controllers/AuthenticationUserByPhoneNumberController';
-import createUserByPhoneNumberMiddleware from '../middleware/createUserByPhoneNumberMiddleware';
 
-const sessionsRoutes = Router();
+const sessionsRouter = Router();
 
 const authenticationByPhoneNumberController =
   new AuthenticationByPhoneNumberController();
 const authenticateUser = new AuthenticationByEmailController();
 
-sessionsRoutes.post(
+sessionsRouter.post(
   '/',
   celebrate({
     [Segments.BODY]: {
@@ -25,7 +24,7 @@ sessionsRoutes.post(
   authenticateUser.create,
 );
 
-sessionsRoutes.post(
+sessionsRouter.post(
   '/sms',
   celebrate({
     [Segments.BODY]: {
@@ -41,4 +40,4 @@ sessionsRoutes.post(
   }),
   authenticationByPhoneNumberController.create,
 );
-export default sessionsRoutes;
+export default sessionsRouter;

@@ -1,27 +1,21 @@
 import ensureAuthenticated from '@modules/users/infra/http/middleware/ensureAuthenticated';
-import { Router } from 'express';
 import { celebrate, Joi, Segments } from 'celebrate';
-import SponsoredController from '@modules/users/infra/http/controllers/SponsoredController';
-import ensurePayment from '../middlewares/ensurePayment';
-import SponsorshipsController from '../controllers/SponsorshipsController';
-import SponsorshipCodeController from '../controllers/SponsorshipCodeController';
+import { Router } from 'express';
 import ShopsController from '../controllers/ShopsController';
+import SponsorshipCodeController from '../controllers/SponsorshipCodeController';
+import SponsorshipsController from '../controllers/SponsorshipsController';
+import ensurePayment from '../middlewares/ensurePayment';
 
 const sponsorshipsRouter = Router();
 
 const sponsorshipsController = new SponsorshipsController();
 const shopsController = new ShopsController();
-const sponsoredController = new SponsoredController();
 const sponsorshipCodeController = new SponsorshipCodeController();
 
 sponsorshipsRouter.use(ensureAuthenticated);
 
-sponsorshipsRouter.get(
-  '/sponsored/me',
-  ensureAuthenticated,
-  sponsoredController.index,
-);
-sponsorshipsRouter.get('/sponsored', shopsController.index);
+sponsorshipsRouter.get('/sponsored/me', shopsController.index);
+
 sponsorshipsRouter.post(
   '/',
   ensurePayment,

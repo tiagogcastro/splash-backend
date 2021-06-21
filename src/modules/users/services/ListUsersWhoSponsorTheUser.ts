@@ -14,7 +14,7 @@ class ListUsersWhoSponsorTheUser {
     private sponsorSponsoredRepository: ISponsorSponsoredRepository,
   ) {}
 
-  async execute(user_id: string): Promise<SponsorSponsored[] | undefined> {
+  async execute(user_id: string): Promise<SponsorSponsored[]> {
     const user = await this.userRepository.findById(user_id);
 
     if (!user) {
