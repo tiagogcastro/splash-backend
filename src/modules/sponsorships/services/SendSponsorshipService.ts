@@ -5,7 +5,6 @@ import IUserBalanceRepository from '@modules/users/repositories/IUserBalanceRepo
 import IUserRepository from '@modules/users/repositories/IUserRepository';
 import IUserSponsorSponsoredCountRepository from '@modules/users/repositories/IUserSponsoringSponsoredCountRepository';
 import AppError from '@shared/errors/AppError';
-import { classToClass } from 'class-transformer';
 import { inject, injectable } from 'tsyringe';
 import ISendSponsorshipServiceDTO from '../dtos/ISendSponsorshipServiceDTO';
 import Sponsorship from '../infra/typeorm/entities/Sponsorship';

@@ -23,7 +23,7 @@ export default class TwilloSMSProvider implements ISMSProvider {
       await this.clientSendMessage.verify
         .services(this.servicesSid)
         .verifications.create({
-          to: `+${to}`,
+          to,
           channel: 'sms',
         });
     } catch {
@@ -38,7 +38,7 @@ export default class TwilloSMSProvider implements ISMSProvider {
       await this.clientSendMessage.verify
         .services(this.servicesSid)
         .verificationChecks.create({
-          to: `+${to}`,
+          to,
           code,
         });
     } catch {

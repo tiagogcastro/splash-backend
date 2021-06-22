@@ -27,9 +27,9 @@ adminsRoutes.post(
         then: Joi.string().min(8).max(100).required(),
       }),
       phone_number: Joi.string()
-        .regex(/^[0-9]+$/)
         .min(8)
         .max(15)
+        .regex(/^\+[0-9]+$/)
         .when('email', {
           not: Joi.exist(),
           then: Joi.string().required(),

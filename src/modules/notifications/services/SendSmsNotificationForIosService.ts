@@ -30,7 +30,7 @@ export default class SendSmsNotificationForIosService {
       throw new AppError('User does not exist');
     }
 
-    const userPhoneNumber = String(user?.phone_number);
+    const userPhoneNumber = String(user.phone_number);
 
     const sendMessageForUser = await clientSendMessage.messages.create({
       body: String(message),

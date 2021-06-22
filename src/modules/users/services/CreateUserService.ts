@@ -1,31 +1,18 @@
 /* eslint-disable no-param-reassign */
-import twilioConfig from '@config/twilio';
 import jwtConfig from '@config/auth';
 import ISponsorshipRepository from '@modules/sponsorships/repositories/ISponsorshipRepository';
+import ISMSProvider from '@shared/container/providers/SMSProvider/models/ISMSProvider';
 import AppError from '@shared/errors/AppError';
 import { hash } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import { inject, injectable } from 'tsyringe';
-import client from 'twilio';
+import ICreateUserServiceDTO from '../dtos/ICreateUserServiceDTO';
 import User from '../infra/typeorm/entities/User';
 import ISponsorBalanceRepository from '../repositories/ISponsorBalanceRepository';
 import ISponsorSponsoredRepository from '../repositories/ISponsorSponsoredRepository';
-import IUserSponsorSponsoredCountRepository from '../repositories/IUserSponsoringSponsoredCountRepository';
 import IUserBalanceRepository from '../repositories/IUserBalanceRepository';
 import IUserRepository from '../repositories/IUserRepository';
-
-interface Request {
-  role?: string;
-  name?: string;
-  phone_number?: string;
-  email?: string;
-  verification_code?: string;
-  balance_amount?: number;
-  username?: string;
-  password: string;
-  sponsorship_code?: string;
-  terms?: boolean;
-}
+import IUserSponsorSponsoredCountRepository from '../repositories/IUserSponsoringSponsoredCountRepository';
 
 interface Response {
   user: User;
@@ -52,6 +39,9 @@ export default class CreateUserService {
 
     @inject('UserSponsorSponsoredCountRepository')
     private userSponsorSponsoredCountRepository: IUserSponsorSponsoredCountRepository,
+
+    @inject('SMSProvider')
+    private smsProvider: ISMSProvider,
   ) {}
 
   public async execute({
@@ -65,7 +55,7 @@ export default class CreateUserService {
     password,
     sponsorship_code,
     terms,
-  }: Request): Promise<Response> {
+  }: ICreateUserServiceDTO): Promise<Response> {
     const sponsorship =
       await this.sponsorshipRepository.findByUnreadSponsorshipCode(
         sponsorship_code,
@@ -83,6 +73,7 @@ export default class CreateUserService {
       const checkUserUsernameExist = await this.userRepository.findByUsername(
         username,
       );
+
       if (checkUserUsernameExist) {
         throw new AppError('This username already exists.', 400);
       }
@@ -91,6 +82,7 @@ export default class CreateUserService {
       const checkEmailAlreadyExist = await this.userRepository.findByEmail(
         email,
       );
+
       if (checkEmailAlreadyExist) {
         throw new AppError('This email address already exists.');
       }
@@ -133,22 +125,10 @@ export default class CreateUserService {
             400,
           );
         }
-        const { accountSid, authToken, servicesSid } = twilioConfig.twilio;
-
-        const clientSendMessage = client(accountSid, authToken);
-
-        try {
-          await clientSendMessage.verify
-            .services(servicesSid)
-            .verificationChecks.create({
-              to: `+${phone_number}`,
-              code: verification_code,
-            });
-        } catch {
-          throw new AppError(
-            'It looks like there was an error regarding the code sent',
-          );
-        }
+        await this.smsProvider.verifyCode({
+          to: phone_number,
+          code: verification_code,
+        });
       }
       user = await this.userRepository.create({
         name,
