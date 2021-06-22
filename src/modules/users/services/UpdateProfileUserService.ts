@@ -10,7 +10,6 @@ interface Request {
   email?: string;
   name?: string;
   bio?: string;
-  old_password?: string;
   token?: string;
   password?: string;
   username?: string;
@@ -27,7 +26,6 @@ class UpdateProfileUserService {
     email,
     name,
     bio,
-    old_password,
     password,
     token,
     username,
@@ -35,25 +33,13 @@ class UpdateProfileUserService {
     const user = await this.userRepository.findById(user_id);
 
     if (!user) {
-      throw new AppError('User does not exist', 401);
+      throw new AppError('User does not exist');
     }
 
     const usernameExist = await this.userRepository.findByUsername(username);
 
     if (usernameExist && usernameExist.username !== username) {
-      throw new AppError('This username already exists', 401);
-    }
-
-    if (password && !old_password) {
-      throw new AppError('You need to inform your old password', 401);
-    }
-
-    if (old_password) {
-      const passwordMatched = compare(old_password, user.password);
-
-      if (!passwordMatched) {
-        throw new AppError('Old password not matched', 401);
-      }
+      throw new AppError('This username already exists');
     }
 
     const updateUserEmail = container.resolve(UpdateUserEmailService);
