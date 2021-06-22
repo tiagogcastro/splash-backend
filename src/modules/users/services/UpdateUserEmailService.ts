@@ -1,5 +1,6 @@
 import IMailProvider from '@shared/container/providers/MailProvider/models/IMailProvider';
 import AppError from '@shared/errors/AppError';
+import AppSuccess from '@shared/success/AppSuccess';
 import { addHours, isAfter } from 'date-fns';
 import path from 'path';
 import { inject, injectable } from 'tsyringe';
@@ -64,9 +65,8 @@ export default class UpdateUserEmailService {
             },
           },
         });
-        throw new AppError(
+        throw new AppSuccess(
           'Please check your email, your code will be expire after 12 hours',
-          401,
         );
       }
       if (token) {
