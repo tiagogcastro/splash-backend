@@ -29,11 +29,7 @@ profileRouter.put(
         .max(30),
       bio: Joi.string().min(2).max(80),
       token: Joi.string().uuid(),
-      old_password: Joi.string(),
-      password: Joi.when('old_password', {
-        is: Joi.exist(),
-        then: Joi.string().required(),
-      }),
+      password: Joi.string(),
       password_confirmation: Joi.when('password', {
         is: Joi.exist(),
         then: Joi.string().required().valid(Joi.ref('password')),

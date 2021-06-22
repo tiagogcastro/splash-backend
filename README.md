@@ -26,10 +26,10 @@
 
 ___
 
-<div align="left"> 
-  <h1 id="techs">🚀 Tecnologias Utilizadas </h1> 
+<div align="left">
+  <h1 id="techs">🚀 Tecnologias Utilizadas </h1>
   <p>
-    Utilizando o VsCode para fazer os códigos em NodeJS e Typescript. 
+    Utilizando o VsCode para fazer os códigos em NodeJS e Typescript.
     </br>
     O Insominia é para testar a api feita.
     </br>
@@ -63,7 +63,7 @@ ___
       <a href="https://code.visualstudio.com"> VsCode</a>
     </p>
   </div>
-</div> 
+</div>
 
 </br>
 
@@ -74,7 +74,7 @@ ___
   <p>➡ Instalar o NodeJS na sua máquina. <p>
 
   <p>➡ Vá no cmd dele(no Vscode o nome é "terminal") ou abra o cmd da sua máquina, digite e execute: </p>
-  <p> 
+  <p>
 
     git clone https://github.com/Tiaguin061/CRUD-basico
   </p>
@@ -84,7 +84,7 @@ ___
     yarn
   </p>
   <p>➡ Para ver os comandos disponíveis e dependências instaladas, vá no arquivo package.json. </p>
-  
+
   </br>
 
   <strong>Muito importante:</strong>
@@ -97,7 +97,7 @@ ___
   <p> Por fim, para iniciar o servidor, vá em seu editor de código e vá no cmd dele(no Vscode o nome é "terminal") ou abra o cmd da sua máquina, digite e execute: </p>
   <p>
 
-    yarn dev:server 
+    yarn dev:server
   </p>
   <p>❤ Pronto, seu projeto está certinho para funcionar.</p>
   <p> Algum erro? Contate-me. </p>
@@ -114,14 +114,14 @@ ___
   <h1>Users</h1>
 
   post - '/users' -
-    
+
   - Cria um usuário pelo e-mail informando:
     - name?: string (max 30 caracter)
     - username?: string (max 30 caracter)
     - email: string
     - password: string
     - isShop: boolean (botão switch)
-    - sponsorship_code?: string 
+    - sponsorship_code?: string
     - terms: boolean
 
   Obs: O isShop é para verificar se é uma loja(true) ou um usuário qualquer(false). <br/>
@@ -132,10 +132,10 @@ ___
   get - '/users/balance-amount'
 
   - Mostra o saldo do usuário logado.
-    - user_id: string;  
-  
+    - user_id: string;
+
   Obs: Id do usuário logado.
-  
+
   <h1> </h1>
 
   post - '/users/sms/send-code'
@@ -159,9 +159,9 @@ ___
   ___
 
   <h1>Profile</h1>
-  
+
   get - '/profile/:username'
-    
+
   - Vai até o perfil de algum usuário informando o username como parâmetro.
 
   <h1> </h1>
@@ -172,13 +172,11 @@ ___
     - user_id: string
     - username: string
     - email?: string
-    - old_password?: string
-    - password?: string 
+    - password?: string
     - password_confirmation?: string
     - name? string <br/>
 
   Obs: user_id é o id do usuário logado.
-  Obs²: Se informar o old_password, é necessário informar os 2 outros campos abaixo.
   Obs³: Se informar o password, é necessário a password_confirmation ser igual.
 
   <h1> </h1>
@@ -205,7 +203,7 @@ ___
   <h1> </h1>
 
   delete - '/profile/'
-  
+
   - Deleta o perfil do usuário logado.
     - user_id: string
 
@@ -214,9 +212,9 @@ ___
   ___
 
   <h1>Session</h1>
-  
+
   post - '/sessions/'
-    
+
   - Loga o usuário informando:
     - email: string
     - password: string
@@ -231,9 +229,9 @@ ___
     - code: String;
 
   ___
- 
+
   <h1>sponsorships</h1>
-  
+
   get - '/sponsored/me'
 
   - Pesquisa um usuário que eu patrocino
@@ -245,7 +243,7 @@ ___
   <h1> </h1>
 
   get - '/sponsored'
-    
+
   - Lista o saldo total de cada loja que me enviou patrocinio.
     - user_id: string
 
@@ -269,22 +267,22 @@ ___
   ___
 
   <h1>notifications</h1>
-  
+
   get - '/notifications/sponsorships-history/:sender_id'
-    
+
   - Lista o histórico de notificações entre 2 usuários(quando clica no usuário la no feed)
     - user_id: string
     - sender_id: string
 
   Obs: O sponsor_user_id é o usuário logado. <br/>
-  Obs²: sender_id é o usuário que eu quero ver o histórico entre nós 2. 
+  Obs²: sender_id é o usuário que eu quero ver o histórico entre nós 2.
 
   <h1> </h1>
 
   get - '/notifications/sponsorships'
 
   - Lista todos as notificações no feed, porém só mostra a última notificação enviada de algum outro usuário(como se fosse o whatsapp).
-  
+
   <h1> </h1>
 
   get - '/notifications/send-notifications-for-ios'
@@ -294,9 +292,9 @@ ___
   ___
 
  <h1>whats</h1>
-  
+
   post - '/whats/'
-    
+
   - ❎ Falta informar.
 
 </div>
@@ -315,10 +313,10 @@ ___
     <p> 5° - Dê 'Push' a sua branch; </p>
     <p> 6° - Ir em Pull Requests do projeto original e criar uma pull request com o seu commit; </p>
     <p>
-     ➡ Caso tenha dúvidas sobre como criar um pull request, 
-      <a 
+     ➡ Caso tenha dúvidas sobre como criar um pull request,
+      <a
         href="https://docs.github.com/pt/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request"> clique neste link.
-      </a>  
+      </a>
     </p>
   </div>
 <<<<<<< HEAD
@@ -346,7 +344,7 @@ ___
 
 <div align="left">
   <h1 id="license">✔ Licença</h1>
-  <p>  Este projeto está sobre Licença MIT, veja: 
+  <p>  Este projeto está sobre Licença MIT, veja:
 
   [![](https://img.shields.io/badge/-✔Licença-3CEA5A)]()
 
