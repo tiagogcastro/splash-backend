@@ -1,13 +1,10 @@
+import twilioConfig from '@config/twilio';
+import ISMSProvider from '@shared/container/providers/SMSProvider/models/ISMSProvider';
 import AppError from '@shared/errors/AppError';
 import { inject, injectable } from 'tsyringe';
 import client from 'twilio';
-import twilioConfig from '@config/twilio';
-
-import IUpdateUserByAdminServiceDTO from '../dtos/IUpdateUserByAdminServiceDTO';
-import UserBalance from '../infra/typeorm/entities/UserBalance';
-import IUserBalanceRepository from '../repositories/IUserBalanceRepository';
-import IUserRepository from '../repositories/IUserRepository';
 import User from '../infra/typeorm/entities/User';
+import IUserRepository from '../repositories/IUserRepository';
 
 const { accountSid, authToken, servicesSid } = twilioConfig.twilio;
 
@@ -20,17 +17,17 @@ interface Resquest {
 }
 
 @injectable()
-export default class UpdateUserPhoneNumberService {
+export default class UpdateUserPhoneService {
   constructor(
     @inject('UserRepository')
     private userRepository: IUserRepository,
+
+    @inject('SMSProvider')
+    private smsProvider: ISMSProvider,
   ) {}
 
   async sendCode(phone_number: string): Promise<void> {
-    await clientSendMessage.verify.services(servicesSid).verifications.create({
-      to: `+${String(phone_number)}`,
-      channel: 'sms',
-    });
+    await this.smsProvider.sendCode(phone_number);
   }
 
   async validationAndUpdateUserPhoneNumber({
@@ -42,15 +39,10 @@ export default class UpdateUserPhoneNumberService {
 
     if (!user) throw new AppError('This user does not exist', 401);
 
-    await clientSendMessage.verify
-      .services(servicesSid)
-      .verificationChecks.create({
-        to: `+${phone_number}`,
-        code: String(verification_code),
-      })
-      .catch(error => {
-        throw new AppError(error);
-      });
+    await this.smsProvider.verifyCode({
+      to: phone_number,
+      code: verification_code,
+    });
 
     user.phone_number = phone_number;
 
