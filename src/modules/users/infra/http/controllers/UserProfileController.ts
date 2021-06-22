@@ -1,14 +1,13 @@
-import { Request, Response } from 'express';
-import mailConfig from '@config/mail';
-import UpdateProfileUserService from '@modules/users/services/UpdateProfileUserService';
-import ShowProfileUserService from '@modules/users/services/ShowProfileUserService';
 import DeleteProfileUserService from '@modules/users/services/DeleteProfileUserService';
-import UpdateUserPhoneNumberService from '@modules/users/services/UpdateUserPhoneNumberService';
-import { classToClass } from 'class-transformer';
-import { container } from 'tsyringe';
+import ShowProfileUserService from '@modules/users/services/ShowProfileUserService';
+import UpdateProfileUserService from '@modules/users/services/UpdateProfileUserService';
+import UpdateUserPhoneService from '@modules/users/services/UpdateUserPhoneService';
 import AppError from '@shared/errors/AppError';
+import { classToClass } from 'class-transformer';
+import { Request, Response } from 'express';
+import { container } from 'tsyringe';
 
-class ProfileUserController {
+class UserProfileController {
   async show(request: Request, response: Response): Promise<Response> {
     const { username } = request.params;
 
@@ -57,9 +56,7 @@ class ProfileUserController {
     try {
       const { phone_number } = await request.body;
 
-      const sendVerificationCode = container.resolve(
-        UpdateUserPhoneNumberService,
-      );
+      const sendVerificationCode = container.resolve(UpdateUserPhoneService);
 
       await sendVerificationCode.sendCode(phone_number);
 
@@ -80,9 +77,7 @@ class ProfileUserController {
 
     const { verification_code, phone_number } = await request.body;
 
-    const sendVerificationCode = container.resolve(
-      UpdateUserPhoneNumberService,
-    );
+    const sendVerificationCode = container.resolve(UpdateUserPhoneService);
 
     const user = await sendVerificationCode.validationAndUpdateUserPhoneNumber({
       user_id,
@@ -94,4 +89,4 @@ class ProfileUserController {
   }
 }
 
-export default ProfileUserController;
+export default UserProfileController;

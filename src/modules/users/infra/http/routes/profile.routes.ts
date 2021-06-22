@@ -2,7 +2,7 @@ import uploadConfig from '@config/upload';
 import { celebrate, Joi, Segments } from 'celebrate';
 import { Router } from 'express';
 import multer from 'multer';
-import ProfileUserController from '../controllers/ProfileUserController';
+import UserProfileController from '../controllers/UserProfileController';
 import UserAvatarController from '../controllers/UserAvatarController';
 import ensureAuthenticated from '../middleware/ensureAuthenticated';
 
@@ -12,11 +12,11 @@ const upload = multer(uploadConfig.multer);
 const profileRouter = Router();
 
 const usersEmailController = new UsersEmailController();
-const profileUserController = new ProfileUserController();
+const userProfileController = new UserProfileController();
 const userAvatarController = new UserAvatarController();
 
 profileRouter.use(ensureAuthenticated);
-profileRouter.get('/:username', profileUserController.show);
+profileRouter.get('/:username', userProfileController.show);
 profileRouter.put(
   '/',
   celebrate({
@@ -40,7 +40,7 @@ profileRouter.put(
       }),
     },
   }),
-  profileUserController.update,
+  userProfileController.update,
 );
 
 profileRouter.patch(
@@ -49,18 +49,18 @@ profileRouter.patch(
   userAvatarController.update,
 );
 
-profileRouter.delete('/', profileUserController.delete);
+profileRouter.delete('/', userProfileController.delete);
 
 profileRouter.put('/add-email', usersEmailController.update);
 
 profileRouter.post(
   '/send-verification-code',
-  profileUserController.sendVerificationCode,
+  userProfileController.sendVerificationCode,
 );
 
 profileRouter.post(
   '/verify/update/phone-number',
-  profileUserController.validationAndUpdateUserPhoneNumber,
+  userProfileController.validationAndUpdateUserPhoneNumber,
 );
 
 export default profileRouter;
