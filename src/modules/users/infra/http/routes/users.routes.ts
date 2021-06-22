@@ -1,9 +1,8 @@
-import ensureAdministrator from '@shared/infra/http/middlewares/ensureAdministrator';
 import { celebrate, Joi, Segments } from 'celebrate';
 import { Router } from 'express';
 import CreateQRCodeController from '../controllers/CreateQRCodeController';
-import UsersController from '../controllers/UsersController';
 import SendCodeController from '../controllers/SendCodeController';
+import UsersController from '../controllers/UsersController';
 import ensureAuthenticated from '../middleware/ensureAuthenticated';
 import ensureLimitedCodeRequests from '../middleware/ensureLimitedCodeRequests';
 
@@ -43,7 +42,7 @@ usersRouter.post(
       phone_number: Joi.string()
         .min(8)
         .max(15)
-        .regex(/^[0-9]+$/)
+        .regex(/^\+[0-9]+$/)
         .required(),
     },
   }),
@@ -72,7 +71,7 @@ usersRouter.post(
       phone_number: Joi.string()
         .min(8)
         .max(15)
-        .regex(/^[0-9]+$/)
+        .regex(/^\+[0-9]+$/)
         .required(),
       password: Joi.string().min(8).max(100).required(),
       terms: Joi.boolean().required(),

@@ -31,7 +31,7 @@ sessionsRouter.post(
       phone_number: Joi.string()
         .min(8)
         .max(15)
-        .regex(/^[0-9]+$/i),
+        .regex(/^\+[0-9]+$/i),
       password: Joi.when('phone_number', {
         is: Joi.exist(),
         then: Joi.string().required().min(8).max(100),
