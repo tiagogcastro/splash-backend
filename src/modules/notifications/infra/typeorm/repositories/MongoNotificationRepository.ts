@@ -25,12 +25,12 @@ export default class MongoNotificationRepository
 
   async findAllSponsorshipHistoryNotifications({
     recipient_id,
-    sender_id,
+    user_id,
   }: IFindAllSponsorshipNotificationsDTO): Promise<Notification[]> {
     const notifications = await this.ormRepository.find({
       where: {
         recipient_id,
-        sender_id,
+        user_id,
       },
       order: {
         created_at: 'DESC',
@@ -57,12 +57,12 @@ export default class MongoNotificationRepository
   async create({
     content,
     recipient_id,
-    sender_id,
+    user_id,
   }: ICreateNotificationDTO): Promise<Notification> {
     const notification = this.ormRepository.create({
       content,
       recipient_id,
-      sender_id,
+      user_id,
     });
 
     await this.ormRepository.save(notification);

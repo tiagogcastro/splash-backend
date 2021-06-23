@@ -268,14 +268,14 @@ ___
 
   <h1>notifications</h1>
 
-  get - '/notifications/sponsorships-history/:sender_id'
+  get - '/notifications/sponsorships-history/:user_id'
 
   - Lista o histórico de notificações entre 2 usuários(quando clica no usuário la no feed)
+    - recipient_id: string
     - user_id: string
-    - sender_id: string
 
   Obs: O sponsor_user_id é o usuário logado. <br/>
-  Obs²: sender_id é o usuário que eu quero ver o histórico entre nós 2.
+  Obs²: user_id é o usuário que eu quero ver o histórico entre nós 2.
 
   <h1> </h1>
 

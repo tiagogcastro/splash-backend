@@ -17,19 +17,18 @@ export default class CreateQRCodeService {
   public async execute({
     sponsorship_code,
   }: ICreateQRCodeServiceDTO): Promise<NodeJS.ReadableStream> {
-    const appWebUrl = process.env.APP_WEB_URL || '*';
-
     if (!sponsorship_code)
       throw new AppError('This sponsorship code does not exist');
 
-    const isSponsorshipCode =
-      await this.sponsorshipRepository.findBySponsorshipCode(sponsorship_code);
+    const sponsorship = await this.sponsorshipRepository.findBySponsorshipCode(
+      sponsorship_code,
+    );
 
-    if (!isSponsorshipCode)
+    if (!sponsorship)
       throw new AppError('This is an invalid or non-existent sponsorship code');
 
     const code = await this.qrcodeProvider.generate(
-      `${appWebUrl}/signup?sponsorship_code=${sponsorship_code}`,
+      `${process.env.APP_WEB_URL}/signup?sponsorship_code=${sponsorship_code}`,
     );
 
     return code;

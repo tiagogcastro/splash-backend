@@ -19,29 +19,29 @@ export default class ListSponsorshipNotificationsService {
     const notifications =
       await this.notificationRepository.findAllNotificationsByUser(user_id);
 
-    const senders: string[] = [];
+    const users: string[] = [];
     const groupedNotifications = notifications.filter(notification => {
-      const sender_id = senders.find(
-        sender => sender === notification.sender_id,
-      );
-      if (sender_id) return false;
-      senders.push(notification.sender_id);
+      const userIdFinded = users.find(user => user === notification.user_id);
+
+      if (userIdFinded) return false;
+
+      users.push(notification.user_id);
 
       return true;
     });
 
     const promises = groupedNotifications.map(async notification => {
-      const user = await this.userRepository.findById(notification.sender_id);
+      const user = await this.userRepository.findById(notification.user_id);
 
       if (!user) throw new AppError('User does not exist');
 
       return {
         ...notification,
-        sender: classToClass(user),
+        user: classToClass(user),
       };
     });
-    const notificationsWithSender = await Promise.all(promises);
+    const notificationsWithUser = await Promise.all(promises);
 
-    return notificationsWithSender;
+    return notificationsWithUser;
   }
 }

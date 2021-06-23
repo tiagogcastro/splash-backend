@@ -36,11 +36,21 @@ class UpdateProfileUserService {
       throw new AppError('User does not exist');
     }
 
-    const usernameExist = await this.userRepository.findByUsername(username);
+    const checkUsernameAlreadyExists = await this.userRepository.findByUsername(
+      username,
+    );
 
-    if (usernameExist && usernameExist.username !== username) {
+    if (
+      checkUsernameAlreadyExists &&
+      checkUsernameAlreadyExists.username !== username
+    ) {
       throw new AppError('This username already exists');
     }
+
+    if (!token && user.email !== email) {
+      throw new AppError('You need to inform a token to update your email');
+    }
+
     let userUpdated = user;
     if (email && token && user.email !== email) {
       const updateUserEmail = container.resolve(UpdateUserEmailService);
