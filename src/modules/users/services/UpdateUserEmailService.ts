@@ -1,6 +1,4 @@
-import IMailProvider from '@shared/container/providers/MailProvider/models/IMailProvider';
 import AppError from '@shared/errors/AppError';
-import AppSuccess from '@shared/success/AppSuccess';
 import { addHours, isAfter } from 'date-fns';
 import { inject, injectable } from 'tsyringe';
 import User from '../infra/typeorm/entities/User';

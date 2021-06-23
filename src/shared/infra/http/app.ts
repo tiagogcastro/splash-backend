@@ -8,7 +8,6 @@ import uploadConfig from '@config/upload';
 import cors from 'cors';
 import express, { NextFunction, Request, Response } from 'express';
 import { errors } from 'celebrate';
-import AppSuccess from '@shared/success/AppSuccess';
 import rateLimiter from './middlewares/rateLimiter';
 import AppError from '../../errors/AppError';
 import router from './routes';
@@ -38,11 +37,6 @@ app.use(
       return response
         .status(error.statusCode)
         .json({ status: 'error', message: error.message });
-    }
-    if (error instanceof AppSuccess) {
-      return response
-        .status(error.statusCode)
-        .json({ status: 'success', message: error.message });
     }
     console.error(error);
 
