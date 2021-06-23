@@ -14,11 +14,14 @@ class UserTokens {
   @ObjectIdColumn()
   id: ObjectID;
 
-  @Column()
+  @Column('uuid')
   token: string;
 
   @Column()
   email: string;
+
+  @Column('uuid')
+  user_id: string;
 
   @Column({
     default: true,

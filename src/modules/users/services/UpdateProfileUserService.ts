@@ -1,5 +1,5 @@
 import AppError from '@shared/errors/AppError';
-import { compare, hash } from 'bcryptjs';
+import { hash } from 'bcryptjs';
 import { container, inject, injectable } from 'tsyringe';
 import User from '../infra/typeorm/entities/User';
 import IUserRepository from '../repositories/IUserRepository';
@@ -41,36 +41,38 @@ class UpdateProfileUserService {
     if (usernameExist && usernameExist.username !== username) {
       throw new AppError('This username already exists');
     }
+    let userUpdated = user;
+    if (email && token && user.email !== email) {
+      const updateUserEmail = container.resolve(UpdateUserEmailService);
 
-    const updateUserEmail = container.resolve(UpdateUserEmailService);
+      userUpdated = await updateUserEmail.execute({
+        user_id,
+        email,
+        token,
+      });
+    }
 
-    await updateUserEmail.execute({
-      user_id,
-      email,
-      token,
-    });
-
-    if (password && user.password !== password) {
+    if (password && userUpdated.password !== password) {
       const hashedPassword = await hash(password, 8);
 
-      user.password = hashedPassword;
+      userUpdated.password = hashedPassword;
     }
 
-    if (name && user.name !== name) {
-      user.name = name;
+    if (name && userUpdated.name !== name) {
+      userUpdated.name = name;
     }
 
-    if (bio && user.bio !== bio) {
-      user.bio = bio;
+    if (bio && userUpdated.bio !== bio) {
+      userUpdated.bio = bio;
     }
 
-    if (username && user.username !== username) {
-      user.username = username;
+    if (username && userUpdated.username !== username) {
+      userUpdated.username = username;
     }
 
-    await this.userRepository.save(user);
+    await this.userRepository.save(userUpdated);
 
-    return user;
+    return userUpdated;
   }
 }
 
