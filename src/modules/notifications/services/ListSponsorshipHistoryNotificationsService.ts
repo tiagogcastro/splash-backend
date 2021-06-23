@@ -7,7 +7,7 @@ import INotificationRepository from '../repositories/INotificationRepository';
 
 interface IListSponsorshipHistoryNotificationsDTO {
   user_recipient_id: string;
-  sender_id: string;
+  user_id: string;
 }
 
 @injectable()
@@ -21,25 +21,25 @@ export default class ListSponsorshipHistoryNotificationsService {
   ) {}
 
   async execute({
-    sender_id,
+    user_id,
     user_recipient_id,
   }: IListSponsorshipHistoryNotificationsDTO): Promise<Notification[]> {
     const notifications =
       await this.notificationRepository.findAllSponsorshipHistoryNotifications({
         recipient_id: user_recipient_id,
-        sender_id,
+        user_id,
       });
-    const user = await this.userRepository.findById(sender_id);
+    const user = await this.userRepository.findById(user_id);
 
     if (!user) throw new AppError('User does not exist');
 
-    const notificationsWithSender = notifications.map(notification => {
+    const notificationsWithUser = notifications.map(notification => {
       return {
         ...notification,
-        sender: classToClass(user),
+        user: classToClass(user),
       };
     });
 
-    return notificationsWithSender;
+    return notificationsWithUser;
   }
 }

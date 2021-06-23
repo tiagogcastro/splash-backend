@@ -16,7 +16,7 @@ class SendCodeController {
 
     return response.status(200).json({
       status: 'success',
-      message: 'code sent successfully',
+      message: 'Code sent successfully',
     });
   }
 }

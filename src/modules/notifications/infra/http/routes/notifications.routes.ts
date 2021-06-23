@@ -15,7 +15,7 @@ const sponsorshipHistoryController = new SponsorshipHistoryController();
 notificationsRouter.use(ensureAuthenticated);
 
 notificationsRouter.get(
-  '/sponsorships-history/:sender_id',
+  '/sponsorships-history/:user_id',
   sponsorshipHistoryController.index,
 );
 notificationsRouter.get(

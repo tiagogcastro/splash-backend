@@ -5,14 +5,14 @@ import ListSponsorshipHistoryNotificationsService from '../../../services/ListSp
 
 export default class SponsorshipHistoryController {
   async index(request: Request, response: Response): Promise<Response> {
-    const { sender_id } = request.params;
+    const { user_id } = request.params;
     const user_recipient_id = request.user.id;
 
     const listSponsorshipHistoryNotifications = container.resolve(
       ListSponsorshipHistoryNotificationsService,
     );
     const notifications = await listSponsorshipHistoryNotifications.execute({
-      sender_id,
+      user_id,
       user_recipient_id,
     });
     return response.status(200).json(classToClass(notifications));

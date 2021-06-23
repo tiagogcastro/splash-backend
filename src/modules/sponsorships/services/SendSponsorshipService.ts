@@ -43,7 +43,7 @@ export default class SendSponsorshipService {
   }: ISendSponsorshipServiceDTO): Promise<Sponsorship> {
     let allow_withdrawal = true;
 
-    const sender = await this.userRepository.findById(sponsor_user_id);
+    const user = await this.userRepository.findById(sponsor_user_id);
     const recipient = await this.userRepository.findById(user_recipient_id);
 
     const userBalance = await this.userBalanceRepository.findByUserId(
@@ -68,7 +68,7 @@ export default class SendSponsorshipService {
       throw new AppError('You cannot send to yourself');
 
     if (!recipient) throw new AppError('The user does not exist', 401);
-    if (!sender) throw new AppError('The sponsor does not exist', 401);
+    if (!user) throw new AppError('The sponsor does not exist', 401);
     if (!userBalance)
       throw new AppError('The sponsor balance does not exist', 401);
     if (!recipientUserBalance)
@@ -92,7 +92,7 @@ export default class SendSponsorshipService {
       );
     }
 
-    if (!(sender.role === 'shop') && allow_withdrawal_balance)
+    if (!(user.role === 'shop') && allow_withdrawal_balance)
       throw new AppError('You are not allowed to access here', 401);
 
     if (userBalance.total_balance < amount)
@@ -109,7 +109,7 @@ export default class SendSponsorshipService {
       userBalance.available_for_withdraw -= amount;
     }
 
-    if (sender.role === 'shop') {
+    if (user.role === 'shop') {
       if (!sponsorBalance) {
         await this.sponsorBalanceRepository.create({
           balance_amount: amount,
@@ -129,7 +129,7 @@ export default class SendSponsorshipService {
       allow_withdrawal = allow_withdrawal_balance;
     }
 
-    if (sender.role === null || sender.role === 'default')
+    if (user.role === null || user.role === 'default')
       recipientUserBalance.available_for_withdraw += amount;
 
     const sponsorship = await this.sponsorshipRepository.create({
@@ -191,14 +191,14 @@ export default class SendSponsorshipService {
 
     await this.notificationRepository.create({
       recipient_id: sponsor_user_id,
-      sender_id: user_recipient_id,
+      user_id: user_recipient_id,
       content: subject,
     });
 
     await this.notificationRepository.create({
       recipient_id: user_recipient_id,
-      sender_id: sponsor_user_id,
-      content: `você recebeu R$${balanceAmount} de ${sender.username}`,
+      user_id: sponsor_user_id,
+      content: `você recebeu R$${balanceAmount} de ${user.username}`,
     });
 
     return sponsorship;

@@ -22,7 +22,7 @@ export default class Notification {
     type: 'uuid',
     nullable: true,
   })
-  sender_id: string;
+  user_id: string;
 
   @Column({ default: false })
   read: boolean;
