@@ -4,14 +4,13 @@ import { Router } from 'express';
 import multer from 'multer';
 import UserProfileController from '../controllers/UserProfileController';
 import UserAvatarController from '../controllers/UserAvatarController';
+import SendVerificationTokenController from '../controllers/SendVerificationTokenController';
 import ensureAuthenticated from '../middleware/ensureAuthenticated';
-
-import UsersEmailController from '../controllers/UsersEmailController';
 
 const upload = multer(uploadConfig.multer);
 const profileRouter = Router();
 
-const usersEmailController = new UsersEmailController();
+const sendVerificationTokenController = new SendVerificationTokenController();
 const userProfileController = new UserProfileController();
 const userAvatarController = new UserAvatarController();
 
@@ -28,7 +27,10 @@ profileRouter.put(
         .min(1)
         .max(30),
       bio: Joi.string().min(2).max(80),
-      token: Joi.string().uuid(),
+      token: Joi.string().uuid().when('email', {
+        is: Joi.exist(),
+        then: Joi.string().required(),
+      }),
       password: Joi.string(),
       password_confirmation: Joi.when('password', {
         is: Joi.exist(),
@@ -47,7 +49,15 @@ profileRouter.patch(
 
 profileRouter.delete('/', userProfileController.delete);
 
-profileRouter.put('/add-email', usersEmailController.update);
+profileRouter.post(
+  '/send-verification-token',
+  celebrate({
+    [Segments.BODY]: {
+      email: Joi.string().email().max(100).required(),
+    },
+  }),
+  sendVerificationTokenController.handle,
+);
 
 profileRouter.post(
   '/send-verification-code',

@@ -34,7 +34,6 @@ export default class CreateSponsorshipCodeService {
     const sponsorUserBalance = await this.userBalanceRepository.findByUserId(
       sponsor_user_id,
     );
-
     if (!sponsor) throw new AppError('The sponsor does not exist', 401);
     if (!sponsorUserBalance)
       throw new AppError('The sponsor balance does not exist', 401);

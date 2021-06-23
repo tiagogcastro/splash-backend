@@ -1,4 +1,5 @@
 import IFindValidTokenDTO from '@modules/users/dtos/IFindValidTokenDTO';
+import IGenerateTokenDTO from '@modules/users/dtos/IGenerateTokenDTO';
 import IUserTokensRepository from '@modules/users/repositories/IUserTokensRepository';
 import { getMongoRepository, MongoRepository } from 'typeorm';
 import UserTokens from '../schemas/UserTokens';
@@ -15,11 +16,13 @@ export default class MongoUserTokensRepository
   async findValidToken({
     token,
     user_id,
+    email,
   }: IFindValidTokenDTO): Promise<UserTokens | undefined> {
     const userTokens = await this.ormRepository.findOne({
       where: {
         token,
         user_id,
+        email,
         active: true,
       },
     });
@@ -30,9 +33,10 @@ export default class MongoUserTokensRepository
     return this.ormRepository.save(userTokens);
   }
 
-  async generate(user_id: string): Promise<UserTokens> {
+  async generate({ email, user_id }: IGenerateTokenDTO): Promise<UserTokens> {
     const userTokens = this.ormRepository.create({
       user_id,
+      email,
       active: true,
     });
 
