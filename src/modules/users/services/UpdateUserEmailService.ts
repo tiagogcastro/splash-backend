@@ -8,7 +8,7 @@ import IUserTokensRepository from '../repositories/IUserTokensRepository';
 interface Resquest {
   user_id: string;
   email: string;
-  token: string;
+  token?: string;
 }
 
 @injectable()
@@ -26,27 +26,43 @@ export default class UpdateUserEmailService {
 
     if (!user) throw new AppError('User does not exist', 401);
 
-    const userTokens = await this.userTokensRepository.findValidToken({
-      token,
-      user_id,
-      email,
-    });
+    if (user.email !== email) {
+      const checkEmailAlreadyExists = await this.userRepository.findByEmail(
+        email,
+      );
 
-    if (!userTokens)
-      throw new AppError('This token is invalid or does not exist');
+      if (checkEmailAlreadyExists) {
+        throw new AppError('This email already exists');
+      }
 
-    const limitDate = addHours(userTokens.created_at, 12);
+      if (!token)
+        throw new AppError(
+          'You need to inform a token to update your email',
+          401,
+        );
 
-    if (isAfter(Date.now(), limitDate))
-      throw new AppError('Token expired', 401);
+      const userTokens = await this.userTokensRepository.findValidToken({
+        token,
+        user_id,
+        email,
+      });
 
-    userTokens.active = false;
+      if (!userTokens)
+        throw new AppError('This token is invalid or does not exist', 401);
 
-    await this.userTokensRepository.save(userTokens);
+      const limitDate = addHours(userTokens.created_at, 12);
 
-    user.email = email;
+      if (isAfter(Date.now(), limitDate))
+        throw new AppError('Token expired', 401);
 
-    await this.userRepository.save(user);
+      userTokens.active = false;
+
+      await this.userTokensRepository.save(userTokens);
+
+      user.email = email;
+
+      await this.userRepository.save(user);
+    }
 
     return user;
   }
