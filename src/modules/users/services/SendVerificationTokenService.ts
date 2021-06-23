@@ -58,7 +58,7 @@ export default class SendVerificationTokenService {
         variables: {
           name: user.name || user.username,
           hour: 12,
-          link: `${process.env.APP_WEB_URL}/perfil/editar?token=${token}`,
+          link: `${process.env.APP_WEB_URL}/perfil/register/verify?token=${token}`,
         },
       },
     });

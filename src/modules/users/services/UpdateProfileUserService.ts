@@ -47,12 +47,8 @@ class UpdateProfileUserService {
       throw new AppError('This username already exists');
     }
 
-    if (!token && user.email !== email) {
-      throw new AppError('You need to inform a token to update your email');
-    }
-
     let userUpdated = user;
-    if (email && token && user.email !== email) {
+    if (email) {
       const updateUserEmail = container.resolve(UpdateUserEmailService);
 
       userUpdated = await updateUserEmail.execute({
