@@ -1,15 +1,10 @@
 import AppError from '@shared/errors/AppError';
 import { addHours, isAfter } from 'date-fns';
 import { inject, injectable } from 'tsyringe';
+import IUpdateUserEmailServiceDTO from '../dtos/IUpdateUserEmailServiceDTO';
 import User from '../infra/typeorm/entities/User';
 import IUserRepository from '../repositories/IUserRepository';
 import IUserTokensRepository from '../repositories/IUserTokensRepository';
-
-interface Resquest {
-  user_id: string;
-  email: string;
-  token?: string;
-}
 
 @injectable()
 export default class UpdateUserEmailService {
@@ -21,48 +16,31 @@ export default class UpdateUserEmailService {
     private userTokensRepository: IUserTokensRepository,
   ) {}
 
-  async execute({ user_id, email, token }: Resquest): Promise<User> {
+  async execute({ user_id, token }: IUpdateUserEmailServiceDTO): Promise<User> {
     const user = await this.userRepository.findById(user_id);
 
     if (!user) throw new AppError('User does not exist', 401);
 
-    if (user.email !== email) {
-      const checkEmailAlreadyExists = await this.userRepository.findByEmail(
-        email,
-      );
+    const userTokens = await this.userTokensRepository.findValidToken({
+      token,
+      user_id,
+    });
 
-      if (checkEmailAlreadyExists) {
-        throw new AppError('This email already exists');
-      }
+    if (!userTokens)
+      throw new AppError('This token is invalid or does not exist', 401);
 
-      if (!token)
-        throw new AppError(
-          'You need to inform a token to update your email',
-          401,
-        );
+    const limitDate = addHours(userTokens.created_at, 12);
 
-      const userTokens = await this.userTokensRepository.findValidToken({
-        token,
-        user_id,
-        email,
-      });
+    if (isAfter(Date.now(), limitDate))
+      throw new AppError('Token expired', 401);
 
-      if (!userTokens)
-        throw new AppError('This token is invalid or does not exist', 401);
+    userTokens.active = false;
 
-      const limitDate = addHours(userTokens.created_at, 12);
+    await this.userTokensRepository.save(userTokens);
 
-      if (isAfter(Date.now(), limitDate))
-        throw new AppError('Token expired', 401);
+    user.email = userTokens.email;
 
-      userTokens.active = false;
-
-      await this.userTokensRepository.save(userTokens);
-
-      user.email = email;
-
-      await this.userRepository.save(user);
-    }
+    await this.userRepository.save(user);
 
     return user;
   }
