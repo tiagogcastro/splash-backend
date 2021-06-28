@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 import jwtConfig from '@config/auth';
+import INotificationRepository from '@modules/notifications/repositories/INotificationRepository';
 import ISponsorshipRepository from '@modules/sponsorships/repositories/ISponsorshipRepository';
 import ISMSProvider from '@shared/container/providers/SMSProvider/models/ISMSProvider';
 import AppError from '@shared/errors/AppError';
@@ -42,6 +43,9 @@ export default class CreateUserService {
 
     @inject('SMSProvider')
     private smsProvider: ISMSProvider,
+
+    @inject('NotificationRepository')
+    private notificationRepository: INotificationRepository,
   ) {}
 
   public async execute({
@@ -163,6 +167,18 @@ export default class CreateUserService {
         });
       }
 
+      await this.notificationRepository.create({
+        recipient_id: user.id,
+        user_id: sponsorship.sponsor_user_id,
+        content: `você usou um código de patrocínio`,
+      });
+
+      await this.notificationRepository.create({
+        recipient_id: sponsorship.sponsor_user_id,
+        user_id: user.id,
+        content: `esse usuário usou seu código de patrocínio`,
+      });
+
       // A loja passa a patrocinar o usuário
       await this.sponsorSponsoredRepository.create({
         sponsor_user_id: sponsorship.sponsor_user_id,
@@ -173,6 +189,7 @@ export default class CreateUserService {
         user_id: user.id,
         sponsor_count: 1,
       });
+
       const userSponsorSponsoredCount =
         await this.userSponsorSponsoredCountRepository.findByUserId(
           sponsorship.sponsor_user_id,

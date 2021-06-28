@@ -1,19 +1,11 @@
 import AppError from '@shared/errors/AppError';
 import { hash } from 'bcryptjs';
 import { container, inject, injectable } from 'tsyringe';
+import IUpdateProfileUserServiceDTO from '../dtos/IUpdateProfileUserServiceDTO';
 import User from '../infra/typeorm/entities/User';
 import IUserRepository from '../repositories/IUserRepository';
 import UpdateUserEmailService from './UpdateUserEmailService';
 
-interface Request {
-  user_id: string;
-  email?: string;
-  name?: string;
-  bio?: string;
-  token?: string;
-  password?: string;
-  username?: string;
-}
 @injectable()
 class UpdateProfileUserService {
   constructor(
@@ -23,13 +15,12 @@ class UpdateProfileUserService {
 
   async execute({
     user_id,
-    email,
     name,
     bio,
     password,
     token,
     username,
-  }: Request): Promise<User> {
+  }: IUpdateProfileUserServiceDTO): Promise<User> {
     const user = await this.userRepository.findById(user_id);
 
     if (!user) {
@@ -48,12 +39,11 @@ class UpdateProfileUserService {
     }
 
     let userUpdated = user;
-    if (email) {
+    if (token) {
       const updateUserEmail = container.resolve(UpdateUserEmailService);
 
       userUpdated = await updateUserEmail.execute({
         user_id,
-        email,
         token,
       });
     }

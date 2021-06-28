@@ -21,7 +21,6 @@ profileRouter.put(
   celebrate({
     [Segments.BODY]: {
       name: Joi.string().min(1).max(30),
-      email: Joi.string().email().max(100),
       username: Joi.string()
         .regex(/^[A-Z0-9_.]+$/i)
         .min(1)
