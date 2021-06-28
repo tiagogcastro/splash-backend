@@ -16,13 +16,11 @@ export default class MongoUserTokensRepository
   async findValidToken({
     token,
     user_id,
-    email,
   }: IFindValidTokenDTO): Promise<UserTokens | undefined> {
     const userTokens = await this.ormRepository.findOne({
       where: {
         token,
         user_id,
-        email,
         active: true,
       },
     });
