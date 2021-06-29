@@ -1,4 +1,4 @@
-<h1 align="center"> Lavimco - mvp backend </h1>
+<h1 align="center"> Splash - backend </h1>
 
 <p align="center">🔍 Navegação dentro do Readme. </p>
 
@@ -18,7 +18,7 @@
 <div align="left">
   <h1 id="sobre-o-projeto"> ✅ Sobre o projeto </h1>
   <p>
-    Backend do app(lavimco) de patrocínios, na qual usuários podem receber patrocínios de lojas em um objetivo de melhorar o sistema de fidelidade entre clientes.
+    Backend do app splash de patrocínios, na qual usuários podem receber patrocínios de lojas em um objetivo de melhorar o sistema de fidelidade entre clientes.
   </p>
 </div>
 
@@ -76,7 +76,7 @@ ___
   <p>➡ Vá no cmd dele(no Vscode o nome é "terminal") ou abra o cmd da sua máquina, digite e execute: </p>
   <p>
 
-    git clone https://github.com/Tiaguin061/CRUD-basico
+    git clone https://github.com/Tiaguin061/splash-backend
   </p>
   <p>➡ Entre na pasta do projeto(a que acabou de clonar), digite e execute: </p>
   <p>
